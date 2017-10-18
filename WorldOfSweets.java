@@ -5,13 +5,17 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 
 public class WorldOfSweets extends JPanel {
 	
-	public static final int WIDTH = 1500;
+	public static final int WIDTH = 1200;
 	public static final int HEIGHT = 1000;
 	
 	public WorldOfSweets() {
@@ -71,6 +75,16 @@ public class WorldOfSweets extends JPanel {
 		// Draw all components - typically a loop, should be easy to implement if we use collections of players, tiles, etc
 		// We could prematurely optimize and draw only what needs changed, etc. but for now fuck it - just worry about rudimentary stuff
 		// ...although our team name implies that we will prematurely optimize:)
+		try 
+		{
+			BufferedImage img = ImageIO.read(new File("background.jpg"));
+			//img = Scalr.r
+			g.drawImage(img, 0, 0,WIDTH,HEIGHT, null);
+		} catch (IOException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		drawBoard(g);
 		
 	}

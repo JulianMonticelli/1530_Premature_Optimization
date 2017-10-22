@@ -11,10 +11,12 @@ public class SweetState {
     private boolean paused = false; // Game is paused (no UI update)    
     private boolean finished = false; // Game is finished
     private boolean newGame = false; // Game is new (no players yet, no moves made)
-    private Player firstPlace = null; // Player who is in first place, who can be displayed as the current leader
+    private Player firstPlace; // Player who is in first place, who can be displayed as the current leader
+    private Deck deck;
     
     public SweetState() {
         newGame = true;
+        deck = new Deck();
     }
     
     public void resetGameState() {
@@ -39,6 +41,10 @@ public class SweetState {
     
     public boolean isNewGame() {
         return newGame;
+    }
+    
+    public Deck getDeck() {
+        return deck;
     }
     
 }

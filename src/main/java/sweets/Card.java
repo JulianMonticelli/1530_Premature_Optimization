@@ -18,5 +18,6 @@ public class Card {
         this.isDouble = isDouble;
     }
     
-    
+    public boolean isDouble() { return isDouble; }
+    public int getColor() { return color; }
 }

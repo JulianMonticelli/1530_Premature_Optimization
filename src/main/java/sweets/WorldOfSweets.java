@@ -19,12 +19,19 @@ public class WorldOfSweets extends JPanel {
 	
 	public static final int WIDTH = 1200;
 	public static final int HEIGHT = 1000;
+        
+        private HUD hud;
+        private SweetState gameState;
 	
 	public WorldOfSweets() {
 		this.setPreferredSize(new Dimension(WIDTH,HEIGHT)); // Preferred size affects packing
 		this.setFocusable(true); // Focusable so we can use keyboard input
 		this.addKeyListener(initKeyAdapter()); // Listens to keys, obv 
 		this.addMouseListener(initMouseListener());
+                
+                hud = new HUD();
+                gameState = new SweetState();
+                
 		running = true;
 	}
 	
@@ -67,8 +74,7 @@ public class WorldOfSweets extends JPanel {
 	
 	
 	public void tick() {
-		// Perform game logic at this stage.
-		// We need a state system - ticks could be used to iterate through particle effects, animations, etc if we have any
+		hud.update(gameState.getDeck());
 	}
 	
 	
@@ -77,9 +83,10 @@ public class WorldOfSweets extends JPanel {
 		// Draw all components - typically a loop, should be easy to implement if we use collections of players, tiles, etc
 		// We could prematurely optimize and draw only what needs changed, etc. but for now fuck it - just worry about rudimentary stuff
 		// ...although our team name implies that we will prematurely optimize:)
+                
 		try 
 		{
-			BufferedImage img = ImageIO.read(new File("background.jpg"));
+			BufferedImage img = ImageIO.read(new File("sweets/assets/background.jpg"));
 			//img = Scalr.r
 			g.drawImage(img, 0, 0,WIDTH,HEIGHT, null);
 		} catch (IOException e) 
@@ -88,6 +95,7 @@ public class WorldOfSweets extends JPanel {
 			e.printStackTrace();
 		}
 		drawBoard(g);
+                hud.draw(g, WIDTH, HEIGHT);
 		
 	}
 	/**

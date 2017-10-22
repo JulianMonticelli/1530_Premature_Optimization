@@ -18,6 +18,7 @@ public class Deck {
     private LinkedList<Card> deck;
     
     
+    // TODO: This constructor should construct and shuffle a deck!
     public Deck() {
         //cards = new Card()[NUM_CARDS];
         deck = new LinkedList<>();
@@ -33,6 +34,22 @@ public class Deck {
     
     private void resetDeck() {
         // Reset the deck, reshuffle
+    }
+    
+    public int getNumCards() {
+        return cardsLeftInDeck;
+    }
+    
+    public int getCapacity() {
+        return NUM_CARDS;
+    }
+    
+    public Card getLastCard() {
+        return lastCard;
+    }
+    
+    public boolean wasLastCardDouble() {
+        return lastCard.isDouble();
     }
     
     

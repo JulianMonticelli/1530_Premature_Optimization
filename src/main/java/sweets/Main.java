@@ -24,4 +24,9 @@ public class Main extends JFrame {
 		this.setVisible(true);
 		gamePanel.run();
 	}
+        
+        
+        public static String getAssetLocale() {
+            return System.getProperty("user.dir") + "/src/main/java/sweets/assets/";
+        }
 }

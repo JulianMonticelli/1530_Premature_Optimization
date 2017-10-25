@@ -3,6 +3,7 @@ package sweets;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -15,8 +16,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 
-public class WorldOfSweets extends JPanel {
-	
+public class WorldOfSweets extends JPanel {    
 	public static final int WIDTH = 1200;
 	public static final int HEIGHT = 1000;
         
@@ -42,6 +42,7 @@ public class WorldOfSweets extends JPanel {
 	private int colorState = 1;
 	
 	
+        
 	
 	public void run() {
 		// Basic as boilerplate. This is definitely subject to change.
@@ -86,7 +87,7 @@ public class WorldOfSweets extends JPanel {
                 
 		try 
 		{
-			BufferedImage img = ImageIO.read(new File("sweets/assets/background.jpg"));
+                        BufferedImage img = ImageIO.read(new File(Main.getAssetLocale() + "background.jpg"));
 			//img = Scalr.r
 			g.drawImage(img, 0, 0,WIDTH,HEIGHT, null);
 		} catch (IOException e) 

@@ -33,17 +33,17 @@ public class HUD {
     
     public HUD() {
         try {
-            DECK_FULL = ImageIO.read(new File("sweets/assets/cards/deck_full.png"));
-            DECK_75 = ImageIO.read(new File("sweets/assets/cards/deck_75.png"));
-            DECK_HALF = ImageIO.read(new File("sweets/assets/cards/deck_50.png"));
-            DECK_25 = ImageIO.read(new File("sweets/assets/cards/deck_25.png"));
-            CARD_RED = ImageIO.read(new File("sweets/assets/cards/card_red.png"));
-            CARD_GREEN = ImageIO.read(new File("sweets/assets/cards/card_green.png"));
-            CARD_BLUE = ImageIO.read(new File("sweets/assets/cards/card_blue.png"));
-            CARD_YELLOW = ImageIO.read(new File("sweets/assets/cards/card_yellow.png"));
-            CARD_PURPLE = ImageIO.read(new File("sweets/assets/cards/card_purple.png"));
-            CARD_ORANGE = ImageIO.read(new File("sweets/assets/cards/card_orange.png"));
-            CARD_DOUBLE_OVERLAY = ImageIO.read(new File("sweets/assets/cards/card_double_overlay.png"));
+            DECK_FULL = ImageIO.read(new File(Main.getAssetLocale() + "cards/deck_full.png"));
+            DECK_75 = ImageIO.read(new File(Main.getAssetLocale() + "cards/deck_75.png"));
+            DECK_HALF = ImageIO.read(new File(Main.getAssetLocale() + "cards/deck_50.png"));
+            DECK_25 = ImageIO.read(new File(Main.getAssetLocale() + "cards/deck_25.png"));
+            CARD_RED = ImageIO.read(new File(Main.getAssetLocale() + "cards/card_red.png"));
+            CARD_GREEN = ImageIO.read(new File(Main.getAssetLocale() + "cards/card_green.png"));
+            CARD_BLUE = ImageIO.read(new File(Main.getAssetLocale() + "cards/card_blue.png"));
+            CARD_YELLOW = ImageIO.read(new File(Main.getAssetLocale() + "cards/card_yellow.png"));
+            CARD_PURPLE = ImageIO.read(new File(Main.getAssetLocale() + "cards/card_purple.png"));
+            CARD_ORANGE = ImageIO.read(new File(Main.getAssetLocale() + "cards/card_orange.png"));
+            CARD_DOUBLE_OVERLAY = ImageIO.read(new File(Main.getAssetLocale() + "cards/card_double_overlay.png"));
             
         } catch (IOException e) {
             e.printStackTrace();

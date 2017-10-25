@@ -1,7 +1,11 @@
 package sweets;
 
+import java.util.ArrayList;
+
 public class SweetState {
     
+
+
     Player[] players;
     
     
@@ -47,4 +51,16 @@ public class SweetState {
         return deck;
     }
     
+    public ArrayList<String> getPlayerInFirst() {
+        ArrayList<String> firstList = new ArrayList<>();
+        // return me some names pls
+        return firstList;
+    }
+
+    public String getCurrentPlayerTurn() {
+        String playerName = "";
+        // Give me a player name
+        return playerName;
+    }
+
 }

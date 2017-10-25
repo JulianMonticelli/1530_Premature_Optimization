@@ -54,17 +54,30 @@ public class HUD {
     
     
     
-    public void update(Deck deck) {
+    public void update(Deck deck, SweetState gameState) {
+        updateFirstPlace(gameState);
+        updatePlayerTurn(gameState);
         updateDeckDisplay(deck);
         updateLastCardPicked(deck);
     }
     
+    public String updateFirstPlace(SweetState gameState) {
+        String updateFirstPlace = "";
+        // TODO: Update!
+        return updateFirstPlace;
+    }
+
+    public String updatePlayerTurn(SweetState gameState) {
+        String updatePlayerTurn = "";
+        // TODO: Update!
+        return updatePlayerTurn;
+    }
     
     
     public void draw(Graphics g, int screenWidth, int screenHeight) {
         // Deck
         g.drawImage(currentDeckImage, screenWidth-HUD_OFFSET_WIDTH, screenHeight-HUD_OFFSET_HEIGHT, null);
-        
+
         // Last Card
         if (lastCardPicked != null) {
             g.drawImage(lastCardPicked, screenWidth-HUD_OFFSET_WIDTH, screenHeight-HUD_OFFSET_HEIGHT - HUD_ELEMENT_SIZE, null);
@@ -123,6 +136,7 @@ public class HUD {
         }
         
         wasLastCardPickedDouble = c.isDouble();       
+        
         
         
         return c;

@@ -4,8 +4,11 @@ public class boardSpace
 {
 	int xOrigin; // The x value of the graphical origin of the space.
 	int yOrigin; // The y value of the graphical origin of the space.
-	Color spaceColor;
+	Color spaceColor; // THe color of the space
 
+	/**
+	* No-arg constructor for a boardSpace
+	**/
 	public boardSpace()
 	{
 		xOrigin = 0;
@@ -13,11 +16,17 @@ public class boardSpace
 		spaceColor = Color.white;
 	}
 
+	/**
+	* Constructor to intialize a board space with a location and color
+	* @x The x location of the origin of the space
+	* @y The y location of the origin of the space
+	* @color The color of the space
+	**/
 	public boardSpace(int x, int y, Color color)
 	{
 		xOrigin = x;
 		yOrigin = x;
-		spaceColor = Color.white;
+		spaceColor = color;
 	}
 
 	/**
@@ -28,37 +37,40 @@ public class boardSpace
 	{
 		if(colorState == 0)
 		{
-			return Color.MAGENTA;
+			color = Color.MAGENTA;
 			
 		}
 		if(colorState == 1)
 		{
-			return Color.red;
+			color = Color.red;
 			
 		}
 		if(colorState == 2)
 		{
-			return Color.green;
+			color = Color.green;
 			
 		}
 		if(colorState == 3)
 		{
-			return Color.orange;
+			color = Color.orange;
 			
 		}
 		if(colorState == 4)
 		{
-			return Color.blue;
+			color = Color.blue;
 			
 		}
 		else
 		{
-			return Color.yellow;
+			color = Color.yellow;
 			
 		}
 		
 	}
 
+	/*
+	* Setters and getters
+	*/
 	public int getXOrigin()
 	{
 		return xOrigin;
@@ -71,7 +83,7 @@ public class boardSpace
 
 	public Color getColor()
 	{
-		return ;
+		return color;
 	}
 
 	public void setXOrigin(int x)

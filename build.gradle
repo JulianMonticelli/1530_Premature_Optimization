@@ -14,3 +14,11 @@ dependencies {
 task testTask << {
 	println "this a test yo"
 }
+
+test {
+	include 'HUDTest'
+	include 'CardTest'
+	include 'DeckTest'
+	include 'PlayerTest'
+	include 'SweetStateTest'
+}

@@ -35,6 +35,13 @@ public class Deck {
         return theDeck.size();
     }
 
+    //NKD: Not sure how people expect to be drawing cards
+    //I would try using this
+    public Card draw() {
+        top++;
+        return theDeck.get(top);
+    }
+
     //NKD: Need to define error handling for case where no card was drawn
     //Currently, returns null
     public Card getLastCard() {

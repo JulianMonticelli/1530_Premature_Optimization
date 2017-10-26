@@ -2,10 +2,13 @@ package sweets;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
-
+import java.util.ArrayList;
+import java.awt.Color;
+import java.awt.Font;	
 public class HUD {
     private static BufferedImage DECK_FULL;
     private static BufferedImage DECK_75;
@@ -29,7 +32,8 @@ public class HUD {
     private BufferedImage currentDeckImage;
     private BufferedImage lastCardPicked;
     private boolean wasLastCardPickedDouble;
-    
+    private String playerFirstPlace;
+    private String playerTurn;
     
     public HUD() {
         try {
@@ -62,15 +66,17 @@ public class HUD {
     }
     
     public String updateFirstPlace(SweetState gameState) {
-        String updateFirstPlace = "";
-        // TODO: Update!
-        return updateFirstPlace;
+        ArrayList<String> playerNames = gameState.getPlayerInFirst();
+        
+        // WARNING: Requires Java 1.8 - but this is wayyyyyy cool:
+        playerFirstPlace = String.join(", ", playerNames);
+        
+        return playerFirstPlace;
     }
 
     public String updatePlayerTurn(SweetState gameState) {
-        String updatePlayerTurn = "";
-        // TODO: Update!
-        return updatePlayerTurn;
+        playerTurn = gameState.getCurrentPlayerTurn();
+        return playerTurn;
     }
     
     
@@ -86,9 +92,27 @@ public class HUD {
             }
         }
         
+        int y = 965;
+        
+        // Player's Turn
+        drawHUDString(g, playerTurn, 20, y);
+        
+        // Players in first
+        drawHUDString(g, playerFirstPlace, 400, y);
     }
     
-    
+    // FEEL FREE to change some colors if you want to boys, I'm not convinced these colors are great
+    private void drawHUDString(Graphics g, String str, int x, int y) {
+    	g.setColor(Color.pink);
+        g.setFont(new Font("Arial", Font.PLAIN|Font.BOLD, 36));
+        g.drawString(str, x, y);
+        
+        g.setColor(Color.green);
+        g.drawString(str, x+1, y+1);
+        
+        g.setColor(Color.black);
+        g.drawString(str, x+2, y+2);
+    }
     
     private int updateDeckDisplay(Deck deck) {
         // Deck from 76% full to 100% full will display 100% full

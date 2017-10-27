@@ -9,7 +9,7 @@ public class BoardSpace
 	/**
 	* No-arg constructor for a boardSpace
 	**/
-	public boardSpace()
+	public BoardSpace()
 	{
 		xOrigin = 0;
 		yOrigin = 0;
@@ -22,7 +22,7 @@ public class BoardSpace
 	* @y The y location of the origin of the space
 	* @color The color of the space
 	**/
-	public boardSpace(int x, int y, Color color)
+	public BoardSpace(int x, int y, Color color)
 	{
 		xOrigin = x;
 		yOrigin = x;
@@ -33,36 +33,36 @@ public class BoardSpace
 	 * Quick and dirty color state function
 	 * @return The color to be applied.
 	 */
-	private Color colorPick(int colorState)
+	private void colorPick(int colorState)
 	{
 		if(colorState == 0)
 		{
-			color = Color.MAGENTA;
+			spaceColor = Color.MAGENTA;
 			
 		}
 		if(colorState == 1)
 		{
-			color = Color.red;
+			spaceColor = Color.red;
 			
 		}
 		if(colorState == 2)
 		{
-			color = Color.green;
+			spaceColor = Color.green;
 			
 		}
 		if(colorState == 3)
 		{
-			color = Color.orange;
+			spaceColor = Color.orange;
 			
 		}
 		if(colorState == 4)
 		{
-			color = Color.blue;
+			spaceColor = Color.blue;
 			
 		}
 		else
 		{
-			color = Color.yellow;
+			spaceColor = Color.yellow;
 			
 		}
 		
@@ -83,7 +83,7 @@ public class BoardSpace
 
 	public Color getColor()
 	{
-		return color;
+		return spaceColor;
 	}
 
 	public void setXOrigin(int x)
@@ -98,6 +98,6 @@ public class BoardSpace
 
 	public void setColor(Color c)
 	{
-		color = c;
+		spaceColor = c;
 	}
 }

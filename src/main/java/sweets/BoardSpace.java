@@ -1,6 +1,6 @@
 import java.awt.Color;
 
-public class boardSpace
+public class BoardSpace
 {
 	int xOrigin; // The x value of the graphical origin of the space.
 	int yOrigin; // The y value of the graphical origin of the space.

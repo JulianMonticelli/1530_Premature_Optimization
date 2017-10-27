@@ -24,22 +24,26 @@ public class Deck {
             int target = RNG.nextInt(i);
             swap(i - 1, target);
         }
-        top = -1;
+        top = 0;
     }
 
     public int getNumCards() {
-        return theDeck.size() - (1 + top); //Ugly, but requires less variables
+        return theDeck.size() - top;
     }
 
     public int getCapacity() {
         return theDeck.size();
     }
 
+    public boolean empty() {
+        return top == theDeck.length();
+    }
+
     //NKD: Not sure how people expect to be drawing cards
     //I would try using this
     public Card draw() {
-        top++;
-        return theDeck.get(top);
+        if(empty()) return null;
+        return theDeck.get(top++);
     }
 
     //NKD: Need to define error handling for case where no card was drawn

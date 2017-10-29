@@ -36,7 +36,7 @@ public class Deck {
     }
 
     public boolean empty() {
-        return top == theDeck.length();
+        return top == theDeck.size();
     }
 
     //NKD: Not sure how people expect to be drawing cards

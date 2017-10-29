@@ -25,7 +25,17 @@ public class SweetState {
         firstPlace = new ArrayList<String>(Arrays.asList(players));
     }
     
+	// Returns 1 if a turn was taken; otherwise return 0
     public int makeTurn() {
+		if (paused){
+			// TO DO: Move game pieces
+			deck.draw();
+			
+		
+			paused = false;
+		}
+		
+		
     	return 0;
     }
     

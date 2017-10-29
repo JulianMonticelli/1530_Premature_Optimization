@@ -39,10 +39,9 @@ public class Deck {
         return top == theDeck.size();
     }
 
-    //NKD: Not sure how people expect to be drawing cards
-    //I would try using this
     public Card draw() {
-        if(empty()) return null;
+		if(empty())
+			reshuffleDeck();
         return theDeck.get(top++);
     }
 

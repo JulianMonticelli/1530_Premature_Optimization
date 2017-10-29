@@ -1,57 +1,66 @@
 package sweets;
 
-import java.util.LinkedList;
-
+import java.util.ArrayList;
+import java.util.Random;
 
 public class Deck {
-    
-    private static final int NUM_CARDS = 20; // 20 for now.
-    
-    private Card[] cards;
-    private boolean[] cardInDeck;
-    private Card lastCard;
-    
-    private int cardsLeftInDeck;
-    
-    
-    // Deck could be a linked list
-    private LinkedList<Card> deck;
-    
-    
+    private ArrayList<Card> theDeck;
+    private int top;
+
     // TODO: This constructor should construct and shuffle a deck!
     public Deck() {
-        //cards = new Card()[NUM_CARDS];
-        deck = new LinkedList<>();
-        
-        // TODO: Create cards and shuffle deck
-        
-        cardsLeftInDeck = NUM_CARDS;
+        throw new IllegalStateException(); //Picked randomly. Just didn't want to do an import.
     }
-    
+
+    public Deck(ArrayList<Card> d) {
+        theDeck = d; //Could convert to array.
+        reshuffleDeck();
+    }
+
+    //NKD: Would prefer to call "shuffle"
     public void reshuffleDeck() {
-        // Reshuffle deck
+        Random RNG = new Random();
+        for(int i = theDeck.size(); i > 0; i--) {
+            int target = RNG.nextInt(i);
+            swap(i - 1, target);
+        }
+        top = 0;
     }
-    
-    private void resetDeck() {
-        // Reset the deck, reshuffle
-    }
-    
+
     public int getNumCards() {
-        return cardsLeftInDeck;
+        return theDeck.size() - top;
     }
-    
+
     public int getCapacity() {
-        return NUM_CARDS;
+        return theDeck.size();
     }
-    
+
+    public boolean empty() {
+        return top == theDeck.length();
+    }
+
+    //NKD: Not sure how people expect to be drawing cards
+    //I would try using this
+    public Card draw() {
+        if(empty()) return null;
+        return theDeck.get(top++);
+    }
+
+    //NKD: Need to define error handling for case where no card was drawn
+    //Currently, returns null
     public Card getLastCard() {
-        return lastCard;
+        if(top < 0 || top >= theDeck.size())
+            return null;
+        return theDeck.get(top);
     }
-    
+
     public boolean wasLastCardDouble() {
-        return lastCard.isDouble();
+        return getLastCard().isDouble();
     }
-    
-    
-    
+
+    private void swap(int a, int b) {
+        Card c = theDeck.get(a);
+        theDeck.set(a, theDeck.get(b));
+        theDeck.set(b, c);
+    }
 }

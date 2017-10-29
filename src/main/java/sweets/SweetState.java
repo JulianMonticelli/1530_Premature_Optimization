@@ -30,7 +30,7 @@ public class SweetState {
 		if (paused){
 			// TO DO: Move game pieces
 			deck.draw();
-			
+			startNextTurn();
 		
 			paused = false;
 		}
@@ -74,5 +74,15 @@ public class SweetState {
         String playerName = players[playerTurn];
         return playerName;
     }
-
+	
+	// TO DO: Use actual player count instead of always having 4 players
+	public int startNextTurn() {
+		int playerCount = 4;
+		if (playerTurn < playerCount - 1)
+			playerTurn++;
+		else
+			playerTurn = 0;
+			
+		return playerTurn;
+	}
 }

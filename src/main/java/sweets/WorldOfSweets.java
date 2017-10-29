@@ -232,8 +232,8 @@ public class WorldOfSweets extends JPanel {
 			public void mouseClicked(MouseEvent e) {
 				System.out.println("Mouse button " + e.getButton() + "clicked at " + e.getX() + ", " + e.getY());
 				
-				//Deck click region is (1075 - 1200, 900 - 1000)
-				if (e.getX() <= 1200 && e.getX() >= 1075 && e.getY() <= 1000 && e.getY() >= 900) {
+				//Deck button is 125x100 pixels, placed in bottom right corner
+				if (e.getX() <= WIDTH && e.getX() >= (WIDTH - 125) && e.getY() <= HEIGHT && e.getY() >= (HEIGHT - 100)) {
 					gameState.togglePaused();
 				}
 			}

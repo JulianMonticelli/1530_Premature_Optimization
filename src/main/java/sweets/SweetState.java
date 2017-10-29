@@ -1,6 +1,7 @@
 package sweets;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class SweetState {
     
@@ -8,20 +9,24 @@ public class SweetState {
     private boolean paused = false; // Game is paused (no UI update)    
     private boolean finished = false; // Game is finished
     private boolean newGame = false; // Game is new (no players yet, no moves made)
+    private DeckFactory deckCreator;
     private Deck deck;
     private ArrayList<BoardSpace> spaces; //List of spaces on the board
     private int playerTurn;
+    private ArrayList<String> firstPlace;
     //To be used as placeholder until method for getting actual names implemented
     private String[] players = {"Bob", "Mel", "Jonah", "Catherine"};
     
     public SweetState() {
         newGame = true;
-        deck = new Deck();
+        deckCreator = new DeckFactory();
+        deck = deckCreator.makeDeck();
         playerTurn = 0;
+        firstPlace = new ArrayList<String>(Arrays.asList(players));
     }
     
     public int makeTurn() {
-    	
+    	return 0;
     }
     
     public void resetGameState() {
@@ -52,13 +57,7 @@ public class SweetState {
     }
     
     public ArrayList<String> getPlayerInFirst() {
-        ArrayList<String> firstList;
-        for (int i = spaces.size(); i >= 0; i--) {
-        	firstList = spaces.get(i).getPlayers();
-        	if (spaces.get(i).getPlayers().isEmpty() != true) {
-        		return firstList;
-        	}
-        }
+        return firstPlace;
     }
 
     public String getCurrentPlayerTurn() {

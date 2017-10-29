@@ -4,27 +4,27 @@ import java.util.ArrayList;
 
 public class SweetState {
     
-
-
-    Player[] players;
-    
-    
-    
-    
     // Game state statements
     private boolean paused = false; // Game is paused (no UI update)    
     private boolean finished = false; // Game is finished
     private boolean newGame = false; // Game is new (no players yet, no moves made)
-    private Player firstPlace; // Player who is in first place, who can be displayed as the current leader
     private Deck deck;
+    private ArrayList<BoardSpace> spaces; //List of spaces on the board
+    private int playerTurn;
+    //To be used as placeholder until method for getting actual names implemented
+    private String[] players = {"Bob", "Mel", "Jonah", "Catherine"};
     
     public SweetState() {
         newGame = true;
         deck = new Deck();
+        playerTurn = 0;
+    }
+    
+    public int makeTurn() {
+    	
     }
     
     public void resetGameState() {
-        players = null; // Null Player List
         paused = false;
         finished = false;
         newGame = true;
@@ -52,14 +52,17 @@ public class SweetState {
     }
     
     public ArrayList<String> getPlayerInFirst() {
-        ArrayList<String> firstList = new ArrayList<>();
-        // return me some names pls
-        return firstList;
+        ArrayList<String> firstList;
+        for (int i = spaces.size(); i >= 0; i--) {
+        	firstList = spaces.get(i).getPlayers();
+        	if (spaces.get(i).getPlayers().isEmpty() != true) {
+        		return firstList;
+        	}
+        }
     }
 
     public String getCurrentPlayerTurn() {
-        String playerName = "";
-        // Give me a player name
+        String playerName = players[playerTurn];
         return playerName;
     }
 

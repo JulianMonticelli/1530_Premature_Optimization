@@ -75,6 +75,7 @@ public class WorldOfSweets extends JPanel {
 	
 	
 	public void tick() {
+		gameState.makeTurn();
 		hud.update(gameState.getDeck(), gameState);
 	}
 	

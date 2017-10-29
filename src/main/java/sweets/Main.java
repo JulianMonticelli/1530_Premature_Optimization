@@ -1,6 +1,7 @@
 package sweets;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 
 public class Main extends JFrame {
@@ -10,6 +11,7 @@ public class Main extends JFrame {
 	WorldOfSweets gamePanel;
 	
 	public static void main(String[] args) {
+		String inputValue = JOptionPane.showInputDialog("How many players are playing?");
 		Main frame = new Main();
 		frame.init();
 		

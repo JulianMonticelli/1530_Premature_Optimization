@@ -36,45 +36,6 @@ public class BoardSpace
 		players = new ArrayList<String>(4);
 	}
 
-	/**
-	 * Quick and dirty color state function
-	 * @return The color to be applied.
-	 */
-	private void colorPick(int colorState)
-	{
-		if(colorState == 0)
-		{
-			spaceColor = Color.MAGENTA;
-			
-		}
-		if(colorState == 1)
-		{
-			spaceColor = Color.red;
-			
-		}
-		if(colorState == 2)
-		{
-			spaceColor = Color.green;
-			
-		}
-		if(colorState == 3)
-		{
-			spaceColor = Color.orange;
-			
-		}
-		if(colorState == 4)
-		{
-			spaceColor = Color.blue;
-			
-		}
-		else
-		{
-			spaceColor = Color.yellow;
-			
-		}
-		
-	}
-
 	/*
 	* Setters and getters
 	*/

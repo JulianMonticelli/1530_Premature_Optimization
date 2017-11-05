@@ -14,6 +14,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import java.util.ArrayList;
 
 
 public class WorldOfSweets extends JPanel {    
@@ -31,6 +32,7 @@ public class WorldOfSweets extends JPanel {
                 
                 hud = new HUD();
                 gameState = new SweetState();
+                gameState.storePath(WIDTH,HEIGHT);
                 
 		running = true;
 	}
@@ -40,6 +42,7 @@ public class WorldOfSweets extends JPanel {
 	
 	private boolean running = false;
 	private int colorState = 1;
+	
 	
 	
         
@@ -96,13 +99,24 @@ public class WorldOfSweets extends JPanel {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		drawBoard(g);
+	
         hud.draw(g, WIDTH, HEIGHT);
         
-        BoardSpace b = new BoardSpace(WIDTH/2,HEIGHT/2,Color.MAGENTA);
-        drawToken(g,b);
-
+        //BoardSpace b = new BoardSpace(WIDTH/2,HEIGHT/2,Color.MAGENTA);
+        //drawToken(g,b);
+        drawPath(g);
 		
+	}
+
+	public void drawPath(Graphics g)
+	{
+		ArrayList<BoardSpace> path = gameState.getPath();
+
+		for(int i = 0; i < path.size() - 3;i++)
+		{
+			g.setColor(path.get(i).getColor());
+			g.fill3DRect(path.get(i).getXOrigin(),path.get(i).getYOrigin(), WIDTH/10, HEIGHT/10, true); // Draw a rect at current calculated height and width.	
+		}
 	}
 
 	public int drawToken(Graphics g, BoardSpace space)
@@ -114,120 +128,7 @@ public class WorldOfSweets extends JPanel {
 		
 		return 0;
 	}
-	/**
-	 * Generates a zig-zag box pattern for the CandyLand path.
-	 * It works by drawing boxes from right to left across the screen,
-	 * then drawing a bridge box. It continues this process until 
-	 * it reaches the bottom of the screen.
-	 * @param The graphics object used to draw to the JPanel
-	 * @return Success or failure code;
-	 */
-	public int drawBoard(Graphics g)
-	{
-		// Current x and y keep track of our x and y indexes into the Jpanel
-		int currentX = 0;
-		int currentY = 0;
-		
-		// X and Y distance are multiplied by the current x or y index to get the total distance for the origin of the rectangle to be drawn.
-		int xDistance = WIDTH/10;
-		int yDistance = HEIGHT/10;
-		
-		// The variables that will hold distance times current
-		int rowDistance = 0;
-		int columnDistance = 0;
-		
-		// Path state determines whether we should draw a bridge on near x or far x side of the window.
-		int pathState = 0; 
-		
-		while(rowDistance < (HEIGHT - yDistance)) // While we have not reached the bottom of the screen (y).
-		{
-			rowDistance = currentY * yDistance; // Get the current height we want to draw at.
-			
-			while(columnDistance < (WIDTH - xDistance)) // While we have not reached the edge of the screen (x).
-			{
-				
-				g.setColor(colorPick());
-				columnDistance = currentX * xDistance; // Get the current width we want to draw at.
-				g.fill3DRect(columnDistance,rowDistance, xDistance, yDistance, true); // Draw a rect at current calculated height and width.
-				currentX++;
-			}
-			currentY++;
-			
-			// After we have drawn a row we need to draw a row of size one so move down one y index.
-			rowDistance = currentY * yDistance;
-			
-			if(rowDistance < HEIGHT - yDistance) // Make sure we are not off the screen in the y direction
-			{
-				g.setColor(colorPick());
-				
-				// Alternate drawing the bridge path on the right and left.
-				if(pathState == 0)
-				{
-					g.fill3DRect(columnDistance,rowDistance, xDistance, yDistance, true);
-					pathState = 1;
-				}
-				else
-				{
-					g.fill3DRect(0,rowDistance, xDistance, yDistance, true);
-					pathState = 0;
-				}
-				
-			}
-			// Move down in y and reset x variable to move left to right again.
-			currentY++;
-			currentX = 0;
-			columnDistance = 0;
-		}
-		
-		
-
-		return 0;
-	}
 	
-	/**
-	 * Quick and dirty color state function
-	 * @return The color to be applied.
-	 */
-	private Color colorPick()
-	{
-		if(colorState == 0)
-		{
-			colorState = 1;
-			return Color.MAGENTA;
-			
-		}
-		if(colorState == 1)
-		{
-			colorState = 2;
-			return Color.red;
-			
-		}
-		if(colorState == 2)
-		{
-			colorState = 3;
-			return Color.green;
-			
-		}
-		if(colorState == 3)
-		{
-			colorState = 4;
-			return Color.orange;
-			
-		}
-		if(colorState == 4)
-		{
-			colorState = 5;
-			return Color.blue;
-			
-		}
-		else
-		{
-			colorState = 0;
-			return Color.yellow;
-			
-		}
-		
-	}
 	
 	// Key and Mouse adapters
 	

@@ -30,7 +30,7 @@ public class BoardSpace
 	public BoardSpace(int x, int y, Color color)
 	{
 		xOrigin = x;
-		yOrigin = x;
+		yOrigin = y;
 		spaceColor = color;
 		players = new ArrayList<String>();
 	}

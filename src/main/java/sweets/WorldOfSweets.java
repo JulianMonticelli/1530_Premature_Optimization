@@ -88,7 +88,7 @@ public class WorldOfSweets extends JPanel {
                 
 		try 
 		{
-                        BufferedImage img = ImageIO.read(new File(Main.getAssetLocale() + "background.jpg"));
+            BufferedImage img = ImageIO.read(new File(Main.getAssetLocale() + "background.jpg"));
 			//img = Scalr.r
 			g.drawImage(img, 0, 0,WIDTH,HEIGHT, null);
 		} catch (IOException e) 
@@ -97,8 +97,22 @@ public class WorldOfSweets extends JPanel {
 			e.printStackTrace();
 		}
 		drawBoard(g);
-                hud.draw(g, WIDTH, HEIGHT);
+        hud.draw(g, WIDTH, HEIGHT);
+        
+        BoardSpace b = new BoardSpace(WIDTH/2,HEIGHT/2,Color.MAGENTA);
+        drawToken(g,b);
+
 		
+	}
+
+	public int drawToken(Graphics g, BoardSpace space)
+	{
+		g.setColor(space.getColor());
+		g.fillArc(space.getXOrigin(), space.getYOrigin(), WIDTH/20, HEIGHT/20,0, 360);
+		g.setColor(Color.black);
+		g.drawArc(space.getXOrigin(), space.getYOrigin(), WIDTH/20, HEIGHT/20,0, 360);
+		
+		return 0;
 	}
 	/**
 	 * Generates a zig-zag box pattern for the CandyLand path.
@@ -134,7 +148,7 @@ public class WorldOfSweets extends JPanel {
 				
 				g.setColor(colorPick());
 				columnDistance = currentX * xDistance; // Get the current width we want to draw at.
-				g.fillRect(columnDistance,rowDistance, xDistance, yDistance); // Draw a rect at current calculated height and width.
+				g.fill3DRect(columnDistance,rowDistance, xDistance, yDistance, true); // Draw a rect at current calculated height and width.
 				currentX++;
 			}
 			currentY++;
@@ -149,12 +163,12 @@ public class WorldOfSweets extends JPanel {
 				// Alternate drawing the bridge path on the right and left.
 				if(pathState == 0)
 				{
-					g.fillRect(columnDistance,rowDistance, xDistance, yDistance);
+					g.fill3DRect(columnDistance,rowDistance, xDistance, yDistance, true);
 					pathState = 1;
 				}
 				else
 				{
-					g.fillRect(0,rowDistance, xDistance, yDistance);
+					g.fill3DRect(0,rowDistance, xDistance, yDistance, true);
 					pathState = 0;
 				}
 				

@@ -1,6 +1,6 @@
 package sweets;
 
-public class Player {
-
+public class Player 
+{
 
 }

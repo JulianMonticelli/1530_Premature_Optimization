@@ -13,7 +13,6 @@ public class SweetState {
     private DeckFactory deckCreator;
     private Deck deck;
     private ArrayList<BoardSpace> spaces = new ArrayList<BoardSpace>(); //List of spaces on the board
-    //private ArrayList<Player> players = new ArrayList<Player>(); //List of spaces on the board
     private int playerTurn;
     private ArrayList<String> firstPlace;
     //To be used as placeholder until method for getting actual names implemented
@@ -26,6 +25,7 @@ public class SweetState {
         deck = deckCreator.makeDeck();
         playerTurn = 0;
         firstPlace = new ArrayList<String>(Arrays.asList(players));
+
     }
     
 	// Returns 1 if a turn was taken; otherwise return 0
@@ -98,11 +98,12 @@ public class SweetState {
      * Generates a zig-zag box pattern for the CandyLand path.
      * It works by drawing boxes from right to left across the screen,
      * then drawing a bridge box. It continues this process until 
-     * it reaches the bottom of the screen.
+     * it reaches the bottom of the screen. Then stores the result
+     * in the spaces array.
      * @param The graphics object used to draw to the JPanel
      * @return Success or failure code;
      */
-    public int storePath(int WIDTH, int HEIGHT)
+    public ArrayList<BoardSpace> storePath(int WIDTH, int HEIGHT)
     {
         // Current x and y keep track of our x and y indexes into the Jpanel
         int currentX = 0;
@@ -138,7 +139,7 @@ public class SweetState {
             
             if(rowDistance < HEIGHT - yDistance) // Make sure we are not off the screen in the y direction
             {
-                //g.setColor(colorPick());
+                
                 
                 // Alternate drawing the bridge path on the right and left.
                 if(pathState == 0)
@@ -160,14 +161,13 @@ public class SweetState {
             currentX = 0;
             columnDistance = 0;
         }
-        
-        System.out.println(spaces.size());
 
-        return 0;
+        return spaces;
     }
     
     /**
-     * Quick and dirty color state function
+     * This function assigns returns 
+     * a color based on the current colorstate
      * @return The color to be applied.
      */
     private Color colorPick()
@@ -175,39 +175,32 @@ public class SweetState {
         if(colorState == 0)
         {
             colorState = 1;
-            return Color.MAGENTA;
-            
+            return Color.MAGENTA; 
         }
         if(colorState == 1)
         {
             colorState = 2;
-            return Color.red;
-            
+            return Color.red;   
         }
         if(colorState == 2)
         {
             colorState = 3;
             return Color.green;
-            
         }
         if(colorState == 3)
         {
             colorState = 4;
             return Color.orange;
-            
         }
         if(colorState == 4)
         {
             colorState = 5;
             return Color.blue;
-            
         }
         else
         {
             colorState = 0;
             return Color.yellow;
-            
-        }
-        
+        }   
     }
 }

@@ -9,6 +9,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
 
@@ -27,8 +28,13 @@ public class WorldOfSweets extends JPanel {
 	Player testPlayer4;
 	ArrayList<BoardSpace> path;
         
-        private HUD hud;
-        private SweetState gameState;
+    private HUD hud;
+    private SweetState gameState;
+
+    private int targetFPS = 30;
+	
+	private boolean running = false;
+	private int colorState = 1;
 	
 	public WorldOfSweets() {
 		this.setPreferredSize(new Dimension(WIDTH,HEIGHT)); // Preferred size affects packing
@@ -46,36 +52,27 @@ public class WorldOfSweets extends JPanel {
 		
 		testPlayer = new Player();
 		testPlayer.setColor(Color.blue);
-		path.get(10).addPlayer(testPlayer);
+		path.get(20).addPlayer(testPlayer);
+		path.get(15).removePlayer(testPlayer);
 
 		testPlayer2 = new Player();
 		testPlayer2.setColor(Color.green);
-		path.get(10).addPlayer(testPlayer2);
+		path.get(20).addPlayer(testPlayer2);
 		
 		testPlayer3 = new Player();
 		testPlayer3.setColor(Color.MAGENTA);
-		path.get(10).addPlayer(testPlayer3);
+		path.get(20).addPlayer(testPlayer3);
 		
 		testPlayer4 = new Player();
 		testPlayer4.setColor(Color.orange);
-		path.get(10).addPlayer(testPlayer4);
+		path.get(20).addPlayer(testPlayer4);
 
 		//path.get(10).removePlayer(testPlayer);
 		//path.get(10).removePlayer(testPlayer2);
 		//path.get(10).removePlayer(testPlayer3);
 		//path.get(10).removePlayer(testPlayer4);
 		
-	}
-	
-	
-	private int targetFPS = 30;
-	
-	private boolean running = false;
-	private int colorState = 1;
-	
-	
-	
-        
+	}    
 	
 	public void run() {
 		// Basic as boilerplate. This is definitely subject to change.
@@ -138,52 +135,85 @@ public class WorldOfSweets extends JPanel {
 		
 	}
 
+	/**
+	*  This function draws the path stored
+	*  in the gameState object. It also draws 
+	*  tokens on their specific locations 
+	*  the path.
+	*  @g The graphics object we are using to draw
+	**/
 	public void drawPath(Graphics g)
 	{
-		ArrayList<BoardSpace> path = gameState.getPath();
+		ArrayList<BoardSpace> path = gameState.getPath(); // The game board path
 
-		for(int i = 0; i < path.size() - 3;i++)
+		for(int i = 0; i < path.size() - 3;i++) // Draw the path stored in the array
 		{
-			g.setColor(path.get(i).getColor());
-			g.fill3DRect(path.get(i).getXOrigin(),path.get(i).getYOrigin(), WIDTH/10, HEIGHT/10, true); // Draw a rect at current calculated height and width.	
+			g.setColor(path.get(i).getColor()); // Get the color of this specific space
+			g.fill3DRect(path.get(i).getXOrigin(),path.get(i).getYOrigin(), WIDTH/10, HEIGHT/10, true); // Draw the rect at this index	
 			
-			ArrayList<Player> players = path.get(i).getPlayers();
+			ArrayList<Player> players = path.get(i).getPlayers(); // Get the players stored in this space
 
-			for(int j = 0; j < path.get(i).getNumPlayers(); j++)
+			for(int j = 0; j < path.get(i).getNumPlayers(); j++) // Iterate through the Boardspaces's players and draw tokens as necessary
 			{
-				g.setColor(path.get(i).getColor());
 
 				if(j == 0) 
 				{
-					drawToken(g, path.get(i), 0,0,players.get(j));
+					drawToken(g, path.get(i), 0,0,players.get(j)); // Draw the first token in top left of square
 				}
 				else if(j == 1)
 				{
-					drawToken(g, path.get(i), WIDTH/17,0,players.get(j));
+					drawToken(g, path.get(i), WIDTH/17,0,players.get(j)); // Draw the second token  in top right of square
 				}
 				else if(j == 2)
 				{
-					drawToken(g, path.get(i), 0, HEIGHT/20,players.get(j));
+					drawToken(g, path.get(i), 0, HEIGHT/20,players.get(j)); // Draw the third token in bottom left of square
 				}
 				else
 				{
-					drawToken(g, path.get(i), WIDTH/17, HEIGHT/20,players.get(j));
+					drawToken(g, path.get(i), WIDTH/17, HEIGHT/20,players.get(j)); // Draw the fourth token in bottom right of square
 				}
 			
 			}
 
 		}
-	}
+		//Draw the start block
+		g.setColor(Color.black);
+        g.setFont(new Font("Arial", Font.PLAIN|Font.BOLD, HEIGHT/50 + WIDTH/50));
+        g.drawString("Start", path.get(0).getXOrigin() + WIDTH/70, path.get(0).getYOrigin()+ HEIGHT/15);
 
-	public int drawToken(Graphics g, BoardSpace space, int xOffset, int yOffset, Player user)
+		try 
+		{
+            BufferedImage img = ImageIO.read(new File(Main.getAssetLocale() + "grandma's.jpg"));
+			//img = Scalr.r
+			g.drawImage(img, path.get(path.size() - 3).getXOrigin(),path.get(path.size() - 3).getYOrigin(),WIDTH/10,HEIGHT/10, null);
+		} catch (IOException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		//Draw the start block
+		//g.setColor(Color.black);
+        //g.setFont(new Font("Arial", Font.PLAIN|Font.BOLD, HEIGHT/50 + WIDTH/50));
+        //g.drawString("Grandma's House", path.get(path.size() - 3).getXOrigin() - WIDTH/85, path.get(path.size() - 3).getYOrigin()+ HEIGHT/5);
+	}
+	/**
+	* This function draws a token at an offset from a Boardspace.
+	* @g The graphics object we are using for drawing
+	* @space The board space we are offsetting from
+	* @xOffset The xOffset from the BoardSpace
+	* @yOffset The yOffset from the BoardSpace
+	* @user The player whose token is being drawn
+	*
+	**/
+	public void drawToken(Graphics g, BoardSpace space, int xOffset, int yOffset, Player user)
 	{
 		g.setColor(user.getColor());
 		g.fillArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, WIDTH/25, HEIGHT/20,0, 360);
 		g.fillArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, WIDTH/25, HEIGHT/20,0, 360);
 		g.setColor(Color.black);
 		g.drawArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, WIDTH/25, HEIGHT/20,0, 360);
-		g.drawArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, WIDTH/25, HEIGHT/20,0, 360);
-		return 0;
+		
 	}
 	
 	

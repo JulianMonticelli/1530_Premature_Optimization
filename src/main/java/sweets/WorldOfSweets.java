@@ -42,23 +42,24 @@ public class WorldOfSweets extends JPanel {
 		running = true;
 
 		ArrayList<BoardSpace> path = gameState.getPath();
-
+		
 		testPlayer = new Player();
 		testPlayer.setColor(Color.blue);
 		path.get(5).addPlayer(testPlayer);
 		
+		
 		testPlayer2 = new Player();
 		testPlayer.setColor(Color.green);
 		path.get(5).addPlayer(testPlayer2);
-
+		
 		testPlayer3 = new Player();
 		testPlayer.setColor(Color.green);
 		path.get(5).addPlayer(testPlayer3);
 		
 		testPlayer4 = new Player();
 		testPlayer.setColor(Color.orange);
-		path.get(5).addPlayer(testPlayer4);
-	
+		path.get(20).addPlayer(testPlayer4);
+		
 	}
 	
 	
@@ -171,7 +172,7 @@ public class WorldOfSweets extends JPanel {
 
 	public int drawToken(Graphics g, BoardSpace space, int xOffset, int yOffset, Player user)
 	{
-		g.setColor(user.getColor());
+		g.setColor(Color.black);
 		g.fillArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, WIDTH/25, HEIGHT/20,0, 360);
 		g.fillArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, WIDTH/25, HEIGHT/20,0, 360);
 		return 0;

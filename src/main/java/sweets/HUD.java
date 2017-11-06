@@ -86,7 +86,7 @@ public class HUD {
 
         // Last Card
         if (lastCardPicked != null) {
-            g.drawImage(lastCardPicked, screenWidth-HUD_OFFSET_WIDTH, screenHeight-HUD_OFFSET_HEIGHT - HUD_ELEMENT_SIZE, null);
+            g.drawImage(lastCardPicked, screenWidth-HUD_OFFSET_WIDTH-HUD_ELEMENT_SIZE, screenHeight-HUD_OFFSET_HEIGHT, null);
             if (wasLastCardPickedDouble) {
                 g.drawImage(CARD_DOUBLE_OVERLAY, screenWidth-HUD_OFFSET_WIDTH - HUD_ELEMENT_SIZE, screenHeight-HUD_OFFSET_HEIGHT, null);
             }

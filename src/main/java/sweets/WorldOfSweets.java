@@ -9,19 +9,32 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import java.util.ArrayList;
 
 
 public class WorldOfSweets extends JPanel {    
 	public static final int WIDTH = 1200;
 	public static final int HEIGHT = 1000;
+
+	Player testPlayer;
+	Player testPlayer2;
+	Player testPlayer3;
+	Player testPlayer4;
+	ArrayList<BoardSpace> path;
         
-        private HUD hud;
-        private SweetState gameState;
+    private HUD hud;
+    private SweetState gameState;
+
+    private int targetFPS = 30;
+	
+	private boolean running = false;
+	private int colorState = 1;
 	
 	public WorldOfSweets() {
 		this.setPreferredSize(new Dimension(WIDTH,HEIGHT)); // Preferred size affects packing
@@ -31,18 +44,35 @@ public class WorldOfSweets extends JPanel {
                 
                 hud = new HUD();
                 gameState = new SweetState();
+                gameState.storePath(WIDTH,HEIGHT);
                 
 		running = true;
-	}
-	
-	
-	private int targetFPS = 30;
-	
-	private boolean running = false;
-	private int colorState = 1;
-	
-	
-        
+
+		path = gameState.getPath();
+		
+		testPlayer = new Player();
+		testPlayer.setColor(Color.blue);
+		path.get(20).addPlayer(testPlayer);
+		path.get(15).removePlayer(testPlayer);
+
+		testPlayer2 = new Player();
+		testPlayer2.setColor(Color.green);
+		path.get(20).addPlayer(testPlayer2);
+		
+		testPlayer3 = new Player();
+		testPlayer3.setColor(Color.MAGENTA);
+		path.get(20).addPlayer(testPlayer3);
+		
+		testPlayer4 = new Player();
+		testPlayer4.setColor(Color.orange);
+		path.get(20).addPlayer(testPlayer4);
+
+		//path.get(10).removePlayer(testPlayer);
+		//path.get(10).removePlayer(testPlayer2);
+		//path.get(10).removePlayer(testPlayer3);
+		//path.get(10).removePlayer(testPlayer4);
+		
+	}    
 	
 	public void run() {
 		// Basic as boilerplate. This is definitely subject to change.
@@ -85,135 +115,107 @@ public class WorldOfSweets extends JPanel {
 		// Draw all components - typically a loop, should be easy to implement if we use collections of players, tiles, etc
 		// We could prematurely optimize and draw only what needs changed, etc. but for now fuck it - just worry about rudimentary stuff
 		// ...although our team name implies that we will prematurely optimize:)
-                
+              
 		try 
 		{
-                        BufferedImage img = ImageIO.read(new File(Main.getAssetLocale() + "background.jpg"));
+            BufferedImage img = ImageIO.read(new File(Main.getAssetLocale() + "background.jpg"));
 			//img = Scalr.r
-			g.drawImage(img, 0, 0,WIDTH,HEIGHT, null);
+			g.drawImage(img, 0,0,WIDTH,HEIGHT, null);
 		} catch (IOException e) 
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		drawBoard(g);
-                hud.draw(g, WIDTH, HEIGHT);
+	
+        hud.draw(g, WIDTH, HEIGHT);
+        
+        //BoardSpace b = new BoardSpace(WIDTH/2,HEIGHT/2,Color.MAGENTA);
+        //drawToken(g,b);
+        drawPath(g);
 		
 	}
+
 	/**
-	 * Generates a zig-zag box pattern for the CandyLand path.
-	 * It works by drawing boxes from right to left across the screen,
-	 * then drawing a bridge box. It continues this process until 
-	 * it reaches the bottom of the screen.
-	 * @param The graphics object used to draw to the JPanel
-	 * @return Success or failure code;
-	 */
-	public int drawBoard(Graphics g)
+	*  This function draws the path stored
+	*  in the gameState object. It also draws 
+	*  tokens on their specific locations 
+	*  the path.
+	*  @g The graphics object we are using to draw
+	**/
+	public void drawPath(Graphics g)
 	{
-		// Current x and y keep track of our x and y indexes into the Jpanel
-		int currentX = 0;
-		int currentY = 0;
-		
-		// X and Y distance are multiplied by the current x or y index to get the total distance for the origin of the rectangle to be drawn.
-		int xDistance = WIDTH/10;
-		int yDistance = HEIGHT/10;
-		
-		// The variables that will hold distance times current
-		int rowDistance = 0;
-		int columnDistance = 0;
-		
-		// Path state determines whether we should draw a bridge on near x or far x side of the window.
-		int pathState = 0; 
-		
-		while(rowDistance < (HEIGHT - yDistance)) // While we have not reached the bottom of the screen (y).
+		ArrayList<BoardSpace> path = gameState.getPath(); // The game board path
+
+		for(int i = 0; i < path.size() - 3;i++) // Draw the path stored in the array
 		{
-			rowDistance = currentY * yDistance; // Get the current height we want to draw at.
+			g.setColor(path.get(i).getColor()); // Get the color of this specific space
+			g.fill3DRect(path.get(i).getXOrigin(),path.get(i).getYOrigin(), WIDTH/10, HEIGHT/10, true); // Draw the rect at this index	
 			
-			while(columnDistance < (WIDTH - xDistance)) // While we have not reached the edge of the screen (x).
+			ArrayList<Player> players = path.get(i).getPlayers(); // Get the players stored in this space
+
+			for(int j = 0; j < path.get(i).getNumPlayers(); j++) // Iterate through the Boardspaces's players and draw tokens as necessary
 			{
-				
-				g.setColor(colorPick());
-				columnDistance = currentX * xDistance; // Get the current width we want to draw at.
-				g.fillRect(columnDistance,rowDistance, xDistance, yDistance); // Draw a rect at current calculated height and width.
-				currentX++;
-			}
-			currentY++;
-			
-			// After we have drawn a row we need to draw a row of size one so move down one y index.
-			rowDistance = currentY * yDistance;
-			
-			if(rowDistance < HEIGHT - yDistance) // Make sure we are not off the screen in the y direction
-			{
-				g.setColor(colorPick());
-				
-				// Alternate drawing the bridge path on the right and left.
-				if(pathState == 0)
+
+				if(j == 0) 
 				{
-					g.fillRect(columnDistance,rowDistance, xDistance, yDistance);
-					pathState = 1;
+					drawToken(g, path.get(i), 0,0,players.get(j)); // Draw the first token in top left of square
+				}
+				else if(j == 1)
+				{
+					drawToken(g, path.get(i), WIDTH/17,0,players.get(j)); // Draw the second token  in top right of square
+				}
+				else if(j == 2)
+				{
+					drawToken(g, path.get(i), 0, HEIGHT/20,players.get(j)); // Draw the third token in bottom left of square
 				}
 				else
 				{
-					g.fillRect(0,rowDistance, xDistance, yDistance);
-					pathState = 0;
+					drawToken(g, path.get(i), WIDTH/17, HEIGHT/20,players.get(j)); // Draw the fourth token in bottom right of square
 				}
-				
+			
 			}
-			// Move down in y and reset x variable to move left to right again.
-			currentY++;
-			currentX = 0;
-			columnDistance = 0;
-		}
-		
-		
 
-		return 0;
+		}
+		//Draw the start block
+		g.setColor(Color.black);
+        g.setFont(new Font("Arial", Font.PLAIN|Font.BOLD, HEIGHT/50 + WIDTH/50));
+        g.drawString("Start", path.get(0).getXOrigin() + WIDTH/70, path.get(0).getYOrigin()+ HEIGHT/15);
+
+		try 
+		{
+            BufferedImage img = ImageIO.read(new File(Main.getAssetLocale() + "grandma's.jpg"));
+			//img = Scalr.r
+			g.drawImage(img, path.get(path.size() - 3).getXOrigin(),path.get(path.size() - 3).getYOrigin(),WIDTH/10,HEIGHT/10, null);
+		} catch (IOException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		//Draw the start block
+		//g.setColor(Color.black);
+        //g.setFont(new Font("Arial", Font.PLAIN|Font.BOLD, HEIGHT/50 + WIDTH/50));
+        //g.drawString("Grandma's House", path.get(path.size() - 3).getXOrigin() - WIDTH/85, path.get(path.size() - 3).getYOrigin()+ HEIGHT/5);
+	}
+	/**
+	* This function draws a token at an offset from a Boardspace.
+	* @g The graphics object we are using for drawing
+	* @space The board space we are offsetting from
+	* @xOffset The xOffset from the BoardSpace
+	* @yOffset The yOffset from the BoardSpace
+	* @user The player whose token is being drawn
+	*
+	**/
+	public void drawToken(Graphics g, BoardSpace space, int xOffset, int yOffset, Player user)
+	{
+		g.setColor(user.getColor());
+		g.fillArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, WIDTH/25, HEIGHT/20,0, 360);
+		g.fillArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, WIDTH/25, HEIGHT/20,0, 360);
+		g.setColor(Color.black);
+		g.drawArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, WIDTH/25, HEIGHT/20,0, 360);
+		
 	}
 	
-	/**
-	 * Quick and dirty color state function
-	 * @return The color to be applied.
-	 */
-	private Color colorPick()
-	{
-		if(colorState == 0)
-		{
-			colorState = 1;
-			return Color.MAGENTA;
-			
-		}
-		if(colorState == 1)
-		{
-			colorState = 2;
-			return Color.red;
-			
-		}
-		if(colorState == 2)
-		{
-			colorState = 3;
-			return Color.green;
-			
-		}
-		if(colorState == 3)
-		{
-			colorState = 4;
-			return Color.orange;
-			
-		}
-		if(colorState == 4)
-		{
-			colorState = 5;
-			return Color.blue;
-			
-		}
-		else
-		{
-			colorState = 0;
-			return Color.yellow;
-			
-		}
-		
-	}
 	
 	// Key and Mouse adapters
 	

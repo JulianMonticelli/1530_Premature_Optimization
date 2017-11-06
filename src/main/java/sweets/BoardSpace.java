@@ -5,11 +5,11 @@ import java.util.ArrayList;
 
 public class BoardSpace
 {
-	int xOrigin; // The x value of the graphical origin of the space.
-	int yOrigin; // The y value of the graphical origin of the space.
-	Color spaceColor; // The color of the space
-	ArrayList<String> players; //Contains list of players currently occupying space
-	
+	private int xOrigin; // The x value of the graphical origin of the space.
+	private int yOrigin; // The y value of the graphical origin of the space.
+	private Color spaceColor; // The color of the space
+	private ArrayList<Player> players; //Contains list of players currently occupying space
+	private int numPlayers = 0;
 
 	/**
 	* No-arg constructor for a boardSpace
@@ -19,7 +19,7 @@ public class BoardSpace
 		xOrigin = 0;
 		yOrigin = 0;
 		spaceColor = Color.white;
-		players = new ArrayList<String>(4);
+		players = new ArrayList<Player>();
 	}
 
 	/**
@@ -31,9 +31,9 @@ public class BoardSpace
 	public BoardSpace(int x, int y, Color color)
 	{
 		xOrigin = x;
-		yOrigin = x;
+		yOrigin = y;
 		spaceColor = color;
-		players = new ArrayList<String>(4);
+		players = new ArrayList<Player>();
 	}
 
 	/*
@@ -69,17 +69,24 @@ public class BoardSpace
 		spaceColor = c;
 	}
 
-	public void addPlayer(String s) 
+	public void addPlayer(Player s) 
 	{
 		players.add(s);
+		numPlayers++;
 	}
 	
-	public void removePlayer(String s) 
+	public void removePlayer(Player p) 
 	{
-		players.remove(s);
+		players.remove(p);
+		numPlayers--;
+	}
+
+	public int getNumPlayers()
+	{
+		return numPlayers;
 	}
 	
-	public ArrayList<String> getPlayers()
+	public ArrayList<Player> getPlayers()
 	{
 		return players;
 	}

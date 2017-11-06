@@ -2,6 +2,7 @@ package sweets;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.awt.Color;
 
 public class SweetState {
     
@@ -11,11 +12,12 @@ public class SweetState {
     private boolean newGame = false; // Game is new (no players yet, no moves made)
     private DeckFactory deckCreator;
     private Deck deck;
-    private ArrayList<BoardSpace> spaces; //List of spaces on the board
+    private ArrayList<BoardSpace> spaces = new ArrayList<BoardSpace>(); //List of spaces on the board
     private int playerTurn;
     private ArrayList<String> firstPlace;
     //To be used as placeholder until method for getting actual names implemented
     private String[] players = {"Bob", "Mel", "Jonah", "Catherine"};
+    private int colorState = 1;
     
     public SweetState() {
         newGame = true;
@@ -23,6 +25,7 @@ public class SweetState {
         deck = deckCreator.makeDeck();
         playerTurn = 0;
         firstPlace = new ArrayList<String>(Arrays.asList(players));
+
     }
     
 	// Returns 1 if a turn was taken; otherwise return 0
@@ -74,6 +77,11 @@ public class SweetState {
         String playerName = players[playerTurn];
         return playerName;
     }
+
+    public ArrayList<BoardSpace> getPath()
+    {
+        return spaces;
+    }
 	
 	// TO DO: Use actual player count instead of always having 4 players
 	public int startNextTurn() {
@@ -85,4 +93,114 @@ public class SweetState {
 			
 		return playerTurn;
 	}
+
+    /**
+     * Generates a zig-zag box pattern for the CandyLand path.
+     * It works by drawing boxes from right to left across the screen,
+     * then drawing a bridge box. It continues this process until 
+     * it reaches the bottom of the screen. Then stores the result
+     * in the spaces array.
+     * @param The graphics object used to draw to the JPanel
+     * @return Success or failure code;
+     */
+    public ArrayList<BoardSpace> storePath(int WIDTH, int HEIGHT)
+    {
+        // Current x and y keep track of our x and y indexes into the Jpanel
+        int currentX = 0;
+        int currentY = 0;
+        
+        // X and Y distance are multiplied by the current x or y index to get the total distance for the origin of the rectangle to be drawn.
+        int xDistance = WIDTH/10;
+        int yDistance = HEIGHT/10;
+        
+        // The variables that will hold distance times current
+        int rowDistance = 0;
+        int columnDistance = 0;
+        
+        // Path state determines whether we should draw a bridge on near x or far x side of the window.
+        int pathState = 0; 
+        
+        while(rowDistance < (HEIGHT - yDistance)) // While we have not reached the bottom of the screen (y).
+        {
+            rowDistance = currentY * yDistance; // Get the current height we want to draw at.
+            
+            while(columnDistance < (WIDTH - xDistance)) // While we have not reached the edge of the screen (x).
+            {
+                //g.setColor(colorPick());
+                columnDistance = currentX * xDistance; // Get the current width we want to draw at.
+                //g.fill3DRect(columnDistance,rowDistance, xDistance, yDistance, true); // Draw a rect at current calculated height and width.
+                spaces.add(new BoardSpace(columnDistance,rowDistance, colorPick()));
+                currentX++;
+            }
+            currentY++;
+            
+            // After we have drawn a row we need to draw a row of size one so move down one y index.
+            rowDistance = currentY * yDistance;
+            
+            if(rowDistance < HEIGHT - yDistance) // Make sure we are not off the screen in the y direction
+            {
+                
+                
+                // Alternate drawing the bridge path on the right and left.
+                if(pathState == 0)
+                {
+                    //g.fill3DRect(columnDistance,rowDistance, xDistance, yDistance, true);
+                    spaces.add(new BoardSpace(columnDistance,rowDistance, colorPick()));
+                    pathState = 1;
+                }
+                else
+                {
+                    //g.fill3DRect(0,rowDistance, xDistance, yDistance, true);
+                    spaces.add(new BoardSpace(0, rowDistance, colorPick()));
+                    pathState = 0;
+                }
+                
+            }
+            // Move down in y and reset x variable to move left to right again.
+            currentY++;
+            currentX = 0;
+            columnDistance = 0;
+        }
+
+        return spaces;
+    }
+    
+    /**
+     * This function assigns returns 
+     * a color based on the current colorstate
+     * @return The color to be applied.
+     */
+    private Color colorPick()
+    {
+        if(colorState == 0)
+        {
+            colorState = 1;
+            return Color.MAGENTA; 
+        }
+        if(colorState == 1)
+        {
+            colorState = 2;
+            return Color.red;   
+        }
+        if(colorState == 2)
+        {
+            colorState = 3;
+            return Color.green;
+        }
+        if(colorState == 3)
+        {
+            colorState = 4;
+            return Color.orange;
+        }
+        if(colorState == 4)
+        {
+            colorState = 5;
+            return Color.blue;
+        }
+        else
+        {
+            colorState = 0;
+            return Color.yellow;
+        }   
+    }
 }

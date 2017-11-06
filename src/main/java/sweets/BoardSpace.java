@@ -75,9 +75,9 @@ public class BoardSpace
 		numPlayers++;
 	}
 	
-	public void removePlayer(Player s) 
+	public void removePlayer(Player p) 
 	{
-		players.remove(s);
+		players.remove(p);
 		numPlayers--;
 	}
 

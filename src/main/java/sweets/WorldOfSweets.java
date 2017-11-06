@@ -47,8 +47,7 @@ public class WorldOfSweets extends JPanel {
 		testPlayer = new Player();
 		testPlayer.setColor(Color.blue);
 		path.get(10).addPlayer(testPlayer);
-		
-		
+
 		testPlayer2 = new Player();
 		testPlayer2.setColor(Color.green);
 		path.get(10).addPlayer(testPlayer2);
@@ -60,6 +59,11 @@ public class WorldOfSweets extends JPanel {
 		testPlayer4 = new Player();
 		testPlayer4.setColor(Color.orange);
 		path.get(10).addPlayer(testPlayer4);
+
+		//path.get(10).removePlayer(testPlayer);
+		//path.get(10).removePlayer(testPlayer2);
+		//path.get(10).removePlayer(testPlayer3);
+		//path.get(10).removePlayer(testPlayer4);
 		
 	}
 	

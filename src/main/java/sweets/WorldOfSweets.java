@@ -25,6 +25,7 @@ public class WorldOfSweets extends JPanel {
 	Player testPlayer2;
 	Player testPlayer3;
 	Player testPlayer4;
+	ArrayList<BoardSpace> path;
         
         private HUD hud;
         private SweetState gameState;
@@ -41,24 +42,24 @@ public class WorldOfSweets extends JPanel {
                 
 		running = true;
 
-		ArrayList<BoardSpace> path = gameState.getPath();
+		path = gameState.getPath();
 		
 		testPlayer = new Player();
 		testPlayer.setColor(Color.blue);
-		path.get(5).addPlayer(testPlayer);
+		path.get(10).addPlayer(testPlayer);
 		
 		
 		testPlayer2 = new Player();
-		testPlayer.setColor(Color.green);
-		path.get(5).addPlayer(testPlayer2);
+		testPlayer2.setColor(Color.green);
+		path.get(10).addPlayer(testPlayer2);
 		
 		testPlayer3 = new Player();
-		testPlayer.setColor(Color.green);
-		path.get(5).addPlayer(testPlayer3);
+		testPlayer3.setColor(Color.MAGENTA);
+		path.get(10).addPlayer(testPlayer3);
 		
 		testPlayer4 = new Player();
-		testPlayer.setColor(Color.orange);
-		path.get(20).addPlayer(testPlayer4);
+		testPlayer4.setColor(Color.orange);
+		path.get(10).addPlayer(testPlayer4);
 		
 	}
 	
@@ -172,9 +173,12 @@ public class WorldOfSweets extends JPanel {
 
 	public int drawToken(Graphics g, BoardSpace space, int xOffset, int yOffset, Player user)
 	{
+		g.setColor(user.getColor());
+		g.fillArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, WIDTH/25, HEIGHT/20,0, 360);
+		g.fillArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, WIDTH/25, HEIGHT/20,0, 360);
 		g.setColor(Color.black);
-		g.fillArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, WIDTH/25, HEIGHT/20,0, 360);
-		g.fillArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, WIDTH/25, HEIGHT/20,0, 360);
+		g.drawArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, WIDTH/25, HEIGHT/20,0, 360);
+		g.drawArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, WIDTH/25, HEIGHT/20,0, 360);
 		return 0;
 	}
 	

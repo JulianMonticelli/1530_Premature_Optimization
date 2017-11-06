@@ -20,6 +20,11 @@ import java.util.ArrayList;
 public class WorldOfSweets extends JPanel {    
 	public static final int WIDTH = 1200;
 	public static final int HEIGHT = 1000;
+
+	Player testPlayer;
+	Player testPlayer2;
+	Player testPlayer3;
+	Player testPlayer4;
         
         private HUD hud;
         private SweetState gameState;
@@ -35,6 +40,25 @@ public class WorldOfSweets extends JPanel {
                 gameState.storePath(WIDTH,HEIGHT);
                 
 		running = true;
+
+		ArrayList<BoardSpace> path = gameState.getPath();
+
+		testPlayer = new Player();
+		testPlayer.setColor(Color.blue);
+		path.get(5).addPlayer(testPlayer);
+		
+		testPlayer2 = new Player();
+		testPlayer.setColor(Color.green);
+		path.get(5).addPlayer(testPlayer2);
+
+		testPlayer3 = new Player();
+		testPlayer.setColor(Color.green);
+		path.get(5).addPlayer(testPlayer3);
+		
+		testPlayer4 = new Player();
+		testPlayer.setColor(Color.orange);
+		path.get(5).addPlayer(testPlayer4);
+	
 	}
 	
 	
@@ -88,12 +112,12 @@ public class WorldOfSweets extends JPanel {
 		// Draw all components - typically a loop, should be easy to implement if we use collections of players, tiles, etc
 		// We could prematurely optimize and draw only what needs changed, etc. but for now fuck it - just worry about rudimentary stuff
 		// ...although our team name implies that we will prematurely optimize:)
-                
+              
 		try 
 		{
             BufferedImage img = ImageIO.read(new File(Main.getAssetLocale() + "background.jpg"));
 			//img = Scalr.r
-			g.drawImage(img, 0, 0,WIDTH,HEIGHT, null);
+			g.drawImage(img, 0,0,WIDTH,HEIGHT, null);
 		} catch (IOException e) 
 		{
 			// TODO Auto-generated catch block
@@ -116,16 +140,40 @@ public class WorldOfSweets extends JPanel {
 		{
 			g.setColor(path.get(i).getColor());
 			g.fill3DRect(path.get(i).getXOrigin(),path.get(i).getYOrigin(), WIDTH/10, HEIGHT/10, true); // Draw a rect at current calculated height and width.	
+			
+			ArrayList<Player> players = path.get(i).getPlayers();
+
+			for(int j = 0; j < path.get(i).getNumPlayers(); j++)
+			{
+				g.setColor(path.get(i).getColor());
+
+				if(j == 0) 
+				{
+					drawToken(g, path.get(i), 0,0,players.get(j));
+				}
+				else if(j == 1)
+				{
+					drawToken(g, path.get(i), WIDTH/17,0,players.get(j));
+				}
+				else if(j == 2)
+				{
+					drawToken(g, path.get(i), 0, HEIGHT/20,players.get(j));
+				}
+				else
+				{
+					drawToken(g, path.get(i), WIDTH/17, HEIGHT/20,players.get(j));
+				}
+			
+			}
+
 		}
 	}
 
-	public int drawToken(Graphics g, BoardSpace space)
+	public int drawToken(Graphics g, BoardSpace space, int xOffset, int yOffset, Player user)
 	{
-		g.setColor(space.getColor());
-		g.fillArc(space.getXOrigin(), space.getYOrigin(), WIDTH/20, HEIGHT/20,0, 360);
-		g.setColor(Color.black);
-		g.drawArc(space.getXOrigin(), space.getYOrigin(), WIDTH/20, HEIGHT/20,0, 360);
-		
+		g.setColor(user.getColor());
+		g.fillArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, WIDTH/25, HEIGHT/20,0, 360);
+		g.fillArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, WIDTH/25, HEIGHT/20,0, 360);
 		return 0;
 	}
 	

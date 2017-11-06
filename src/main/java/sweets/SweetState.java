@@ -13,6 +13,7 @@ public class SweetState {
     private DeckFactory deckCreator;
     private Deck deck;
     private ArrayList<BoardSpace> spaces = new ArrayList<BoardSpace>(); //List of spaces on the board
+    //private ArrayList<Player> players = new ArrayList<Player>(); //List of spaces on the board
     private int playerTurn;
     private ArrayList<String> firstPlace;
     //To be used as placeholder until method for getting actual names implemented

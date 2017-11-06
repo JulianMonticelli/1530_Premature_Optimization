@@ -8,7 +8,8 @@ public class BoardSpace
 	private int xOrigin; // The x value of the graphical origin of the space.
 	private int yOrigin; // The y value of the graphical origin of the space.
 	private Color spaceColor; // The color of the space
-	private ArrayList<String> players; //Contains list of players currently occupying space
+	private ArrayList<Player> players; //Contains list of players currently occupying space
+	private int numPlayers = 0;
 
 	/**
 	* No-arg constructor for a boardSpace
@@ -18,7 +19,7 @@ public class BoardSpace
 		xOrigin = 0;
 		yOrigin = 0;
 		spaceColor = Color.white;
-		players = new ArrayList<String>();
+		players = new ArrayList<Player>();
 	}
 
 	/**
@@ -32,7 +33,7 @@ public class BoardSpace
 		xOrigin = x;
 		yOrigin = y;
 		spaceColor = color;
-		players = new ArrayList<String>();
+		players = new ArrayList<Player>();
 	}
 
 	/*
@@ -68,17 +69,24 @@ public class BoardSpace
 		spaceColor = c;
 	}
 
-	public void addPlayer(String s) 
+	public void addPlayer(Player s) 
 	{
 		players.add(s);
+		numPlayers++;
 	}
 	
-	public void removePlayer(String s) 
+	public void removePlayer(Player s) 
 	{
 		players.remove(s);
+		numPlayers--;
+	}
+
+	public int getNumPlayers()
+	{
+		return numPlayers;
 	}
 	
-	public ArrayList<String> getPlayers()
+	public ArrayList<Player> getPlayers()
 	{
 		return players;
 	}

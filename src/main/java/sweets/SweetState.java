@@ -3,6 +3,7 @@ package sweets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.awt.Color;
+import javax.swing.JOptionPane;
 
 public class SweetState {
     
@@ -14,9 +15,8 @@ public class SweetState {
     private Deck deck;
     private ArrayList<BoardSpace> spaces = new ArrayList<BoardSpace>(); //List of spaces on the board
     private int playerTurn;
-    private ArrayList<String> firstPlace;
-    //To be used as placeholder until method for getting actual names implemented
-    private String[] players = {"Bob", "Mel", "Jonah", "Catherine"};
+	private int numPlayers;
+    private ArrayList<Player> players;
     private int colorState = 1;
     
     public SweetState() {
@@ -24,8 +24,29 @@ public class SweetState {
         deckCreator = new DeckFactory();
         deck = deckCreator.makeDeck();
         playerTurn = 0;
-        firstPlace = new ArrayList<String>(Arrays.asList(players));
-
+		boolean done = false;
+		while (!done) {
+			try {
+				String input = JOptionPane.showInputDialog("How many players are playing?");
+				numPlayers = Integer.parseInt(input);
+				done = true;
+			}
+			catch (NumberFormatException e) {
+				JOptionPane.showMessageDialog(null, "Invalid Input");
+			}
+		}
+		players = new ArrayList<Player>(numPlayers);
+		for (int i = 0; i < numPlayers; i++) {
+			String playerName = JOptionPane.showInputDialog("What is player" + (i + 1) + "'s name?");
+			for (int j = 0; j < i; j++) {
+				if (playerName.equals(players.get(j).getName())) {
+					playerName = JOptionPane.showInputDialog("Please enter a unique name");
+				}
+			}
+			players.add(i, new Player(colorPick(), playerName, 0));
+		}
+		colorState = 1;
+		
     }
     
 	// Returns 1 if a turn was taken; otherwise return 0
@@ -33,6 +54,7 @@ public class SweetState {
 		if (paused){
 			// TO DO: Move game pieces
 			deck.draw();
+			
 			startNextTurn();
 		
 			paused = false;
@@ -70,11 +92,23 @@ public class SweetState {
     }
     
     public ArrayList<String> getPlayerInFirst() {
-        return firstPlace;
+        ArrayList<String> firstPlace = new ArrayList<String>(numPlayers);
+		int maxPos = 0;
+		for (int i = 0; i < numPlayers; i++) {
+			if (players.get(i).getPos() >= maxPos) {
+				if (players.get(i).getPos() > maxPos) {
+					firstPlace.clear();
+					maxPos = players.get(i).getPos();
+				}
+				firstPlace.add(players.get(i).getName());
+			}
+		}
+		
+		return firstPlace;
     }
 
     public String getCurrentPlayerTurn() {
-        String playerName = players[playerTurn];
+        String playerName = players.get(playerTurn).getName();
         return playerName;
     }
 
@@ -177,22 +211,22 @@ public class SweetState {
             colorState = 1;
             return Color.MAGENTA; 
         }
-        if(colorState == 1)
+        else if(colorState == 1)
         {
             colorState = 2;
             return Color.red;   
         }
-        if(colorState == 2)
+        else if(colorState == 2)
         {
             colorState = 3;
             return Color.green;
         }
-        if(colorState == 3)
+        else if(colorState == 3)
         {
             colorState = 4;
             return Color.orange;
         }
-        if(colorState == 4)
+        else if(colorState == 4)
         {
             colorState = 5;
             return Color.blue;

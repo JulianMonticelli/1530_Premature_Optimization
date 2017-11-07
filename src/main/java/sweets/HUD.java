@@ -180,7 +180,6 @@ public class HUD {
             return null;
         }
         
-        /*
         if (c.wasLastCardSkipCard()) {
             lastCardPicked = SKIP_CARD;
             return SKIP_CARD;
@@ -190,7 +189,6 @@ public class HUD {
             lastCardPicked = MIDDLE_CARD;
             return MIDDLE_CARD;
         }
-        */
         
         switch(c.getColor()) {
             case Card.COLOR_RED:

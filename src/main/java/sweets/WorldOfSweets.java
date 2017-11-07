@@ -42,7 +42,7 @@ public class WorldOfSweets extends JPanel {
 		this.addKeyListener(initKeyAdapter()); // Listens to keys, obv 
 		this.addMouseListener(initMouseListener());
                 
-                hud = new HUD();
+                hud = new HUD(WIDTH, HEIGHT);
                 gameState = new SweetState();
                 gameState.storePath(WIDTH,HEIGHT);
                 

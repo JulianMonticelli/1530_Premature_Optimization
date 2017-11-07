@@ -119,11 +119,7 @@ public class SweetState {
 	
 	// TO DO: Use actual player count instead of always having 4 players
 	public int startNextTurn() {
-		int playerCount = 4;
-		if (playerTurn < playerCount - 1)
-			playerTurn++;
-		else
-			playerTurn = 0;
+                playerTurn = ++playerTurn % players.size();
 			
 		return playerTurn;
 	}

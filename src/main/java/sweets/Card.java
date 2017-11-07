@@ -19,8 +19,8 @@ public class Card {
         this.data = data;
     }
 
-    public boolean isDouble() { return (data & DOUBLE != 0); }
-    public boolean isSkipTurn() { return (data & SKIP_TURN != 0); }
-    public boolean isGoToMiddle() { return (data & GO_TO_MIDDLE != 0); }
+    public boolean isDouble() { return ((data & DOUBLE) != 0); }
+    public boolean isSkipTurn() { return ((data & SKIP_TURN) != 0); }
+    public boolean isMiddleCard() { return ((data & GO_TO_MIDDLE) != 0); }
     public int getColor() { return data & 63; }
 }

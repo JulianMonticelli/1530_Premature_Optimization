@@ -57,11 +57,11 @@ public class Deck {
         return getLastCard().isDouble();
     }
 
-    public boolean wasLastSkipCard() {
+    public boolean wasLastCardSkipCard() {
         return getLastCard().isSkipTurn();
     }
 
-    public boolean wasLastMiddleCard() {
+    public boolean wasLastCardMiddleCard() {
         return getLastCard().isMiddleCard();
     }
 

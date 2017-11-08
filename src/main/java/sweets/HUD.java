@@ -137,7 +137,7 @@ public class HUD {
         int y = 965;
         
         // Player's Turn
-        drawHUDString(g, playerTurn, 20, y);
+        drawHUDString(g, playerTurn + "'s turn!", 20, y);
         
         // Players in first
         drawHUDString(g, playerFirstPlace, 400, y);
@@ -180,12 +180,12 @@ public class HUD {
             return null;
         }
         
-        if (c.wasLastCardSkipCard()) {
+        if (c.isSkipTurn()) {
             lastCardPicked = SKIP_CARD;
             return c;
         }
         
-        if (c.wasLastCardMiddleCard()) {
+        if (c.isMiddleCard()) {
             lastCardPicked = MIDDLE_CARD;
             return c;
         }

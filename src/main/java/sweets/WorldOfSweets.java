@@ -22,10 +22,7 @@ public class WorldOfSweets extends JPanel {
 	public static final int WIDTH = 1200;
 	public static final int HEIGHT = 1000;
 
-	Player testPlayer;
-	Player testPlayer2;
-	Player testPlayer3;
-	Player testPlayer4;
+
 	ArrayList<BoardSpace> path;
         
     private HUD hud;
@@ -45,33 +42,10 @@ public class WorldOfSweets extends JPanel {
                 hud = new HUD(WIDTH, HEIGHT);
                 gameState = new SweetState();
                 gameState.storePath(WIDTH,HEIGHT);
+				gameState.addTokensToBoard();
                 
 		running = true;
 
-		path = gameState.getPath();
-		
-		testPlayer = new Player();
-		testPlayer.setColor(Color.blue);
-		path.get(20).addPlayer(testPlayer);
-		path.get(15).removePlayer(testPlayer);
-
-		testPlayer2 = new Player();
-		testPlayer2.setColor(Color.green);
-		path.get(20).addPlayer(testPlayer2);
-		
-		testPlayer3 = new Player();
-		testPlayer3.setColor(Color.MAGENTA);
-		path.get(20).addPlayer(testPlayer3);
-		
-		testPlayer4 = new Player();
-		testPlayer4.setColor(Color.orange);
-		path.get(20).addPlayer(testPlayer4);
-
-		//path.get(10).removePlayer(testPlayer);
-		//path.get(10).removePlayer(testPlayer2);
-		//path.get(10).removePlayer(testPlayer3);
-		//path.get(10).removePlayer(testPlayer4);
-		
 	}    
 	
 	public void run() {

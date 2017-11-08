@@ -18,6 +18,7 @@ public class SweetState {
 	private int numPlayers;
     private ArrayList<Player> players;
     private int colorState = 1;
+	private Color[] playerColors = { Color.cyan, Color.black, Color.pink, Color.white};
     
     public SweetState() {
         newGame = true;
@@ -52,12 +53,20 @@ public class SweetState {
 	// Returns 1 if a turn was taken; otherwise return 0
     public int makeTurn() {
 		if (paused){
-			// TO DO: Move game pieces
-			deck.draw();
+			
+			Player currentPlayer = players.get(playerTurn);
+			int currentPos = currentPlayer.getPos();
+			int destPos = calculateDest(currentPos);
+			System.out.println(currentPlayer.getName() + " going from " + currentPos + " to " + destPos);
+			
+			spaces.get(currentPos).removePlayer(currentPlayer);
+			spaces.get(destPos).addPlayer(currentPlayer);
+			currentPlayer.setPos(destPos);
 			
 			startNextTurn();
 		
 			paused = false;
+			return 1;
 		}
 		
 		
@@ -117,11 +126,64 @@ public class SweetState {
         return spaces;
     }
 	
-	// TO DO: Use actual player count instead of always having 4 players
 	public int startNextTurn() {
                 playerTurn = ++playerTurn % players.size();
 			
 		return playerTurn;
+	}
+	
+	public int addTokensToBoard() {
+		for (int i = 0; i < numPlayers; i++) {
+			//players.get(i).setPos(0);
+			players.get(i).setColor(playerColors[i]);
+			spaces.get(0).addPlayer(players.get(i));
+		}
+		
+		
+		return 0;
+	}
+	
+	public int calculateDest(int startPos) {
+		Card drawnCard = deck.draw();
+		int destination = startPos;
+		
+		if (drawnCard.isSkipTurn())
+		{System.out.println("skip card");
+		return startPos;}
+		
+		else if (drawnCard.isMiddleCard())
+		{System.out.println("middle card");
+		return (spaces.size() - 3)/2;}
+		
+		else if (drawnCard.isDouble()) {
+			System.out.println("double card + " + drawnCard.getColor());
+			boolean hasPassedMatchingSquare = false;
+			for (int i = startPos + 1; i < (spaces.size()); i++) {
+				if (spaces.get(i).getIntColorCode() == drawnCard.getColor()) {
+					if (hasPassedMatchingSquare)
+					{destination = i;
+					break;}
+					else
+						hasPassedMatchingSquare = true;
+				}
+				
+			}
+		} else {
+			for (int i = startPos + 1; i < (spaces.size()); i++) {
+				if (spaces.get(i).getIntColorCode() == drawnCard.getColor()) {
+					destination = i;
+					break;
+				}
+			}
+		}
+
+		//Check to see if grandma's house has been reached
+		if (destination >= spaces.size() - 3)
+		{System.out.println("grandma");
+		return spaces.size() - 3;}
+		else
+			return destination;
+		
 	}
 
     /**
@@ -154,15 +216,31 @@ public class SweetState {
         {
             rowDistance = currentY * yDistance; // Get the current height we want to draw at.
             
-            while(columnDistance < (WIDTH - xDistance)) // While we have not reached the edge of the screen (x).
-            {
-                //g.setColor(colorPick());
-                columnDistance = currentX * xDistance; // Get the current width we want to draw at.
-                //g.fill3DRect(columnDistance,rowDistance, xDistance, yDistance, true); // Draw a rect at current calculated height and width.
-                spaces.add(new BoardSpace(columnDistance,rowDistance, colorPick()));
-                currentX++;
-            }
-            currentY++;
+			if(pathState == 0) {
+				while(columnDistance < (WIDTH - xDistance)) // While we have not reached the edge of the screen (x).
+				{
+					//g.setColor(colorPick());
+					columnDistance = currentX * xDistance; // Get the current width we want to draw at.
+					//g.fill3DRect(columnDistance,rowDistance, xDistance, yDistance, true); // Draw a rect at current calculated height and width.
+					spaces.add(new BoardSpace(columnDistance,rowDistance, colorPick()));
+					currentX++;
+				}
+				currentY++;
+			}
+			else
+			{
+				columnDistance = WIDTH;
+				while(columnDistance > 0) // While we have not reached the edge of the screen (x).
+				{
+					//g.setColor(colorPick());
+					columnDistance = WIDTH - xDistance * currentX;
+					//g.fill3DRect(columnDistance,rowDistance, xDistance, yDistance, true); // Draw a rect at current calculated height and width.
+					//spaces.add(new BoardSpace(columnDistance,rowDistance, colorPick()));
+					spaces.add(new BoardSpace(columnDistance,rowDistance, colorPick()));
+					currentX++;
+				}
+				currentY++;
+			}
             
             // After we have drawn a row we need to draw a row of size one so move down one y index.
             rowDistance = currentY * yDistance;

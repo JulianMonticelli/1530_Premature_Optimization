@@ -8,6 +8,7 @@ public class BoardSpace
 	private int xOrigin; // The x value of the graphical origin of the space.
 	private int yOrigin; // The y value of the graphical origin of the space.
 	private Color spaceColor; // The color of the space
+	private int intColorCode; //The color corresponding to the code in Card.java
 	private ArrayList<Player> players; //Contains list of players currently occupying space
 	private int numPlayers = 0;
 
@@ -34,6 +35,28 @@ public class BoardSpace
 		yOrigin = y;
 		spaceColor = color;
 		players = new ArrayList<Player>();
+				
+		int rgbValue = spaceColor.getRGB();
+		switch(rgbValue) {
+            case -65536:
+                intColorCode = 1;
+                break;
+            case -16711936:
+                intColorCode = 2;
+                break;
+            case -16776961:
+                intColorCode = 4;
+                break;
+            case -256:
+                intColorCode = 8;
+                break;
+            case -14336:
+                intColorCode = 16;
+                break;
+            case -65281:
+                intColorCode = 32;
+                break;
+        }
 	}
 
 	/*
@@ -52,6 +75,11 @@ public class BoardSpace
 	public Color getColor()
 	{
 		return spaceColor;
+	}
+	
+	public int getIntColorCode()
+	{
+		return intColorCode;
 	}
 
 	public void setXOrigin(int x)

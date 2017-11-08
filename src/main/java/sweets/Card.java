@@ -16,6 +16,7 @@ public class Card {
     private int data;
 
     public Card(int data) {
+        if((data & 511) == 0) throw new IllegalStateException();
         this.data = data;
     }
 

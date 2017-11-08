@@ -40,9 +40,9 @@ public class Deck {
     }
 
     public Card draw() {
-		if(empty())
-			reshuffleDeck();
-        return theDeck.get(top++);
+	  if(empty())
+	     reshuffleDeck();
+      return theDeck.get(top++);
     }
 
     //NKD: Need to define error handling for case where no card was drawn

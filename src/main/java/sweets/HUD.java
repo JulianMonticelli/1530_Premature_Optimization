@@ -182,12 +182,12 @@ public class HUD {
         
         if (c.wasLastCardSkipCard()) {
             lastCardPicked = SKIP_CARD;
-            return SKIP_CARD;
+            return c;
         }
         
         if (c.wasLastCardMiddleCard()) {
             lastCardPicked = MIDDLE_CARD;
-            return MIDDLE_CARD;
+            return c;
         }
         
         switch(c.getColor()) {

@@ -233,6 +233,7 @@ public class SweetState {
 			else
 			{
 				columnDistance = WIDTH;
+				currentX = 1;
 				while(columnDistance > 0) // While we have not reached the edge of the screen (x).
 				{
 					//g.setColor(colorPick());

@@ -30,7 +30,11 @@ public class SweetState {
 			try {
 				String input = JOptionPane.showInputDialog("How many players are playing?");
 				numPlayers = Integer.parseInt(input);
-				done = true;
+				if (numPlayers < 5 && numPlayers > 1)
+					done = true;
+				else {
+					JOptionPane.showMessageDialog(null, "Please enter a number between 2 and 4");
+				}
 			}
 			catch (NumberFormatException e) {
 				JOptionPane.showMessageDialog(null, "Invalid Input");

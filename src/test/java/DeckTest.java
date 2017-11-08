@@ -45,6 +45,33 @@ public class DeckTest {
     Card c = _d.draw();
     assertEquals(c, _d.getLastCard());
   }
+  
+  @Test
+  public void testDeckShuffles() {
+     DeckFactory df = new DeckFactory();
+     Deck d = df.makeDeck();
+     d.reshuffleDeck();
+     Card c1 = d.draw();
+     Card c2 = d.draw();
+     Card c3 = d.draw();
+
+     // This test relies on the assumption that the deck
+     // is at least reset every time you call reshuffle.
+     
+     d.reshuffleDeck();
+     Card cc1 = d.draw();
+     Card cc2 = d.draw();
+     Card cc3 = d.draw();
+
+     boolean comp1 = c1.equals(cc1);
+     boolean comp2 = c2.equals(cc2);
+     boolean comp3 = c3.equals(cc3);
+
+     d.reshuffleDeck();
+     
+     boolean bool = comp1 && comp2 && comp3;
+     assertTrue(!bool);
+  }
 
 
 }

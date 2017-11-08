@@ -50,10 +50,9 @@ public class SweetState {
 		
     }
     
-	// Returns 1 if a turn was taken; otherwise return 0
-    public int makeTurn() {
+	// Returns 0 if someone won; otherwise return 1
+    public boolean makeTurn() {
 		if (paused){
-			
 			Player currentPlayer = players.get(playerTurn);
 			int currentPos = currentPlayer.getPos();
 			int destPos = calculateDest(currentPos);
@@ -63,15 +62,23 @@ public class SweetState {
 			spaces.get(destPos).addPlayer(currentPlayer);
 			currentPlayer.setPos(destPos);
 			
+			int grandmaLoc = spaces.size() - 3;
+			if (destPos == grandmaLoc) {
+				endGame(currentPlayer);
+				return false;
+			}
+			
 			startNextTurn();
 		
 			paused = false;
-			return 1;
 		}
 		
-		
-    	return 0;
+    	return true;
     }
+	
+	public void endGame(Player winner) {
+		JOptionPane.showMessageDialog(null, winner.getName() + " has won the game!");
+	}
     
     public void resetGameState() {
         paused = false;
@@ -139,51 +146,43 @@ public class SweetState {
 			spaces.get(0).addPlayer(players.get(i));
 		}
 		
-		
 		return 0;
 	}
 	
+	//Returns index of destination, or returns -1 when grandma's house is reached
 	public int calculateDest(int startPos) {
 		Card drawnCard = deck.draw();
 		int destination = startPos;
+		int grandmaLoc = spaces.size() - 3;
 		
 		if (drawnCard.isSkipTurn())
-		{System.out.println("skip card");
-		return startPos;}
+			return startPos;
 		
 		else if (drawnCard.isMiddleCard())
-		{System.out.println("middle card");
-		return (spaces.size() - 3)/2;}
+			return (spaces.size() - 3)/2;
 		
 		else if (drawnCard.isDouble()) {
-			System.out.println("double card + " + drawnCard.getColor());
 			boolean hasPassedMatchingSquare = false;
-			for (int i = startPos + 1; i < (spaces.size()); i++) {
+			for (int i = startPos + 1; i < grandmaLoc + 1; i++) {
 				if (spaces.get(i).getIntColorCode() == drawnCard.getColor()) {
-					if (hasPassedMatchingSquare)
-					{destination = i;
-					break;}
+					if (i == grandmaLoc)
+						return grandmaLoc;
+					else if (hasPassedMatchingSquare)
+						return i;
 					else
 						hasPassedMatchingSquare = true;
 				}
-				
 			}
 		} else {
-			for (int i = startPos + 1; i < (spaces.size()); i++) {
-				if (spaces.get(i).getIntColorCode() == drawnCard.getColor()) {
-					destination = i;
-					break;
-				}
+			for (int i = startPos + 1; i < grandmaLoc + 1; i++) {
+				if (i == grandmaLoc)
+					return grandmaLoc;
+				else if (spaces.get(i).getIntColorCode() == drawnCard.getColor())
+					return i;
 			}
 		}
 
-		//Check to see if grandma's house has been reached
-		if (destination >= spaces.size() - 3)
-		{System.out.println("grandma");
-		return spaces.size() - 3;}
-		else
-			return destination;
-		
+		return 0;
 	}
 
     /**

@@ -145,7 +145,7 @@ public class WorldOfSweets extends JPanel {
 	public void drawPath(Graphics g)
 	{
 		ArrayList<BoardSpace> path = gameState.getPath(); // The game board path
-
+		
 		for(int i = 0; i < path.size() - 3;i++) // Draw the path stored in the array
 		{
 			g.setColor(path.get(i).getColor()); // Get the color of this specific space

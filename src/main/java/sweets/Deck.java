@@ -57,6 +57,14 @@ public class Deck {
         return getLastCard().isDouble();
     }
 
+    public boolean wasLastCardSkipCard() {
+        return getLastCard().isSkipTurn();
+    }
+
+    public boolean wasLastCardMiddleCard() {
+        return getLastCard().isMiddleCard();
+    }
+
     private void swap(int a, int b) {
         Card c = theDeck.get(a);
         theDeck.set(a, theDeck.get(b));

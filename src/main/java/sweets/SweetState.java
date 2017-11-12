@@ -11,12 +11,21 @@ public class SweetState {
     private boolean paused = false; // Game is paused (no UI update)    
     private boolean finished = false; // Game is finished
     private boolean newGame = false; // Game is new (no players yet, no moves made)
+    
+    private boolean deckClicked = false; // The variable for determining if the deck was clicked
+    
+    private MultithreadedTimer mtTimer;
+    
+    private ArrayList<BoardSpace> spaces = new ArrayList<BoardSpace>(); //List of spaces on the board
+    private ArrayList<Player> players;
+
     private DeckFactory deckCreator;
     private Deck deck;
-    private ArrayList<BoardSpace> spaces = new ArrayList<BoardSpace>(); //List of spaces on the board
+
     private int playerTurn;
-	private int numPlayers;
-    private ArrayList<Player> players;
+    private int numPlayers;
+    
+    
     private int colorState = 1;
 	private Color[] playerColors = { Color.cyan, Color.black, Color.pink, Color.white};
     
@@ -25,64 +34,88 @@ public class SweetState {
         deckCreator = new DeckFactory();
         deck = deckCreator.makeDeck();
         playerTurn = 0;
-		boolean done = false;
-		while (!done) {
-			try {
-				String input = JOptionPane.showInputDialog("How many players are playing?");
-				numPlayers = Integer.parseInt(input);
-				if (numPlayers < 5 && numPlayers > 1)
-					done = true;
-				else {
-					JOptionPane.showMessageDialog(null, "Please enter a number between 2 and 4");
-				}
-			}
-			catch (NumberFormatException e) {
-				JOptionPane.showMessageDialog(null, "Invalid Input");
-			}
-		}
-		players = new ArrayList<Player>(numPlayers);
-		for (int i = 0; i < numPlayers; i++) {
-			String playerName = JOptionPane.showInputDialog("What is player" + (i + 1) + "'s name?");
-			for (int j = 0; j < i; j++) {
-				if (playerName.equals(players.get(j).getName())) {
-					playerName = JOptionPane.showInputDialog("Please enter a unique name");
-				}
-			}
-			players.add(i, new Player(colorPick(), playerName, 0));
-		}
-		colorState = 1;
+        
+        boolean done = false;
+        
+        while (!done) {
+            
+            try {
+                
+                String input = JOptionPane.showInputDialog("How many players are playing?");
+                numPlayers = Integer.parseInt(input);
+                
+                if (numPlayers < 5 && numPlayers > 1)
+                    done = true;
+                else {
+                    JOptionPane.showMessageDialog(null, "Please enter a number between 2 and 4");
+                }
+                
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "Invalid Input");
+            }
+        }
+        players = new ArrayList<Player>(numPlayers);
+        
+        for (int i = 0; i < numPlayers; i++) {
+            
+            String playerName = JOptionPane.showInputDialog("What is player" + (i + 1) + "'s name?");
+            
+            for (int j = 0; j < i; j++) {
+                if (playerName.equals(players.get(j).getName())) {
+                    playerName = JOptionPane.showInputDialog("Please enter a unique name");
+                }
+            }
+            
+            players.add(i, new Player(colorPick(), playerName, 0));
+            
+        }
+        colorState = 1;
+        
+        
+        // Initialize timer and start thread
+        mtTimer = new MultithreadedTimer();
+        mtTimer.startThread();
 		
     }
     
-	// Returns 0 if someone won; otherwise return 1
+    public void clickDeck() {
+        deckClicked = true;
+    }
+    
+    // Returns 0 if someone won; otherwise return 1
     public boolean makeTurn() {
-		if (paused){
-			Player currentPlayer = players.get(playerTurn);
-			int currentPos = currentPlayer.getPos();
-			int destPos = calculateDest(currentPos);
-			System.out.println(currentPlayer.getName() + " going from " + currentPos + " to " + destPos);
-			
-			spaces.get(currentPos).removePlayer(currentPlayer);
-			spaces.get(destPos).addPlayer(currentPlayer);
-			currentPlayer.setPos(destPos);
-			
-			int grandmaLoc = spaces.size() - 3;
-			if (destPos == grandmaLoc) {
-				endGame(currentPlayer);
-				return false;
-			}
-			
-			startNextTurn();
-		
-			paused = false;
-		}
+        if (deckClicked){
+            Player currentPlayer = players.get(playerTurn);
+            
+            int currentPos = currentPlayer.getPos();
+            int destPos = calculateDest(currentPos);
+            
+            System.out.println(currentPlayer.getName() + " going from " + currentPos + " to " + destPos);
+
+            spaces.get(currentPos).removePlayer(currentPlayer);
+            spaces.get(destPos).addPlayer(currentPlayer);
+            
+            currentPlayer.setPos(destPos);
+
+            int grandmaLoc = spaces.size() - 3;
+
+            if (destPos == grandmaLoc) {
+                mtTimer.killThread();
+                endGame(currentPlayer);
+                return false;
+            }
+
+            startNextTurn();
+
+            deckClicked = false;
+        }
 		
     	return true;
     }
 	
-	public void endGame(Player winner) {
-		JOptionPane.showMessageDialog(null, winner.getName() + " has won the game!");
-	}
+    public void endGame(Player winner) {
+        JOptionPane.showMessageDialog(null, winner.getName() + " has won the game!");
+    }
     
     public void resetGameState() {
         paused = false;
@@ -113,18 +146,18 @@ public class SweetState {
     
     public ArrayList<String> getPlayerInFirst() {
         ArrayList<String> firstPlace = new ArrayList<String>(numPlayers);
-		int maxPos = 0;
-		for (int i = 0; i < numPlayers; i++) {
-			if (players.get(i).getPos() >= maxPos) {
-				if (players.get(i).getPos() > maxPos) {
-					firstPlace.clear();
-					maxPos = players.get(i).getPos();
-				}
-				firstPlace.add(players.get(i).getName());
-			}
-		}
+            int maxPos = 0;
+            for (int i = 0; i < numPlayers; i++) {
+                if (players.get(i).getPos() >= maxPos) {
+                    if (players.get(i).getPos() > maxPos) {
+                        firstPlace.clear();
+                        maxPos = players.get(i).getPos();
+                    }
+                    firstPlace.add(players.get(i).getName());
+                }
+            }
 		
-		return firstPlace;
+        return firstPlace;
     }
 
     public String getCurrentPlayerTurn() {
@@ -138,55 +171,55 @@ public class SweetState {
     }
 	
 	public int startNextTurn() {
-                playerTurn = ++playerTurn % players.size();
-			
-		return playerTurn;
+            playerTurn = ++playerTurn % players.size();
+
+            return playerTurn;
 	}
 	
 	public int addTokensToBoard() {
-		for (int i = 0; i < numPlayers; i++) {
-			//players.get(i).setPos(0);
-			players.get(i).setColor(playerColors[i]);
-			spaces.get(0).addPlayer(players.get(i));
-		}
-		
-		return 0;
+            for (int i = 0; i < numPlayers; i++) {
+                //players.get(i).setPos(0);
+                players.get(i).setColor(playerColors[i]);
+                spaces.get(0).addPlayer(players.get(i));
+            }
+
+            return 0;
 	}
 	
 	//Returns index of destination, or returns -1 when grandma's house is reached
 	public int calculateDest(int startPos) {
-		Card drawnCard = deck.draw();
-		int destination = startPos;
-		int grandmaLoc = spaces.size() - 3;
-		
-		if (drawnCard.isSkipTurn())
-			return startPos;
-		
-		else if (drawnCard.isMiddleCard())
-			return (spaces.size() - 3)/2;
-		
-		else if (drawnCard.isDouble()) {
-			boolean hasPassedMatchingSquare = false;
-			for (int i = startPos + 1; i < grandmaLoc + 1; i++) {
-				if (spaces.get(i).getIntColorCode() == drawnCard.getColor()) {
-					if (i == grandmaLoc)
-						return grandmaLoc;
-					else if (hasPassedMatchingSquare)
-						return i;
-					else
-						hasPassedMatchingSquare = true;
-				}
-			}
-		} else {
-			for (int i = startPos + 1; i < grandmaLoc + 1; i++) {
-				if (i == grandmaLoc)
-					return grandmaLoc;
-				else if (spaces.get(i).getIntColorCode() == drawnCard.getColor())
-					return i;
-			}
-		}
+            Card drawnCard = deck.draw();
+            int destination = startPos;
+            int grandmaLoc = spaces.size() - 3;
 
-		return 0;
+            if (drawnCard.isSkipTurn())
+                return startPos;
+
+            else if (drawnCard.isMiddleCard())
+                return (spaces.size() - 3)/2;
+
+            else if (drawnCard.isDouble()) {
+                boolean hasPassedMatchingSquare = false;
+                for (int i = startPos + 1; i < grandmaLoc + 1; i++) {
+                    if (spaces.get(i).getIntColorCode() == drawnCard.getColor()) {
+                        if (i == grandmaLoc)
+                            return grandmaLoc;
+                        else if (hasPassedMatchingSquare)
+                            return i;
+                        else
+                            hasPassedMatchingSquare = true;
+                    }
+                }
+            } else {
+                for (int i = startPos + 1; i < grandmaLoc + 1; i++) {
+                    if (i == grandmaLoc)
+                        return grandmaLoc;
+                    else if (spaces.get(i).getIntColorCode() == drawnCard.getColor())
+                        return i;
+                }
+            }
+
+            return 0;
 	}
 
     /**
@@ -219,32 +252,32 @@ public class SweetState {
         {
             rowDistance = currentY * yDistance; // Get the current height we want to draw at.
             
-			if(pathState == 0) {
-				while(columnDistance < (WIDTH - xDistance)) // While we have not reached the edge of the screen (x).
-				{
-					//g.setColor(colorPick());
-					columnDistance = currentX * xDistance; // Get the current width we want to draw at.
-					//g.fill3DRect(columnDistance,rowDistance, xDistance, yDistance, true); // Draw a rect at current calculated height and width.
-					spaces.add(new BoardSpace(columnDistance,rowDistance, colorPick()));
-					currentX++;
-				}
-				currentY++;
-			}
-			else
-			{
-				columnDistance = WIDTH;
-				currentX = 1;
-				while(columnDistance > 0) // While we have not reached the edge of the screen (x).
-				{
-					//g.setColor(colorPick());
-					columnDistance = WIDTH - xDistance * currentX;
-					//g.fill3DRect(columnDistance,rowDistance, xDistance, yDistance, true); // Draw a rect at current calculated height and width.
-					//spaces.add(new BoardSpace(columnDistance,rowDistance, colorPick()));
-					spaces.add(new BoardSpace(columnDistance,rowDistance, colorPick()));
-					currentX++;
-				}
-				currentY++;
-			}
+            if(pathState == 0) {
+                while(columnDistance < (WIDTH - xDistance)) // While we have not reached the edge of the screen (x).
+                {
+                    //g.setColor(colorPick());
+                    columnDistance = currentX * xDistance; // Get the current width we want to draw at.
+                    //g.fill3DRect(columnDistance,rowDistance, xDistance, yDistance, true); // Draw a rect at current calculated height and width.
+                    spaces.add(new BoardSpace(columnDistance,rowDistance, colorPick()));
+                    currentX++;
+                }
+                currentY++;
+            }
+            else
+            {
+                columnDistance = WIDTH;
+                currentX = 1;
+                while(columnDistance > 0) // While we have not reached the edge of the screen (x).
+                {
+                    //g.setColor(colorPick());
+                    columnDistance = WIDTH - xDistance * currentX;
+                    //g.fill3DRect(columnDistance,rowDistance, xDistance, yDistance, true); // Draw a rect at current calculated height and width.
+                    //spaces.add(new BoardSpace(columnDistance,rowDistance, colorPick()));
+                    spaces.add(new BoardSpace(columnDistance,rowDistance, colorPick()));
+                    currentX++;
+                }
+                currentY++;
+            }
             
             // After we have drawn a row we need to draw a row of size one so move down one y index.
             rowDistance = currentY * yDistance;
@@ -315,4 +348,9 @@ public class SweetState {
             return Color.yellow;
         }   
     }
+    
+    public MultithreadedTimer getMultithreadedTimer() {
+        return mtTimer;
+    }
+    
 }

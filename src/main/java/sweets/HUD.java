@@ -29,15 +29,31 @@ public class HUD {
     private static BufferedImage HUD_BACKGROUND_IMAGE;
     private static BufferedImage HUD_BACKGROUND_IMAGE_2;
     private static BufferedImage HUD_BACKGROUND_IMAGE_3;
+    private static BufferedImage HUD_TIMER_BACKGROUND_IMAGE;
     
     // colors
     private static final Color TEXT_BEHIND_COLOR = Color.decode("#FFBF00");
     private static final Color TEXT_MIDDLE_COLOR = Color.decode("#4C3900");
     private static final Color TEXT_MAIN_COLOR = Color.decode("#FFFFFF");
     
+    private static final Color TIMER_TEXT_BEHIND_COLOR = Color.decode("#000000");
+    private static final Color TIMER_TEXT_MIDDLE_COLOR = Color.decode("#A0A0A0");
+    private static final Color TIMER_TEXT_MAIN_COLOR = Color.decode("#FFFFFF");
+    
+    
     private static final int HUD_ELEMENT_SIZE = 128;
     private static final int HUD_OFFSET_HEIGHT = HUD_ELEMENT_SIZE-10; // 128 pixel images, drawn an extra 20 pixels down the bottom
     private static final int HUD_OFFSET_WIDTH = HUD_ELEMENT_SIZE;
+    
+    // used ABSOLUTE pixel resolution
+    private static final int TIMER_BACKGROUND_OFFSET_X = 964;
+    private static final int TIMER_BACKGROUND_OFFSET_Y = 801;
+    
+    
+    private static final int TIMER_TEXT_OFFSET_X = TIMER_BACKGROUND_OFFSET_X + 72;
+    private static final int TIMER_TEXT_OFFSET_Y = TIMER_BACKGROUND_OFFSET_Y + 62;
+    
+    private static final Font fontHUD = new Font("Arial", Font.PLAIN|Font.BOLD, 36);
     
     
     private BufferedImage hudBackground = null;
@@ -48,7 +64,11 @@ public class HUD {
     
     private BufferedImage currentDeckImage;
     private BufferedImage lastCardPicked;
+    
+    private String timerTimeStamp = "Not Initialized";
+    
     private boolean wasLastCardPickedDouble;
+    
     private String playerFirstPlace;
     private String playerTurn;
     
@@ -75,6 +95,7 @@ public class HUD {
             HUD_BACKGROUND_IMAGE = ImageIO.read(new File(Main.getAssetLocale() + "hud/choco_bar.png"));
             HUD_BACKGROUND_IMAGE_2 = ImageIO.read(new File(Main.getAssetLocale() + "hud/choco_bar_bite.png"));
             HUD_BACKGROUND_IMAGE_3 = ImageIO.read(new File(Main.getAssetLocale() + "hud/choco_bar_wrapper.png"));
+            HUD_TIMER_BACKGROUND_IMAGE = ImageIO.read(new File(Main.getAssetLocale() + "hud/timer_background.png"));
             
             HUD_BACKGROUND_IMAGE.getHeight();
             
@@ -100,7 +121,14 @@ public class HUD {
         updatePlayerTurn(gameState);
         updateDeckDisplay(deck);
         updateLastCardPicked(deck);
+        updateTimer(gameState);
     }
+    
+    public String updateTimer(SweetState gameState) {
+        // Update Timer timestamp
+        timerTimeStamp = gameState.getMultithreadedTimer().getTimerString();
+        return timerTimeStamp;
+    } 
     
     public String updateFirstPlace(SweetState gameState) {
         ArrayList<String> playerNames = gameState.getPlayerInFirst();
@@ -126,6 +154,8 @@ public class HUD {
         // Deck
         g.drawImage(currentDeckImage, screenWidth-HUD_OFFSET_WIDTH, screenHeight-HUD_OFFSET_HEIGHT, null);
 
+        drawHUDTimer(g, timerTimeStamp);
+        
         // Last Card
         if (lastCardPicked != null) {
             g.drawImage(lastCardPicked, screenWidth-HUD_OFFSET_WIDTH-HUD_ELEMENT_SIZE, screenHeight-HUD_OFFSET_HEIGHT, null);
@@ -143,10 +173,26 @@ public class HUD {
         drawHUDString(g, playerFirstPlace, 400, y);
     }
     
+    private void drawHUDTimer(Graphics g, String timerTimeStamp) {
+        g.drawImage(HUD_TIMER_BACKGROUND_IMAGE, TIMER_BACKGROUND_OFFSET_X, TIMER_BACKGROUND_OFFSET_Y, null);
+        
+        g.setFont(fontHUD);
+        
+        g.setColor(TIMER_TEXT_BEHIND_COLOR);
+        g.drawString(timerTimeStamp, TIMER_TEXT_OFFSET_X-2, TIMER_TEXT_OFFSET_Y-2);
+        
+        g.setColor(TIMER_TEXT_MIDDLE_COLOR);
+        g.drawString(timerTimeStamp, TIMER_TEXT_OFFSET_X-1, TIMER_TEXT_OFFSET_Y-1);
+        
+        g.setColor(TIMER_TEXT_MAIN_COLOR);
+        g.drawString(timerTimeStamp, TIMER_TEXT_OFFSET_X, TIMER_TEXT_OFFSET_Y);
+        
+    }
+    
     // FEEL FREE to change some colors if you want to boys, I'm not convinced these colors are great
     private void drawHUDString(Graphics g, String str, int x, int y) {
     	g.setColor(TEXT_BEHIND_COLOR);
-        g.setFont(new Font("Arial", Font.PLAIN|Font.BOLD, 36));
+        g.setFont(fontHUD);
         g.drawString(str, x, y);
         
         g.setColor(TEXT_MIDDLE_COLOR);
@@ -175,6 +221,9 @@ public class HUD {
     
     private Card updateLastCardPicked(Deck deck) {
         Card c = deck.getLastCard();
+        
+        // Check this first to avoid overlay image bugs
+        wasLastCardPickedDouble = c.isDouble();     
         
         if (c == null) {
             return null;
@@ -212,10 +261,6 @@ public class HUD {
             default:
                 System.err.println("Not a valid card color. ");
         }
-        
-        wasLastCardPickedDouble = c.isDouble();       
-        
-        
         
         return c;
     }

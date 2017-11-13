@@ -15,10 +15,16 @@ task testTask << {
 	println "this a test yo"
 }
 
-test {
-	include 'HUDTest'
-	include 'CardTest'
-	include 'DeckTest'
-	include 'PlayerTest'
-	include 'SweetStateTest'
+sourceSets {
+   main {
+      java {
+         srcDir 'src/main'
+      }
+   }
+	
+   test {
+      java {
+         srcDir 'src/test'
+      }
+   }
 }

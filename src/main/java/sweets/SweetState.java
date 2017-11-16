@@ -88,6 +88,7 @@ public class SweetState {
             
             int currentPos = currentPlayer.getPos();
             int destPos = calculateDest(currentPos);
+
             
             System.out.println(currentPlayer.getName() + " going from " + currentPos + " to " + destPos);
 

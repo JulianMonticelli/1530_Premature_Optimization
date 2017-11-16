@@ -26,7 +26,7 @@ public class SweetState {
     private int numPlayers;
     
     
-    private int colorState = 1;
+    private int colorState = 3;
 	private Color[] playerColors = { Color.cyan, Color.black, Color.pink, Color.white};
     
     public SweetState() {
@@ -69,7 +69,6 @@ public class SweetState {
             players.add(i, new Player(colorPick(), playerName, 0));
             
         }
-        colorState = 1;
         
         
         // Initialize timer and start thread
@@ -320,32 +319,27 @@ public class SweetState {
         if(colorState == 0)
         {
             colorState = 1;
-            return Color.MAGENTA; 
+            return Color.red; 
         }
         else if(colorState == 1)
         {
             colorState = 2;
-            return Color.red;   
+            return Color.yellow;   
         }
         else if(colorState == 2)
         {
             colorState = 3;
-            return Color.green;
+            return Color.blue;
         }
         else if(colorState == 3)
         {
             colorState = 4;
-            return Color.orange;
-        }
-        else if(colorState == 4)
-        {
-            colorState = 5;
-            return Color.blue;
+            return Color.green;
         }
         else
         {
             colorState = 0;
-            return Color.yellow;
+            return Color.orange;
         }   
     }
     

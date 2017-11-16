@@ -67,6 +67,7 @@ public class SweetState {
             }
             
             players.add(i, new Player(colorPick(), playerName, 0));
+            colorState = 0;
             
         }
         
@@ -88,7 +89,6 @@ public class SweetState {
             
             int currentPos = currentPlayer.getPos();
             int destPos = calculateDest(currentPos);
-
             
             System.out.println(currentPlayer.getName() + " going from " + currentPos + " to " + destPos);
 
@@ -211,15 +211,21 @@ public class SweetState {
                     }
                 }
             } else {
-                for (int i = startPos + 1; i < grandmaLoc + 1; i++) {
+                for (int i = startPos; i < grandmaLoc + 1; i++) {
                     if (i == grandmaLoc)
+                    {
+                       
                         return grandmaLoc;
+                    }
                     else if (spaces.get(i).getIntColorCode() == drawnCard.getColor())
+                    {
+
                         return i;
+                    }
                 }
             }
 
-            return 0;
+            return grandmaLoc;
 	}
 
     /**
@@ -317,6 +323,7 @@ public class SweetState {
      */
     private Color colorPick()
     {
+        System.out.println(colorState);
         if(colorState == 0)
         {
             colorState = 1;

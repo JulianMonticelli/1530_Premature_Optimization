@@ -255,10 +255,8 @@ public class HUD {
             case Card.COLOR_ORANGE:
                 lastCardPicked = CARD_ORANGE;
                 break;
-            case Card.COLOR_PURPLE:
-                lastCardPicked = CARD_PURPLE;
-                break;
             default:
+                System.out.println(c.getColor());
                 System.err.println("Not a valid card color. ");
         }
         

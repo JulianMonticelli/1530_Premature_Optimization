@@ -37,26 +37,35 @@ public class BoardSpace
 		players = new ArrayList<Player>();
 				
 		int rgbValue = spaceColor.getRGB();
-		switch(rgbValue) {
-            case -65536:
-                intColorCode = 1;
-                break;
-            case -16711936:
-                intColorCode = 2;
-                break;
-            case -16776961:
-                intColorCode = 4;
-                break;
-            case -256:
-                intColorCode = 8;
-                break;
-            case -14336:
-                intColorCode = 16;
-                break;
-            case -65281:
-                intColorCode = 32;
-                break;
-        }
+
+		int red = Color.red.getRGB();
+		int yellow = Color.yellow.getRGB();
+		int blue = Color.blue.getRGB();
+		int green = Color.green.getRGB();
+		int orange = Color.orange.getRGB();
+
+		if(rgbValue == red)
+		{
+			intColorCode = 1;
+		}
+		else if(rgbValue == yellow)
+		{
+			intColorCode = 2;
+		}
+		else if(rgbValue == blue)
+		{
+			intColorCode = 4;
+		}
+		else if(rgbValue == green)
+		{
+			intColorCode = 8;
+		}
+		else
+		{
+			intColorCode = 16;
+		}
+
+		
 	}
 
 	/*

@@ -186,7 +186,7 @@ public class SweetState {
             return 0;
 	}
 	
-	//Returns index of destination, or returns -1 when grandma's house is reached
+	//Returns index of destination
 	public int calculateDest(int startPos) {
             Card drawnCard = deck.draw();
             int destination = startPos;
@@ -211,7 +211,7 @@ public class SweetState {
                     }
                 }
             } else {
-                for (int i = startPos; i < grandmaLoc + 1; i++) {
+                for (int i = startPos + 1; i < grandmaLoc + 1; i++) {
                     if (i == grandmaLoc)
                     {
                        

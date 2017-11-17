@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="TimerTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2017-11-17T23:30:22" hostname="DESKTOP-B6C5CLH" time="8.834">
+  <properties/>
+  <testcase name="testTimerIsAccurateToSecondGranularityWithManySmallPauses" classname="TimerTest" time="1.506"/>
+  <testcase name="testTimerIsAccurateToSecondGranularityWithPauses" classname="TimerTest" time="1.076"/>
+  <testcase name="testTimerDoesNotAdvanceWithShortRuntimeAndLongPause" classname="TimerTest" time="2.201"/>
+  <testcase name="testTimerIsAccurateToSecondGranularity" classname="TimerTest" time="1.025"/>
+  <testcase name="testTimerIsAccurateToSecondGranularityThreeSeconds" classname="TimerTest" time="3.026"/>
+  <system-out><![CDATA[Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+00:01
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+00:01
+Detected game is paused!
+Detected game unpaused!
+00:01
+00:01
+00:02
+00:03
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

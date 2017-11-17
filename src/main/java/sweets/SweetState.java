@@ -7,14 +7,14 @@ import javax.swing.JOptionPane;
 
 public class SweetState {
     
+    
     // Game state statements
     private boolean paused = false; // Game is paused (no UI update)    
     private boolean finished = false; // Game is finished
     private boolean newGame = false; // Game is new (no players yet, no moves made)
     
     private boolean deckClicked = false; // The variable for determining if the deck was clicked
-    
-    private MultithreadedTimer mtTimer;
+
     
     private ArrayList<BoardSpace> spaces = new ArrayList<BoardSpace>(); //List of spaces on the board
     private ArrayList<Player> players;
@@ -25,6 +25,11 @@ public class SweetState {
     private int playerTurn;
     private int numPlayers;
     
+    // Multi-threaded Timer
+    private MultithreadedTimer mtTimer;
+    
+    // Warning system
+    WarningManager warningManager;
     
     private int colorState = 3;
 	private Color[] playerColors = { Color.cyan, Color.black, Color.pink, Color.white};
@@ -34,6 +39,8 @@ public class SweetState {
         deckCreator = new DeckFactory();
         deck = deckCreator.makeDeck();
         playerTurn = 0;
+        
+        warningManager = WarningManager.getInstance();
         
         boolean done = false;
         
@@ -100,7 +107,6 @@ public class SweetState {
             int grandmaLoc = spaces.size() - 3;
 
             if (destPos == grandmaLoc) {
-                mtTimer.killThread();
                 endGame(currentPlayer);
                 return false;
             }
@@ -114,13 +120,18 @@ public class SweetState {
     }
 	
     public void endGame(Player winner) {
-        JOptionPane.showMessageDialog(null, winner.getName() + " has won the game!");
+        // Hacky solution. Creates a warning. These are made to be animated.
+        WarningManager.getInstance().createWarning("Game Over", Warning.TYPE_ENDGAME, 400, 475);
+        mtTimer.killThread();
+        
+        // Display some sort of "Play another game?" message?
     }
     
     public void resetGameState() {
         paused = false;
         finished = false;
         newGame = true;
+        warningManager.clearWarningList();
     }
     
     public boolean togglePaused() {
@@ -353,6 +364,10 @@ public class SweetState {
     
     public MultithreadedTimer getMultithreadedTimer() {
         return mtTimer;
+    }
+    
+    public WarningManager getWarningManager() {
+        return warningManager;
     }
     
 }

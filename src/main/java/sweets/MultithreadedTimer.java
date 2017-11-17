@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 public class MultithreadedTimer {
 
     Timer timer;
-    
+    Thread timerThread;
     
     public void unpauseThread() {
         timer.setGamePaused(false);
@@ -33,7 +33,8 @@ public class MultithreadedTimer {
     // WARNING: This is used only ONCE per game.
     public void startThread() {
         timer = new Timer();
-        timer.start();
+        timerThread = new Thread(timer);
+        timerThread.start();
     }
     
     public String getTimerString() {
@@ -42,7 +43,12 @@ public class MultithreadedTimer {
 
     
     // Timer Subclass
-    public class Timer extends Thread {
+    public class Timer implements Runnable {
+        
+        public Timer() {
+            // Nothing to construct here:)
+        }
+        
         private static final int nanosPerSec = 1000000000;
         
         // Create a volatile boolean, because another thread may 

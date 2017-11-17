@@ -31,7 +31,7 @@ public class WorldOfSweets extends JPanel {
     private int targetFPS = 30;
 	
     private boolean running = false;
-    private int colorState = 1;
+    //private int colorState = 1;
 
     private BufferedImage backgroundImage;
     private BufferedImage grandmasHouseImage;
@@ -168,10 +168,12 @@ public class WorldOfSweets extends JPanel {
     {
         ArrayList<BoardSpace> path = gameState.getPath(); // The game board path
 
-        for(int i = 0; i < path.size() - 3;i++) // Draw the path stored in the array
+        for(int i = 0; i < path.size() - 2;i++) // Draw the path stored in the array
         {
             g.setColor(path.get(i).getColor()); // Get the color of this specific space
             g.fill3DRect(path.get(i).getXOrigin(),path.get(i).getYOrigin(), WIDTH/10, HEIGHT/10, true); // Draw the rect at this index	
+            g.drawImage(grandmasHouseImage, path.get(path.size() - 3).getXOrigin(),path.get(path.size() - 3).getYOrigin(),WIDTH/10,HEIGHT/10, null);
+        
 
             ArrayList<Player> players = path.get(i).getPlayers(); // Get the players stored in this space
 
@@ -203,9 +205,7 @@ public class WorldOfSweets extends JPanel {
         g.setFont(new Font("Arial", Font.PLAIN|Font.BOLD, HEIGHT/50 + WIDTH/50));
         g.drawString("Start", path.get(0).getXOrigin() + WIDTH/70, path.get(0).getYOrigin()+ HEIGHT/15);
 
-        g.drawImage(grandmasHouseImage, path.get(path.size() - 3).getXOrigin(),path.get(path.size() - 3).getYOrigin(),WIDTH/10,HEIGHT/10, null);
         
-
         //Draw the start block
         //g.setColor(Color.black);
         //g.setFont(new Font("Arial", Font.PLAIN|Font.BOLD, HEIGHT/50 + WIDTH/50));

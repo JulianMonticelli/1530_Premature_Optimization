@@ -34,7 +34,7 @@ public class SweetState {
     private int colorState = 3;
     private int specialSpaces[] = {-1,-1,-1,-1,-1}; // This array holds the indexes into the board of the special squares
     // 0 = iceCreamImage
-    // 1 = chocolateBarImage
+    // 1 = chocolateBar
     // 2 = candyCane
     // 3 = lollipop
     // 4 = candy
@@ -250,12 +250,12 @@ public class SweetState {
 	/**
 	*  Gets the index of a special square
 	**/
-	int searchForSpecialSquare(int index)
+	public int searchForSpecialSquare(int[] specials, int index)
 	{
 
-		for(int i = 0; i < specialSpaces.length;i++)
+		for(int i = 0; i < specials.length;i++)
 		{
-			if(index == specialSpaces[i])
+			if(index == specials[i])
 			{
 				
 				return i;
@@ -302,7 +302,7 @@ public class SweetState {
                     //g.setColor(colorPick());
                     columnDistance = currentX * xDistance; // Get the current width we want to draw at.
                     //g.fill3DRect(columnDistance,rowDistance, xDistance, yDistance, true); // Draw a rect at current calculated height and width.
-                    int searchValue = searchForSpecialSquare(spaces.size());
+                    int searchValue = searchForSpecialSquare(specialSpaces, spaces.size());
                     
                     if(searchValue == -1)
                     {
@@ -329,7 +329,7 @@ public class SweetState {
                     columnDistance = WIDTH - xDistance * currentX;
                     //g.fill3DRect(columnDistance,rowDistance, xDistance, yDistance, true); // Draw a rect at current calculated height and width.
                     //spaces.add(new BoardSpace(columnDistance,rowDistance, colorPick()));
-                     int searchValue = searchForSpecialSquare(spaces.size());
+                    int searchValue = searchForSpecialSquare(specialSpaces, spaces.size());
                     if(searchValue == -1)
                     {
                     	spaces.add(new BoardSpace(columnDistance,rowDistance, colorPick()));
@@ -354,7 +354,7 @@ public class SweetState {
                 if(pathState == 0)
                 {
                     //g.fill3DRect(columnDistance,rowDistance, xDistance, yDistance, true);
-                     int searchValue = searchForSpecialSquare(spaces.size());
+                     int searchValue = searchForSpecialSquare(specialSpaces, spaces.size());
                     if(searchValue == -1)
                     {
                     	spaces.add(new BoardSpace(columnDistance,rowDistance, colorPick()));
@@ -369,7 +369,7 @@ public class SweetState {
                 else
                 {
                     //g.fill3DRect(0,rowDistance, xDistance, yDistance, true);
-                    int searchValue = searchForSpecialSquare(spaces.size());
+                    int searchValue = searchForSpecialSquare(specialSpaces, spaces.size());
                     if(searchValue == -1)
                     {
                     	spaces.add(new BoardSpace(columnDistance,rowDistance, colorPick()));
@@ -412,7 +412,6 @@ public class SweetState {
     	for(int i = 0; i < specials.length;i++)
     	{
     		
-
     		do
     		{
     			randomNum = min + (int)(Math.random() * max); 	

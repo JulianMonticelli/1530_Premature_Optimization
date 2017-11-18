@@ -120,7 +120,8 @@ public class SweetState {
     }
 	
     public void endGame(Player winner) {
-        // Hacky solution. Creates a warning. These are made to be animated.
+        // Hacky solution. Creates a warning. These are made to be animated warnings, that
+        // fade and travel up the screen.
         WarningManager.getInstance().createWarning("Game Over", Warning.TYPE_ENDGAME, 400, 475);
         mtTimer.killThread();
         
@@ -334,7 +335,6 @@ public class SweetState {
      */
     private Color colorPick()
     {
-        System.out.println(colorState);
         if(colorState == 0)
         {
             colorState = 1;

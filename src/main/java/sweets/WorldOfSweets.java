@@ -204,8 +204,6 @@ public class WorldOfSweets extends JPanel {
             g.drawImage(grandmasHouseImage, path.get(path.size() - 3).getXOrigin(),path.get(path.size() - 3).getYOrigin(),WIDTH/10,HEIGHT/10, null);
         
 
-            
-
             ArrayList<Player> players = path.get(i).getPlayers(); // Get the players stored in this space
 
             for(int j = 0; j < path.get(i).getNumPlayers(); j++) // Iterate through the Boardspaces's players and draw tokens as necessary

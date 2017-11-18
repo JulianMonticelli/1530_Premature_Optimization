@@ -2,6 +2,8 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import sweets.SweetState;
+import sweets.BoardSpace;
+import java.util.ArrayList;
 
 public class SweetStateTest {
 
@@ -53,6 +55,31 @@ public class SweetStateTest {
     }
 
     /**
+    * Tests to ensure that there are always 
+    * exactly 5 spaces generated in the game path.
+    *
+    **/
+    @Test
+    public void testNumSpecialSpacesInPath() 
+    {
+        
+        SweetState gameState = new SweetState();
+        ArrayList<BoardSpace> spaces = gameState.storePath(1200,1000);
+        int specialSpaces = 0;
+
+        for(int i = 0; i < spaces.size() - 4;i++)
+        {
+            if(spaces.get(i).specialNum != -1)
+            {
+                specialSpaces++;
+            }
+        }
+
+        assertEquals(specialSpaces,5);
+    }
+
+
+    /**
     * Tests to ensure that validNum
     * is not allowing numbers within
     * 5 units of each other to be picked
@@ -83,6 +110,33 @@ public class SweetStateTest {
         assertFalse(gameState.validNum(specialSpaces,47, 0));
 
     }
+
+    /**
+    * Tests to ensure that searchForSpecialSquare
+    * returns the correct value
+    *
+    **/
+    @Test
+    public void testSearchForSpecialSquare() 
+    {
+        
+        
+        boolean valid = true;
+
+        SweetState gameState = new SweetState();
+        
+        int specialSpaces[] = {35,45,12,5,20};
+        
+        assertEquals(gameState.searchForSpecialSquare(specialSpaces, 35), 0);
+        assertEquals(gameState.searchForSpecialSquare(specialSpaces, 45), 1);
+        assertEquals(gameState.searchForSpecialSquare(specialSpaces, 12), 2);
+        assertEquals(gameState.searchForSpecialSquare(specialSpaces, 5), 3);
+        assertEquals(gameState.searchForSpecialSquare(specialSpaces, 20), 4);
+        assertEquals(gameState.searchForSpecialSquare(specialSpaces, 25), -1);
+
+    }
+
+
     
     
 }

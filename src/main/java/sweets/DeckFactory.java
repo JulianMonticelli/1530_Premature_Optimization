@@ -9,14 +9,15 @@ public class DeckFactory {
     ArrayList<Card> cardList = new ArrayList<Card>();
     for(int i = 1; i < 64; i *= 2) {
       for(int c = 0; c < 10; c++)
-        cardList.add(new Card(i));
+        cardList.add(new Card(i, -1));
       for(int d = 0; d < 2; d++)
-        cardList.add(new Card(i | Card.DOUBLE));
+        cardList.add(new Card(i | Card.DOUBLE, -1));
     }
-    for(int i = 0; i < 3; i++)
-      cardList.add(new Card(Card.GO_TO_MIDDLE));
     for(int i = 0; i < 5; i++)
-      cardList.add(new Card(Card.SKIP_TURN));
+      cardList.add(new Card(Card.SKIP_TURN, -1));
+    for(int i = 0; i < 5; i++)
+      cardList.add(new Card(Card.SPECIAL_MOVE, i));
+
     return new Deck(cardList);
   }
 }

@@ -125,63 +125,38 @@ public class TimerTest {
         mtt.killThread();
     }
     
-    
-    
-    
     @Test
-    // Test that the timer is accurate given there are numerous microscopic pauses inbetween execution (~20ms)
-    public void testTimerIsAccurateToSecondGranularityWithManyExtraSmallPauses() { // say that one really fast with peanut butter in ya mouth :)
+    // Test that
+    public void testTimerDoesNotAdvanceWithShortRuntimeAndLongPause() {
         mtt.startThread();
-        
-        for (int i = 0; i < 50; i++) {
-            try {
-                Thread.sleep(20L + delayTime); // There's some delay with the threads - an extra 50ms is required
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        try {
+            Thread.sleep(100L); // Run thread for ~100ms
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-            mtt.pauseThread();
+        mtt.pauseThread();
 
-            // Create some delay so the thread is guaranteed to catch up
-            try {
-                Thread.sleep(delayTime);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        // Create some delay so the thread is guaranteed to catch up
+        try {
+            Thread.sleep(2000L); // Sleep for 2 seconds
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-            mtt.unpauseThread(); 
+        // Unpause thread and run for another 100ms - this gives at LEAST 1 update
+        mtt.unpauseThread(); 
+        try {
+            Thread.sleep(100L); // Run thread for ~100ms
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
         
-        assertEquals("00:01", mtt.getTimerString());
+        assertEquals("00:00", mtt.getTimerString());
         mtt.killThread();
     }
     
-    @Test
-    // Test that the timer is accurate given there are numerous microscopic pauses inbetween execution (~30ms)
-    public void testTimerIsAccurateToSecondGranularityWithManyExtraSmallPausesThreeSeconds() { // say that one really fast with peanut butter in ya mouth :)
-        mtt.startThread();
-        
-        for (int i = 0; i < 100; i++) {
-            try {
-                Thread.sleep(30 + delayTime); // There's some delay with the threads - 1 extra ms = +150ms overall
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            mtt.pauseThread();
-
-            // Create some delay so the thread is guaranteed to catch up
-            try {
-                Thread.sleep(delayTime);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            mtt.unpauseThread(); 
-        }
-        
-        assertEquals("00:03", mtt.getTimerString());
-        mtt.killThread();
-    }
     
+    
+
 }

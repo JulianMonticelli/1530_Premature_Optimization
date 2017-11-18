@@ -116,11 +116,11 @@ public class HUD {
     
     
     
-    public void update(Deck deck, SweetState gameState) {
+    public void update(SweetState gameState) {
         updateFirstPlace(gameState);
         updatePlayerTurn(gameState);
-        updateDeckDisplay(deck);
-        updateLastCardPicked(deck);
+        updateDeckDisplay(gameState.getDeck());
+        updateLastCardPicked(gameState.getDeck());
         updateTimer(gameState);
     }
     
@@ -220,14 +220,14 @@ public class HUD {
     }
     
     private Card updateLastCardPicked(Deck deck) {
-        Card c = deck.getLastCard();
-        
-        // Check this first to avoid overlay image bugs
-        wasLastCardPickedDouble = c.isDouble();     
+        Card c = deck.getLastCard();    
         
         if (c == null) {
             return null;
         }
+		
+		// Check this first to avoid overlay image bugs
+        wasLastCardPickedDouble = c.isDouble(); 
         
         if (c.isSkipTurn()) {
             lastCardPicked = SKIP_CARD;

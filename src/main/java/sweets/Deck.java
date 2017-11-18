@@ -24,7 +24,7 @@ public class Deck {
             int target = RNG.nextInt(i);
             swap(i - 1, target);
         }
-        top = 0;
+        top = -1;
     }
 
     public int getNumCards() {
@@ -40,9 +40,11 @@ public class Deck {
     }
 
     public Card draw() {
-	  if(empty())
-	     reshuffleDeck();
-      return theDeck.get(top++);
+		if(empty())
+			reshuffleDeck();
+	 
+		top++;
+		return theDeck.get(top);
     }
 
     //NKD: Need to define error handling for case where no card was drawn

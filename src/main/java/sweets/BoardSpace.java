@@ -11,6 +11,13 @@ public class BoardSpace
 	private int intColorCode; //The color corresponding to the code in Card.java
 	private ArrayList<Player> players; //Contains list of players currently occupying space
 	private int numPlayers = 0;
+	public int specialNum = -1; // This tells you what type of space this space is. I put a guide below this line
+	// -1 = normal space
+	// 0 = iceCream
+    // 1 = chocolateBar
+    // 2 = candyCane
+    // 3 = lollipop
+    // 4 = candy
 
 	/**
 	* No-arg constructor for a boardSpace

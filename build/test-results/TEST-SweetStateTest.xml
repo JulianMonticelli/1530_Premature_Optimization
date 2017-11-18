@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="SweetStateTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2017-11-18T00:07:52" hostname="Bat-Mobile" time="6.272">
+  <properties/>
+  <testcase name="testValidNum" classname="SweetStateTest" time="3.926"/>
+  <testcase name="testPickSpecialSpaces" classname="SweetStateTest" time="2.344"/>
+  <system-out><![CDATA[3
+0
+00:01
+3
+00:02
+0
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

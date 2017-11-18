@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="TimerTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2017-11-18T00:07:58" hostname="Bat-Mobile" time="18.162">
+  <properties/>
+  <testcase name="testTimerIsAccurateToSecondGranularityWithManySmallPauses" classname="TimerTest" time="1.503"/>
+  <testcase name="testTimerIsAccurateToSecondGranularityWithPauses" classname="TimerTest" time="1.075"/>
+  <testcase name="testTimerIsAccurateToSecondGranularityWithManyExtraSmallPauses" classname="TimerTest" time="3.51"/>
+  <testcase name="testTimerIsAccurateToSecondGranularity" classname="TimerTest" time="1.026"/>
+  <testcase name="testTimerIsAccurateToSecondGranularityThreeSeconds" classname="TimerTest" time="3.026"/>
+  <testcase name="testTimerIsAccurateToSecondGranularityWithManyExtraSmallPausesThreeSeconds" classname="TimerTest" time="8.02"/>
+  <system-out><![CDATA[Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+00:03
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+00:01
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+00:01
+Detected game is paused!
+Detected game unpaused!
+00:04
+00:02
+Detected game is paused!
+Detected game unpaused!
+00:01
+Detected game is paused!
+00:05
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+00:03
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+00:06
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+00:04
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+00:07
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+00:05
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+00:08
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+00:06
+Detected game is paused!
+Detected game unpaused!
+00:01
+Detected game is paused!
+Detected game unpaused!
+00:09
+00:07
+00:01
+00:10
+00:08
+00:01
+00:11
+00:09
+00:02
+00:12
+00:10
+00:03
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+00:13
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+00:11
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+00:14
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+00:12
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+00:15
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+00:01
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+00:13
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+00:16
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+00:14
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+00:17
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+00:15
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+00:02
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+00:18
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+00:16
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+00:19
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+00:17
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+00:20
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+Detected game is paused!
+00:18
+Detected game unpaused!
+Detected game is paused!
+Detected game unpaused!
+00:03
+Detected game is paused!
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

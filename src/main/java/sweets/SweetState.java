@@ -31,6 +31,7 @@ public class SweetState {
     // Warning system
     WarningManager warningManager;
     
+    public boolean randomSpaces = false;
     private int colorState = 3;
     private int specialSpaces[] = {-1,-1,-1,-1,-1}; // This array holds the indexes into the board of the special squares
     // 0 = iceCreamImage
@@ -264,7 +265,22 @@ public class SweetState {
         
         // Path state determines whether we should draw a bridge on near x or far x side of the window.
         int pathState = 0; 
-        specialSpaces = pickSpecialSpaces(specialSpaces, 2, 49);
+
+        if(randomSpaces == true)
+        {
+             specialSpaces = pickSpecialSpaces(specialSpaces, 2, 49);
+        }
+        else
+        {
+            specialSpaces[0] = 5;
+            specialSpaces[1] = 15;
+            specialSpaces[2] = 25;
+            specialSpaces[3] = 35;
+            specialSpaces[4] = 45;
+             
+        }
+       
+
         while(rowDistance < (HEIGHT - yDistance)) // While we have not reached the bottom of the screen (y).
         {
             rowDistance = currentY * yDistance; // Get the current height we want to draw at.

@@ -188,16 +188,24 @@ public class SweetState {
 	
 	//Returns index of destination
 	public int calculateDest(int startPos) {
+
             Card drawnCard = deck.draw();
             int destination = startPos;
             int grandmaLoc = spaces.size() - 3;
+			int specialNum = drawnCard.getSpecialMoveNumber();
 
             if (drawnCard.isSkipTurn())
                 return startPos;
 
-            else if (drawnCard.isMiddleCard())
+			if (specialNum != -1)
+				return specialSpaces[specialNum];
+			
+            //Middle cards have been removed
+			/*
+			else if (drawnCard.isMiddleCard())
                 return (spaces.size() - 3)/2;
-
+			*/
+			
             else if (drawnCard.isDouble()) {
                 boolean hasPassedMatchingSquare = false;
                 for (int i = startPos + 1; i < grandmaLoc + 1; i++) {
@@ -213,15 +221,9 @@ public class SweetState {
             } else {
                 for (int i = startPos + 1; i < grandmaLoc + 1; i++) {
                     if (i == grandmaLoc)
-                    {
-                       
                         return grandmaLoc;
-                    }
                     else if (spaces.get(i).getIntColorCode() == drawnCard.getColor())
-                    {
-
                         return i;
-                    }
                 }
             }
 
@@ -313,6 +315,10 @@ public class SweetState {
             columnDistance = 0;
         }
 
+<<<<<<< ewright_d3
+=======
+        System.out.println(specialSpaces[0] + " " + specialSpaces[1] + " " + specialSpaces[2] + " " + specialSpaces[3] + " " + specialSpaces[4] + " ");        
+>>>>>>> local
         return spaces;
     }
     

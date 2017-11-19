@@ -15,6 +15,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import javax.swing.JOptionPane;
 import java.util.ArrayList;
 
 
@@ -75,7 +76,7 @@ public class WorldOfSweets extends JPanel {
         hud = new HUD(WIDTH, HEIGHT);
         gameState = new SweetState();
         gameState.storePath(WIDTH,HEIGHT);
-        gameState.addTokensToBoard();
+		gameState.addPlayers(getPlayerCountAndNames());
 
         running = true;
 
@@ -288,7 +289,49 @@ public class WorldOfSweets extends JPanel {
         }
     }
 
-
+	public ArrayList<Player> getPlayerCountAndNames() {
+		Color[] playerColors = { Color.cyan, Color.black, Color.pink, Color.white};
+		boolean done = false; 	//used to make sure we only accept correct input
+		ArrayList<Player> players = new ArrayList<Player>();
+		int numPlayers = 0;
+		
+		// Get number of players
+		while (!done) {
+            try {
+                
+                String input = JOptionPane.showInputDialog("How many players are playing?");
+                numPlayers = Integer.parseInt(input);
+                
+                if (numPlayers < 5 && numPlayers > 1)
+                    done = true;
+                else {
+                    JOptionPane.showMessageDialog(null, "Please enter a number between 2 and 4");
+                }
+                
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "Invalid Input");
+            }
+        }
+        
+		//Get names of players
+		for (int i = 0; i < numPlayers; i++) {
+			
+			String playerName = JOptionPane.showInputDialog("What is player" + (i + 1) + "'s name?");
+			
+			for (int j = 0; j < i; j++) {
+				if (playerName.equals(players.get(j).getName()) || playerName.length() < 1 || playerName.length() > 10) {
+					playerName = JOptionPane.showInputDialog("Please enter a unique name between 1 and 10 characters");
+					j = 0;
+				}
+			}
+			
+			players.add(i, new Player(playerColors[i], playerName, 0));
+		}
+		
+		return players;
+	}
+	
+	
     // Key and Mouse adapters
 
     private KeyAdapter initKeyAdapter() {

@@ -3,7 +3,7 @@ package sweets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.awt.Color;
-import javax.swing.JOptionPane;
+//import javax.swing.JOptionPane;
 
 public class SweetState {
     
@@ -38,53 +38,15 @@ public class SweetState {
     // 2 = candyCane
     // 3 = lollipop
     // 4 = candy
-    
-	private Color[] playerColors = { Color.cyan, Color.black, Color.pink, Color.white};
+
     
     public SweetState() {
         newGame = true;
         deckCreator = new DeckFactory();
         deck = deckCreator.makeDeck();
         playerTurn = 0;
-        
+
         warningManager = WarningManager.getInstance();
-        
-        boolean done = false;
-        
-        while (!done) {
-            
-            try {
-                
-                String input = JOptionPane.showInputDialog("How many players are playing?");
-                numPlayers = Integer.parseInt(input);
-                
-                if (numPlayers < 5 && numPlayers > 1)
-                    done = true;
-                else {
-                    JOptionPane.showMessageDialog(null, "Please enter a number between 2 and 4");
-                }
-                
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, "Invalid Input");
-            }
-        }
-        players = new ArrayList<Player>(numPlayers);
-        
-        for (int i = 0; i < numPlayers; i++) {
-            
-            String playerName = JOptionPane.showInputDialog("What is player" + (i + 1) + "'s name?");
-            
-            for (int j = 0; j < i; j++) {
-                if (playerName.equals(players.get(j).getName())) {
-                    playerName = JOptionPane.showInputDialog("Please enter a unique name");
-                }
-            }
-            
-            players.add(i, new Player(colorPick(), playerName, 0));
-            colorState = 0;
-            
-        }
-        
         
         // Initialize timer and start thread
         mtTimer = new MultithreadedTimer();
@@ -95,6 +57,10 @@ public class SweetState {
     public void clickDeck() {
         deckClicked = true;
     }
+	
+	public boolean isDeckClicked() {
+		return deckClicked;
+	}
     
     // Returns 0 if someone won; otherwise return 1
     public boolean makeTurn() {
@@ -195,13 +161,19 @@ public class SweetState {
             return playerTurn;
 	}
 	
-	public int addTokensToBoard() {
-            for (int i = 0; i < numPlayers; i++) {
-                //players.get(i).setPos(0);
-                players.get(i).setColor(playerColors[i]);
-                spaces.get(0).addPlayer(players.get(i));
-            }
-
+	public int addPlayers(ArrayList<Player> playersInfo) {
+		players = playersInfo;
+		numPlayers = playersInfo.size();
+		
+		//Add tokens to board
+		try {
+			for (int i = 0; i < numPlayers; i++) {
+					spaces.get(0).addPlayer(players.get(i));
+			}
+		} catch (IndexOutOfBoundsException e) {
+			System.out.println("Board has not been created yet!");
+			return -1;
+		}
             return 0;
 	}
 	

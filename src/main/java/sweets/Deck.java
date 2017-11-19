@@ -36,14 +36,13 @@ public class Deck {
     }
 
     public boolean empty() {
-        return top == theDeck.size();
+        return top == (theDeck.size() - 1);
     }
 
     public Card draw() {
 		if(empty())
 			reshuffleDeck();
 		top++;
-		
 		return theDeck.get(top);
     }
 

@@ -24,7 +24,7 @@ public class Deck {
             int target = RNG.nextInt(i);
             swap(i - 1, target);
         }
-        top = 0;
+        top = -1;
     }
 
     public int getNumCards() {
@@ -40,9 +40,10 @@ public class Deck {
     }
 
     public Card draw() {
-		top++;
 		if(empty())
 			reshuffleDeck();
+		top++;
+		
 		return theDeck.get(top);
     }
 
@@ -62,9 +63,12 @@ public class Deck {
         return getLastCard().isSkipTurn();
     }
 
+	// Deprecated
+	/*
     public boolean wasLastCardMiddleCard() {
         return getLastCard().isMiddleCard();
     }
+	*/
 
     private void swap(int a, int b) {
         Card c = theDeck.get(a);

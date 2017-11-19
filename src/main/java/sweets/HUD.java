@@ -23,6 +23,11 @@ public class HUD {
     private static BufferedImage CARD_ORANGE;
     private static BufferedImage SKIP_CARD;
     private static BufferedImage MIDDLE_CARD;
+	private static BufferedImage SPECIAL_CANDY_CARD;
+	private static BufferedImage SPECIAL_CANDYCANE_CARD;
+	private static BufferedImage SPECIAL_CHOCOLATE_CARD;
+	private static BufferedImage SPECIAL_ICECREAM_CARD;
+	private static BufferedImage SPECIAL_LOLLIPOP_CARD;
     
     private static BufferedImage CARD_DOUBLE_OVERLAY;
     
@@ -91,6 +96,11 @@ public class HUD {
             
             SKIP_CARD = ImageIO.read(new File(Main.getAssetLocale() + "cards/skip_card.png"));
             MIDDLE_CARD = ImageIO.read(new File(Main.getAssetLocale() + "cards/middle_card.png"));
+			SPECIAL_CANDY_CARD = ImageIO.read(new File(Main.getAssetLocale() + "cards/card_special_candy.png"));
+			SPECIAL_CANDYCANE_CARD = ImageIO.read(new File(Main.getAssetLocale() + "cards/card_special_candycane.png"));
+			SPECIAL_CHOCOLATE_CARD = ImageIO.read(new File(Main.getAssetLocale() + "cards/card_special_chocolate.png"));
+			SPECIAL_ICECREAM_CARD = ImageIO.read(new File(Main.getAssetLocale() + "cards/card_special_icecream.png"));
+			SPECIAL_LOLLIPOP_CARD = ImageIO.read(new File(Main.getAssetLocale() + "cards/card_special_lollipop.png"));
             
             HUD_BACKGROUND_IMAGE = ImageIO.read(new File(Main.getAssetLocale() + "hud/choco_bar.png"));
             HUD_BACKGROUND_IMAGE_2 = ImageIO.read(new File(Main.getAssetLocale() + "hud/choco_bar_bite.png"));
@@ -234,10 +244,37 @@ public class HUD {
             return c;
         }
         
+		//Deprecated
+		/*
         if (c.isMiddleCard()) {
             lastCardPicked = MIDDLE_CARD;
             return c;
         }
+		*/
+			
+		if (c.isSpecialMoveCard()) {
+			switch(c.getSpecialMoveNumber()) {
+				case 0:
+					lastCardPicked = SPECIAL_ICECREAM_CARD;
+					break;
+				case 1:
+					lastCardPicked = SPECIAL_CHOCOLATE_CARD;
+					break;
+				case 2:
+					lastCardPicked = SPECIAL_CANDYCANE_CARD;
+					break;
+				case 3:
+					lastCardPicked = SPECIAL_LOLLIPOP_CARD;
+					break;
+				case 4:
+					lastCardPicked = SPECIAL_CANDY_CARD;
+					break;
+				default:
+					System.out.println(c.getSpecialMoveNumber());
+					System.err.println("Not a valid special card value. ");
+			}
+			return c;
+		}
         
         switch(c.getColor()) {
             case Card.COLOR_RED:

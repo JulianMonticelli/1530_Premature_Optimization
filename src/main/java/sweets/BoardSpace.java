@@ -67,9 +67,13 @@ public class BoardSpace
 		{
 			intColorCode = 8;
 		}
-		else
+		else if(rgbValue == orange)
 		{
 			intColorCode = 16;
+		}
+		else
+		{
+			intColorCode = -1;
 		}
 
 		

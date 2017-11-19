@@ -33,9 +33,9 @@ public class Card {
     public boolean isSkipTurn() { return ((flags & SKIP_TURN) != 0); }
     //This method has been replaced by isSpecialMove
     @Deprecated
-    public boolean isMiddleCard() { return ((flags & SPECIAL_MOVE) != 0); }
+    //public boolean isMiddleCard() { return ((flags & SPECIAL_MOVE) != 0); }
     public boolean isSpecialMoveCard() { return ((flags & SPECIAL_MOVE) != 0); }
-    public int specialMoveNumber() { return specialMoveNumber;}
+    public int getSpecialMoveNumber() { return specialMoveNumber;}
 
     public int getColor() {
         //Check the color with bitwise and

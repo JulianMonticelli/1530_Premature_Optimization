@@ -10,10 +10,28 @@ public class SweetStateTest {
     // Incase anybody hasn't taken 1632, here's how you write a test
     // Also, if you haven't taken 1632, I HIGHLY suggest you do before you graduate.
 
+	
+	/**
+    * Tests to make sure isDeckClicked is false at the start and true after deckClick()
+    **/
+	@Test
+	public void testIsDeckClicked()
+	{
+		//ArrayList<Player> testPlayers = new ArrayList<Player>();
+		//players.add(new Player(null, "test player 1", 0));
+		//players.add(new Player(null, "test player 2", 0));
+	
+		SweetState gameState = new SweetState();
+		assertFalse(gameState.isDeckClicked());
+		
+		gameState.clickDeck();
+		assertTrue(gameState.isDeckClicked());
+	}
+    
     
     /**
     * Tests to ensure pickSPecialSpaces is always generating
-    * numbers that are at least 5 squares away
+    * numbers that are at least 5 squares away4
     * from each other
     *
     **/
@@ -137,7 +155,6 @@ public class SweetStateTest {
     }
 
 
-    
     
 }
 

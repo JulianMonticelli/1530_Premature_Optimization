@@ -24,7 +24,7 @@ public class Deck {
             int target = RNG.nextInt(i);
             swap(i - 1, target);
         }
-        top = -1;
+        top = 0;
     }
 
     public int getNumCards() {
@@ -40,10 +40,9 @@ public class Deck {
     }
 
     public Card draw() {
+		top++;
 		if(empty())
 			reshuffleDeck();
-	 
-		top++;
 		return theDeck.get(top);
     }
 

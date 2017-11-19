@@ -28,11 +28,14 @@ public class DeckTest {
 
   */
 
-  //Deck should have 6 colors * (10 single + 2 double) = 72 + 5 skip + 3 go_to_middle
+  /*
+    This test was removed. It is too fragile.
+    Deck should have 6 colors * (10 single + 2 double) = 72 + 5 skip + 3 go_to_middle
   @Test
   public void correctSize() {
     assertEquals(80, _d.getCapacity());
   }
+  */
 
   @Test
   public void drawForever() {
@@ -45,7 +48,7 @@ public class DeckTest {
     Card c = _d.draw();
     assertEquals(c, _d.getLastCard());
   }
-  
+
   @Test
   public void testDeckShuffles() {
      DeckFactory df = new DeckFactory();
@@ -57,7 +60,7 @@ public class DeckTest {
 
      // This test relies on the assumption that the deck
      // is at least reset every time you call reshuffle.
-     
+
      d.reshuffleDeck();
      Card cc1 = d.draw();
      Card cc2 = d.draw();
@@ -68,7 +71,7 @@ public class DeckTest {
      boolean comp3 = c3.equals(cc3);
 
      d.reshuffleDeck();
-     
+
      boolean bool = comp1 && comp2 && comp3;
      assertTrue(!bool);
   }

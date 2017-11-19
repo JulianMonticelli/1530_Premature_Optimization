@@ -20,25 +20,25 @@ public class CardTest {
   */
   @Test
   public void setColorCorrectly() {
-    Card c = new Card(Card.COLOR_RED);
+    Card c = new Card(Card.COLOR_RED, -1);
     assertEquals(Card.COLOR_RED, c.getColor());
   }
 
   @Test
   public void setSpecialsCorrectly() {
-    Card d = new Card(Card.DOUBLE);
-    Card g = new Card(Card.GO_TO_MIDDLE);
-    Card s = new Card(Card.SKIP_TURN);
+    Card d = new Card(Card.DOUBLE, -1);
+    Card g = new Card(Card.SPECIAL_MOVE, -1);
+    Card s = new Card(Card.SKIP_TURN, -1);
     assertEquals(true, d.isDouble());
     assertEquals(false, d.isSkipTurn());
-    assertEquals(true, g.isMiddleCard());
+    assertEquals(true, g.isSpecialMoveCard());
     assertEquals(true, s.isSkipTurn());
-    assertEquals(true, s.isMiddleCard());
+    assertEquals(false, s.isSpecialMoveCard());
   }
 
   @Test
   public void doubleOfColor() {
-    Card c = new Card(Card.COLOR_RED | Card.DOUBLE);
+    Card c = new Card(Card.COLOR_RED | Card.DOUBLE, -1);
     assertEquals(Card.COLOR_RED, c.getColor());
     assertEquals(true, c.isDouble());
   }

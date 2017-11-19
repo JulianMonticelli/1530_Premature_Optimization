@@ -7,14 +7,14 @@ import javax.swing.JOptionPane;
 
 public class SweetState {
     
+
     // Game state statements
     private boolean paused = false; // Game is paused (no UI update)    
     private boolean finished = false; // Game is finished
     private boolean newGame = false; // Game is new (no players yet, no moves made)
     
     private boolean deckClicked = false; // The variable for determining if the deck was clicked
-    
-    private MultithreadedTimer mtTimer;
+
     
     private ArrayList<BoardSpace> spaces = new ArrayList<BoardSpace>(); //List of spaces on the board
     private ArrayList<Player> players;
@@ -25,8 +25,20 @@ public class SweetState {
     private int playerTurn;
     private int numPlayers;
     
+    // Multi-threaded Timer
+    private MultithreadedTimer mtTimer;
+    
+    // Warning system
+    WarningManager warningManager;
     
     private int colorState = 3;
+    private int specialSpaces[] = {-1,-1,-1,-1,-1}; // This array holds the indexes into the board of the special squares
+    // 0 = iceCreamImage
+    // 1 = chocolateBar
+    // 2 = candyCane
+    // 3 = lollipop
+    // 4 = candy
+    
 	private Color[] playerColors = { Color.cyan, Color.black, Color.pink, Color.white};
     
     public SweetState() {
@@ -34,6 +46,8 @@ public class SweetState {
         deckCreator = new DeckFactory();
         deck = deckCreator.makeDeck();
         playerTurn = 0;
+        
+        warningManager = WarningManager.getInstance();
         
         boolean done = false;
         
@@ -100,7 +114,6 @@ public class SweetState {
             int grandmaLoc = spaces.size() - 3;
 
             if (destPos == grandmaLoc) {
-                mtTimer.killThread();
                 endGame(currentPlayer);
                 return false;
             }
@@ -114,13 +127,19 @@ public class SweetState {
     }
 	
     public void endGame(Player winner) {
-        JOptionPane.showMessageDialog(null, winner.getName() + " has won the game!");
+        // Hacky solution. Creates a warning. These are made to be animated warnings, that
+        // fade and travel up the screen.
+        WarningManager.getInstance().createWarning("Game Over", Warning.TYPE_ENDGAME, 400, 475);
+        mtTimer.killThread();
+        
+        // Display some sort of "Play another game?" message?
     }
     
     public void resetGameState() {
         paused = false;
         finished = false;
         newGame = true;
+        warningManager.clearWarningList();
     }
     
     public boolean togglePaused() {
@@ -230,6 +249,24 @@ public class SweetState {
             return grandmaLoc;
 	}
 
+	/**
+	*  Gets the index of a special square
+	**/
+	public int searchForSpecialSquare(int[] specials, int index)
+	{
+
+		for(int i = 0; i < specials.length;i++)
+		{
+			if(index == specials[i])
+			{
+				
+				return i;
+			}
+		}
+
+		return -1;
+	}
+
     /**
      * Generates a zig-zag box pattern for the CandyLand path.
      * It works by drawing boxes from right to left across the screen,
@@ -255,18 +292,30 @@ public class SweetState {
         
         // Path state determines whether we should draw a bridge on near x or far x side of the window.
         int pathState = 0; 
-        
+        specialSpaces = pickSpecialSpaces(specialSpaces, 2, 49);
         while(rowDistance < (HEIGHT - yDistance)) // While we have not reached the bottom of the screen (y).
         {
             rowDistance = currentY * yDistance; // Get the current height we want to draw at.
             
-            if(pathState == 0) {
+            if(pathState == 0) 
+            {
                 while(columnDistance < (WIDTH - xDistance)) // While we have not reached the edge of the screen (x).
                 {
                     //g.setColor(colorPick());
                     columnDistance = currentX * xDistance; // Get the current width we want to draw at.
                     //g.fill3DRect(columnDistance,rowDistance, xDistance, yDistance, true); // Draw a rect at current calculated height and width.
-                    spaces.add(new BoardSpace(columnDistance,rowDistance, colorPick()));
+                    int searchValue = searchForSpecialSquare(specialSpaces, spaces.size());
+                    
+                    if(searchValue == -1)
+                    {
+                    	spaces.add(new BoardSpace(columnDistance,rowDistance, colorPick()));
+                    }
+                    else
+                    {
+                    	spaces.add(new BoardSpace(columnDistance,rowDistance, Color.black));
+                    	spaces.get(spaces.size()-1).specialNum = searchValue;
+                    }
+                    
                     currentX++;
                 }
                 currentY++;
@@ -277,11 +326,21 @@ public class SweetState {
                 currentX = 1;
                 while(columnDistance > 0) // While we have not reached the edge of the screen (x).
                 {
+                    
                     //g.setColor(colorPick());
                     columnDistance = WIDTH - xDistance * currentX;
                     //g.fill3DRect(columnDistance,rowDistance, xDistance, yDistance, true); // Draw a rect at current calculated height and width.
                     //spaces.add(new BoardSpace(columnDistance,rowDistance, colorPick()));
-                    spaces.add(new BoardSpace(columnDistance,rowDistance, colorPick()));
+                    int searchValue = searchForSpecialSquare(specialSpaces, spaces.size());
+                    if(searchValue == -1)
+                    {
+                    	spaces.add(new BoardSpace(columnDistance,rowDistance, colorPick()));
+                    }
+                    else
+                    {
+                    	spaces.add(new BoardSpace(columnDistance,rowDistance, Color.black));
+                    	spaces.get(spaces.size()-1).specialNum = searchValue;
+                    }
                     currentX++;
                 }
                 currentY++;
@@ -293,18 +352,36 @@ public class SweetState {
             if(rowDistance < HEIGHT - yDistance) // Make sure we are not off the screen in the y direction
             {
                 
-                
                 // Alternate drawing the bridge path on the right and left.
                 if(pathState == 0)
                 {
                     //g.fill3DRect(columnDistance,rowDistance, xDistance, yDistance, true);
-                    spaces.add(new BoardSpace(columnDistance,rowDistance, colorPick()));
+                     int searchValue = searchForSpecialSquare(specialSpaces, spaces.size());
+                    if(searchValue == -1)
+                    {
+                    	spaces.add(new BoardSpace(columnDistance,rowDistance, colorPick()));
+                    }
+                    else
+                    {
+                    	spaces.add(new BoardSpace(columnDistance,rowDistance, Color.black));
+                    	spaces.get(spaces.size()-1).specialNum = searchValue;
+                    }
                     pathState = 1;
                 }
                 else
                 {
                     //g.fill3DRect(0,rowDistance, xDistance, yDistance, true);
-                    spaces.add(new BoardSpace(0, rowDistance, colorPick()));
+                    int searchValue = searchForSpecialSquare(specialSpaces, spaces.size());
+                    if(searchValue == -1)
+                    {
+                    	spaces.add(new BoardSpace(columnDistance,rowDistance, colorPick()));
+                    }
+                    else
+                    {
+                    	
+                    	spaces.add(new BoardSpace(0,rowDistance, Color.black));
+                    	spaces.get(spaces.size()-1).specialNum = searchValue;
+                    }
                     pathState = 0;
                 }
                 
@@ -315,11 +392,69 @@ public class SweetState {
             columnDistance = 0;
         }
 
-<<<<<<< ewright_d3
-=======
         System.out.println(specialSpaces[0] + " " + specialSpaces[1] + " " + specialSpaces[2] + " " + specialSpaces[3] + " " + specialSpaces[4] + " ");        
->>>>>>> local
         return spaces;
+    }
+
+    /**
+     * This function picks random spaces for the
+     * special candy spaces and stores them in an array
+     * @param specials The array of ints representing special blocks.
+     * @param min Lower bound of random numbers
+     * @param max upper bound of random numbers
+     * @return The array containing the special block int
+     */
+    public int[] pickSpecialSpaces(int[] specials, int min, int max)
+    {
+    	int randomNum = -1;
+    	
+    	
+    	for(int i = 0; i < specials.length;i++)
+    	{
+    		
+    		do
+    		{
+    			randomNum = min + (int)(Math.random() * max); 	
+    		}while(!validNum(specials,randomNum, i));
+
+    		specials[i] = randomNum;
+    	}
+
+    	return specials;
+    }
+
+    /**
+     * This funtion verifies that a sppace is an 
+     * acceptable distance from another space to
+     * ensure that they do not appear together
+     * @param specials The array of ints representing special blocks.
+     * @param number The generated number
+     * @param index The index of insertion
+     * @return Whether this number is acceptable
+     */
+    public boolean validNum(int[] specials, int number, int index)
+    {
+    	for(int i = 0; i < specials.length;i++)
+    	{
+    		if(specials[i] == -1)
+    		{
+    			return true;
+    		}
+
+    		if(i == index)
+    		{
+    			continue;
+    		}
+    		else
+    		{
+    			if( Math.abs(specials[i] - number) < 5)
+    			{
+    				return false;
+    			}
+    		}  
+    	}
+
+    	return true;  	
     }
     
     /**
@@ -329,7 +464,6 @@ public class SweetState {
      */
     private Color colorPick()
     {
-        System.out.println(colorState);
         if(colorState == 0)
         {
             colorState = 1;
@@ -359,6 +493,10 @@ public class SweetState {
     
     public MultithreadedTimer getMultithreadedTimer() {
         return mtTimer;
+    }
+    
+    public WarningManager getWarningManager() {
+        return warningManager;
     }
     
 }

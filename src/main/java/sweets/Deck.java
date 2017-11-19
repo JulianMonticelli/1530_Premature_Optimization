@@ -42,13 +42,8 @@ public class Deck {
     public Card draw() {
 		if(empty())
 			reshuffleDeck();
-<<<<<<< ewright_d3
-	 
-		top++;
-=======
 		top++;
 		
->>>>>>> local
 		return theDeck.get(top);
     }
 

@@ -35,6 +35,12 @@ public class WorldOfSweets extends JPanel {
 
     private BufferedImage backgroundImage;
     private BufferedImage grandmasHouseImage;
+
+    private BufferedImage iceCreamImage;
+    private BufferedImage chocolateBarImage;
+    private BufferedImage candyCaneImage;
+    private BufferedImage lollipopImage;
+    private BufferedImage candyImage;
     
     private static Font PAUSED_FONT = new Font("Verdana", Font.PLAIN|Font.BOLD, 72);
     private static final Color PAUSED_COLOR_1 = Color.RED;
@@ -57,6 +63,11 @@ public class WorldOfSweets extends JPanel {
         try {
             backgroundImage = ImageIO.read(new File(Main.getAssetLocale() + "background.jpg"));
             grandmasHouseImage = ImageIO.read(new File(Main.getAssetLocale() + "grandma's.jpg"));
+            iceCreamImage = ImageIO.read(new File(Main.getAssetLocale() + "icon_icecream.png"));
+            chocolateBarImage = ImageIO.read(new File(Main.getAssetLocale() + "icon_chocolate.png"));
+            candyCaneImage = ImageIO.read(new File(Main.getAssetLocale() + "icon_candycane.png"));
+            lollipopImage = ImageIO.read(new File(Main.getAssetLocale() + "icon_lollipop.png"));
+            candyImage = ImageIO.read(new File(Main.getAssetLocale() + "icon_candy.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -72,55 +83,61 @@ public class WorldOfSweets extends JPanel {
 
     public void run() {
 
-            while (running) {
-                    // Target time is always recalculated in case we want to switch frame rate
-                    long targetTime = (1000L/targetFPS);
-                    long startTime = System.currentTimeMillis();
+        while (running) {
+            // Target time is always recalculated in case we want to switch frame rate
+            long targetTime = (1000L/targetFPS);
+            long startTime = System.currentTimeMillis();
 
-                    
-                    // Game pause loop
-                    if (gameState.isPaused()) {
-                        // If we've paused the game, pause the timer thread
-                        gameState.getMultithreadedTimer().pauseThread();
-                        
-                        // Repaint while paused and a paused overlay will be drawn
-                        repaint();
-                        
-                        while(gameState.isPaused()) {
-                            try {
-                                Thread.sleep(50L);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace(); // If something goes wrong here, we really want to know what happened.
-                            }
-                        }
-                        
-                        // When we unpause the game, unpause the timer thread
-                        gameState.getMultithreadedTimer().unpauseThread();
-                        
+
+            // Game pause loop
+            if (gameState.isPaused()) {
+                // If we've paused the game, pause the timer thread
+                gameState.getMultithreadedTimer().pauseThread();
+
+                // Repaint while paused and a paused overlay will be drawn
+                repaint();
+
+                while(gameState.isPaused()) {
+                    try {
+                        Thread.sleep(50L);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace(); // If something goes wrong here, we really want to know what happened.
                     }
-                    
-                    // Perform turn
-                    tick();
+                }
 
-                    // Redraw screen
-                    repaint();
+                // When we unpause the game, unpause the timer thread
+                gameState.getMultithreadedTimer().unpauseThread();
 
-                    // Frame limiting code
-                    long totalSleepTime = targetTime - (System.currentTimeMillis() - startTime);
-                    if (totalSleepTime > 0) {
-                            try {
-                                    Thread.sleep(totalSleepTime);
-                            } catch (InterruptedException e) {
-                                    e.printStackTrace(); // This shouldn't happen - but in case it does throw an error!
-                            }
-                    }
             }
+
+            // Perform turn
+            tick();
+
+            // Redraw screen
+            repaint();
+
+            // Frame limiting code
+            long totalSleepTime = targetTime - (System.currentTimeMillis() - startTime);
+            if (totalSleepTime > 0) {
+                try {
+                        Thread.sleep(totalSleepTime);
+                } catch (InterruptedException e) {
+                        e.printStackTrace(); // This shouldn't happen - but in case it does throw an error!
+                }
+            }
+        }
     }
 
 
     public void tick() {
-            running = gameState.makeTurn();
-            hud.update(gameState.getDeck(), gameState);
+        // Make player turn
+        running = gameState.makeTurn();
+        
+        // Update HUD 
+        hud.update(gameState);
+        
+        // Update WarningSystem
+        gameState.getWarningManager().update();
     }
 
 
@@ -155,6 +172,8 @@ public class WorldOfSweets extends JPanel {
             g.drawString(GAME_PAUSED, PAUSED_STRING_X_OFFSET+1, PAUSED_STRING_Y_OFFSET+1);
         }
         
+        gameState.getWarningManager().draw(g, 0, 0);
+        
     }
 
     /**
@@ -170,8 +189,18 @@ public class WorldOfSweets extends JPanel {
 
         for(int i = 0; i < path.size() - 2;i++) // Draw the path stored in the array
         {
-            g.setColor(path.get(i).getColor()); // Get the color of this specific space
-            g.fill3DRect(path.get(i).getXOrigin(),path.get(i).getYOrigin(), WIDTH/10, HEIGHT/10, true); // Draw the rect at this index	
+            if(path.get(i).specialNum == -1)
+            {
+                g.setColor(path.get(i).getColor()); // Get the color of this specific space
+                g.fill3DRect(path.get(i).getXOrigin(),path.get(i).getYOrigin(), WIDTH/10, HEIGHT/10, true); // Draw the rect at this index  
+            }
+            else
+            {
+                g.setColor(Color.white); // Get the color of this specific space
+                g.fill3DRect(path.get(i).getXOrigin(),path.get(i).getYOrigin(), WIDTH/10, HEIGHT/10, true);   
+                g.drawImage(specialSpaceImg(path.get(i).specialNum), path.get(i).getXOrigin(),path.get(i).getYOrigin(), WIDTH/10, HEIGHT/10, null);
+            }
+
             g.drawImage(grandmasHouseImage, path.get(path.size() - 3).getXOrigin(),path.get(path.size() - 3).getYOrigin(),WIDTH/10,HEIGHT/10, null);
         
 
@@ -229,6 +258,34 @@ public class WorldOfSweets extends JPanel {
         g.setColor(Color.black);
         g.drawArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, WIDTH/25, HEIGHT/20,0, 360);
 
+    }
+
+    public BufferedImage specialSpaceImg(int id)
+    {
+        if(id == 0)
+        {
+            return iceCreamImage;
+        }
+        else if(id == 1)
+        {
+            return chocolateBarImage;
+        }
+        else if(id == 2)
+        {
+            return candyCaneImage;
+        }
+        else if(id == 3)
+        {
+            return lollipopImage;
+        }
+        else if(id == 4)
+        {
+            return candyImage;
+        }
+        else
+        {
+            return null;
+        }
     }
 
 

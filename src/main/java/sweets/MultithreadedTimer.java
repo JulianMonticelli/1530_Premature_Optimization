@@ -119,7 +119,7 @@ public class MultithreadedTimer {
                     previousTime = System.nanoTime();
                     timeInSeconds++;
                     extraTime = timeDiff - nanosPerSec; // Reset pause time
-                    System.out.println(getTimerString());
+                    //System.out.println(getTimerString());
                 }
                 
                 // THIS is premature optimization vvvv

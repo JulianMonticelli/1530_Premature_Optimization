@@ -31,9 +31,10 @@ public class SweetState {
     // Warning system
     WarningManager warningManager;
     
-    public boolean randomSpaces = false;
+	public boolean randomSpaces = false;
     private int colorState = 3;
-    public int specialSpaces[] = {-1,-1,-1,-1,-1}; // This array holds the indexes into the board of the special squares
+    private int specialSpaces[] = {-1,-1,-1,-1,-1}; // This array holds the indexes into the board of the special squares
+	private int grandmaLoc = -1;
     // 0 = iceCreamImage
     // 1 = chocolateBar
     // 2 = candyCane
@@ -67,9 +68,10 @@ public class SweetState {
     public boolean makeTurn() {
         if (deckClicked){
             Player currentPlayer = players.get(playerTurn);
+			Card drawnCard = deck.draw();
             
             int currentPos = currentPlayer.getPos();
-            int destPos = calculateDest(currentPos);
+            int destPos = calculateDest(currentPos, drawnCard);
             
             System.out.println(currentPlayer.getName() + " going from " + currentPos + " to " + destPos);
 
@@ -78,7 +80,7 @@ public class SweetState {
             
             currentPlayer.setPos(destPos);
 
-            int grandmaLoc = spaces.size() - 3;
+            //int grandmaLoc = spaces.size() - 3;
 
             if (destPos == grandmaLoc) {
                 endGame(currentPlayer);
@@ -178,12 +180,15 @@ public class SweetState {
             return 0;
 	}
 	
+	public ArrayList<Player> getPlayers() {
+		return players;
+	}
+	
 	//Returns index of destination
-	public int calculateDest(int startPos) {
+	public int calculateDest(int startPos, Card drawnCard) {
 
-            Card drawnCard = deck.draw();
             int destination = startPos;
-            int grandmaLoc = spaces.size() - 3;
+            //int grandmaLoc = spaces.size() - 3;
 			int specialNum = drawnCard.getSpecialMoveNumber();
 
             if (drawnCard.isSkipTurn())
@@ -265,8 +270,8 @@ public class SweetState {
         
         // Path state determines whether we should draw a bridge on near x or far x side of the window.
         int pathState = 0; 
-
-        if(randomSpaces == true)
+        
+		if(randomSpaces == true)
         {
              specialSpaces = pickSpecialSpaces(specialSpaces, 2, 49);
         }
@@ -279,8 +284,8 @@ public class SweetState {
             specialSpaces[4] = 45;
              
         }
-       
-
+		
+		
         while(rowDistance < (HEIGHT - yDistance)) // While we have not reached the bottom of the screen (y).
         {
             rowDistance = currentY * yDistance; // Get the current height we want to draw at.
@@ -381,8 +386,13 @@ public class SweetState {
         }
 
         System.out.println(specialSpaces[0] + " " + specialSpaces[1] + " " + specialSpaces[2] + " " + specialSpaces[3] + " " + specialSpaces[4] + " ");        
+		grandmaLoc = spaces.size() - 3;
         return spaces;
     }
+	
+	public int getGrandmaLoc() {
+		return grandmaLoc;
+	}
 
     /**
      * This function picks random spaces for the
@@ -411,6 +421,10 @@ public class SweetState {
     	return specials;
     }
 
+	public int[] getSpecialSpaces() {
+		return specialSpaces;
+	}
+	
     /**
      * This funtion verifies that a sppace is an 
      * acceptable distance from another space to

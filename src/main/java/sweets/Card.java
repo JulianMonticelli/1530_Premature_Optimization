@@ -31,9 +31,6 @@ public class Card {
 
     public boolean isDouble() { return ((flags & DOUBLE) != 0); }
     public boolean isSkipTurn() { return ((flags & SKIP_TURN) != 0); }
-    //This method has been replaced by isSpecialMove
-    @Deprecated
-    //public boolean isMiddleCard() { return ((flags & SPECIAL_MOVE) != 0); }
     public boolean isSpecialMoveCard() { return ((flags & SPECIAL_MOVE) != 0); }
     public int getSpecialMoveNumber() { return specialMoveNumber;}
 

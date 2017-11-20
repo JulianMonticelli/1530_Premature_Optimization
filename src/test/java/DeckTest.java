@@ -28,14 +28,16 @@ public class DeckTest {
 
   */
 
-  /*
-    This test was removed. It is too fragile.
-    Deck should have 6 colors * (10 single + 2 double) = 72 + 5 skip + 3 go_to_middle
   @Test
   public void correctSize() {
-    assertEquals(80, _d.getCapacity());
+    int expectedCards = 0;
+    int numColors = 5;
+    int cardsPerColor = 12;
+    int specialCards = 5 + 5; //5 skip, 5 special
+    expectedCards = numColors * cardsPerColor;
+    expectedCards = expectedCards + specialCards;
+    assertEquals(expectedCards, _d.getCapacity());
   }
-  */
 
   @Test
   public void drawForever() {

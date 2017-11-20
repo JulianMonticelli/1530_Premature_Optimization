@@ -24,7 +24,7 @@ public class Deck {
             int target = RNG.nextInt(i);
             swap(i - 1, target);
         }
-        top = 0;
+        top = -1;
     }
 
     public int getNumCards() {
@@ -36,13 +36,14 @@ public class Deck {
     }
 
     public boolean empty() {
-        return top == theDeck.size();
+        return top == (theDeck.size() - 1);
     }
 
     public Card draw() {
 		if(empty())
 			reshuffleDeck();
-        return theDeck.get(top++);
+		top++;
+		return theDeck.get(top);
     }
 
     //NKD: Need to define error handling for case where no card was drawn
@@ -56,6 +57,17 @@ public class Deck {
     public boolean wasLastCardDouble() {
         return getLastCard().isDouble();
     }
+
+    public boolean wasLastCardSkipCard() {
+        return getLastCard().isSkipTurn();
+    }
+
+	// Deprecated
+	/*
+    public boolean wasLastCardMiddleCard() {
+        return getLastCard().isMiddleCard();
+    }
+	*/
 
     private void swap(int a, int b) {
         Card c = theDeck.get(a);

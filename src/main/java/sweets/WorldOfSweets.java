@@ -15,6 +15,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import javax.swing.JOptionPane;
 import java.util.ArrayList;
 
 
@@ -22,10 +23,7 @@ public class WorldOfSweets extends JPanel {
 	public static final int WIDTH = 1200;
 	public static final int HEIGHT = 1000;
 
-	Player testPlayer;
-	Player testPlayer2;
-	Player testPlayer3;
-	Player testPlayer4;
+
 	ArrayList<BoardSpace> path;
         
     private HUD hud;
@@ -33,212 +31,379 @@ public class WorldOfSweets extends JPanel {
 
     private int targetFPS = 30;
 	
-	private boolean running = false;
-	private int colorState = 1;
-	
-	public WorldOfSweets() {
-		this.setPreferredSize(new Dimension(WIDTH,HEIGHT)); // Preferred size affects packing
-		this.setFocusable(true); // Focusable so we can use keyboard input
-		this.addKeyListener(initKeyAdapter()); // Listens to keys, obv 
-		this.addMouseListener(initMouseListener());
-                
-                hud = new HUD();
-                gameState = new SweetState();
-                gameState.storePath(WIDTH,HEIGHT);
-                
-		running = true;
+    private boolean running = false;
+    //private int colorState = 1;
 
-		path = gameState.getPath();
-		
-		testPlayer = new Player();
-		testPlayer.setColor(Color.blue);
-		path.get(20).addPlayer(testPlayer);
-		path.get(15).removePlayer(testPlayer);
+    private BufferedImage backgroundImage;
+    private BufferedImage grandmasHouseImage;
 
-		testPlayer2 = new Player();
-		testPlayer2.setColor(Color.green);
-		path.get(20).addPlayer(testPlayer2);
-		
-		testPlayer3 = new Player();
-		testPlayer3.setColor(Color.MAGENTA);
-		path.get(20).addPlayer(testPlayer3);
-		
-		testPlayer4 = new Player();
-		testPlayer4.setColor(Color.orange);
-		path.get(20).addPlayer(testPlayer4);
-
-		//path.get(10).removePlayer(testPlayer);
-		//path.get(10).removePlayer(testPlayer2);
-		//path.get(10).removePlayer(testPlayer3);
-		//path.get(10).removePlayer(testPlayer4);
-		
-	}    
-	
-	public void run() {
-		// Basic as boilerplate. This is definitely subject to change.
-		// This is the standard basic template for Swing java games.
-		// Assuming 30FPS
-		
-		
-		while (running) {
-			// Target time is always recalculated in case we want to switch frame rate
-			long targetTime = (1000L/targetFPS);
-			long startTime = System.currentTimeMillis();
-			
-			// Perform turn
-			tick();
-		
-			// Redraw screen
-			repaint();
-			
-			// Frame limiting code
-			long totalSleepTime = targetTime - (System.currentTimeMillis() - startTime);
-			if (totalSleepTime > 0) {
-				try {
-					Thread.sleep(totalSleepTime);
-				} catch (InterruptedException e) {
-					e.printStackTrace(); // This shouldn't happen - but in case it does throw an error!
-				}
-			}
-		}
-	}
-	
-	
-	public void tick() {
-		gameState.makeTurn();
-		hud.update(gameState.getDeck(), gameState);
-	}
-	
-	
-	@Override
-	public void paintComponent(Graphics g) {
-		// Draw all components - typically a loop, should be easy to implement if we use collections of players, tiles, etc
-		// We could prematurely optimize and draw only what needs changed, etc. but for now fuck it - just worry about rudimentary stuff
-		// ...although our team name implies that we will prematurely optimize:)
-              
-		try 
-		{
-            BufferedImage img = ImageIO.read(new File(Main.getAssetLocale() + "background.jpg"));
-			//img = Scalr.r
-			g.drawImage(img, 0,0,WIDTH,HEIGHT, null);
-		} catch (IOException e) 
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	
-        hud.draw(g, WIDTH, HEIGHT);
+    private BufferedImage iceCreamImage;
+    private BufferedImage chocolateBarImage;
+    private BufferedImage candyCaneImage;
+    private BufferedImage lollipopImage;
+    private BufferedImage candyImage;
+    
+    private static Font PAUSED_FONT = new Font("Verdana", Font.PLAIN|Font.BOLD, 72);
+    private static final Color PAUSED_COLOR_1 = Color.RED;
+    private static final Color PAUSED_COLOR_2 = Color.WHITE;
+    private static final Color PAUSED_COLOR_3 = Color.BLACK;
+    
+    private static final int PAUSED_STRING_X_OFFSET = WIDTH/2-250;
+    private static final int PAUSED_STRING_Y_OFFSET = HEIGHT/2;
+    
+    private static final String GAME_PAUSED = "Game Paused";
+    
+    public WorldOfSweets() {
         
+        
+        this.setPreferredSize(new Dimension(WIDTH,HEIGHT)); // Preferred size affects packing
+        this.setFocusable(true); // Focusable so we can use keyboard input
+        this.addKeyListener(initKeyAdapter()); // Listens to keys, obv 
+        this.addMouseListener(initMouseListener());
+
+        try {
+            backgroundImage = ImageIO.read(new File(Main.getAssetLocale() + "background.jpg"));
+            grandmasHouseImage = ImageIO.read(new File(Main.getAssetLocale() + "grandma's.jpg"));
+            iceCreamImage = ImageIO.read(new File(Main.getAssetLocale() + "icon_icecream.png"));
+            chocolateBarImage = ImageIO.read(new File(Main.getAssetLocale() + "icon_chocolate.png"));
+            candyCaneImage = ImageIO.read(new File(Main.getAssetLocale() + "icon_candycane.png"));
+            lollipopImage = ImageIO.read(new File(Main.getAssetLocale() + "icon_lollipop.png"));
+            candyImage = ImageIO.read(new File(Main.getAssetLocale() + "icon_candy.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        hud = new HUD(WIDTH, HEIGHT);
+        gameState = new SweetState();
+        chooseSpecialSpacePickMode();
+        gameState.storePath(WIDTH,HEIGHT);
+        gameState.addPlayers(getPlayerCountAndNames());
+		
+
+        running = true;
+
+    }
+
+    public void chooseSpecialSpacePickMode()
+    {
+        String boolString = JOptionPane.showInputDialog("Do you want to randomize locations for special squares? Please type yes or no");
+                    
+        boolean randomSet = false;
+                
+        while(!randomSet)
+        {
+                 
+            if(boolString.equalsIgnoreCase("yes"))
+            {
+                gameState.randomSpaces = true;
+                randomSet = true;
+            }
+            else if(boolString.equalsIgnoreCase("no"))
+            {
+                gameState.randomSpaces = false;
+                randomSet = true;
+            }
+            else
+            {
+                boolString = JOptionPane.showInputDialog("Invalid input please type yes if you want special spaces randomized");
+                    
+            }
+        }
+    }    
+
+    public void run() {
+
+        while (running) {
+            // Target time is always recalculated in case we want to switch frame rate
+            long targetTime = (1000L/targetFPS);
+            long startTime = System.currentTimeMillis();
+
+
+            // Game pause loop
+            if (gameState.isPaused()) {
+                // If we've paused the game, pause the timer thread
+                gameState.getMultithreadedTimer().pauseThread();
+
+                // Repaint while paused and a paused overlay will be drawn
+                repaint();
+
+                while(gameState.isPaused()) {
+                    try {
+                        Thread.sleep(50L);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace(); // If something goes wrong here, we really want to know what happened.
+                    }
+                }
+
+                // When we unpause the game, unpause the timer thread
+                gameState.getMultithreadedTimer().unpauseThread();
+
+            }
+
+            // Perform turn
+            tick();
+
+            // Redraw screen
+            repaint();
+
+            // Frame limiting code
+            long totalSleepTime = targetTime - (System.currentTimeMillis() - startTime);
+            if (totalSleepTime > 0) {
+                try {
+                        Thread.sleep(totalSleepTime);
+                } catch (InterruptedException e) {
+                        e.printStackTrace(); // This shouldn't happen - but in case it does throw an error!
+                }
+            }
+        }
+    }
+
+
+    public void tick() {
+        // Make player turn
+        running = gameState.makeTurn();
+        
+        // Update HUD 
+        hud.update(gameState);
+        
+        // Update WarningSystem
+        gameState.getWarningManager().update();
+    }
+
+
+    @Override
+    public void paintComponent(Graphics g) {
+        // Draw all components - typically a loop, should be easy to implement if we use collections of players, tiles, etc
+        // We could prematurely optimize and draw only what needs changed, etc. but for now fuck it - just worry about rudimentary stuff
+        // ...although our team name implies that we will prematurely optimize:)
+
+        
+        //backgroundImage = Scalr.r
+        g.drawImage(backgroundImage, 0,0,WIDTH,HEIGHT, null);
+
+
+        hud.draw(g, WIDTH, HEIGHT);
+
         //BoardSpace b = new BoardSpace(WIDTH/2,HEIGHT/2,Color.MAGENTA);
         //drawToken(g,b);
         drawPath(g);
-		
-	}
 
-	/**
-	*  This function draws the path stored
-	*  in the gameState object. It also draws 
-	*  tokens on their specific locations 
-	*  the path.
-	*  @g The graphics object we are using to draw
-	**/
-	public void drawPath(Graphics g)
-	{
-		ArrayList<BoardSpace> path = gameState.getPath(); // The game board path
-		
-		for(int i = 0; i < path.size() - 3;i++) // Draw the path stored in the array
-		{
-			g.setColor(path.get(i).getColor()); // Get the color of this specific space
-			g.fill3DRect(path.get(i).getXOrigin(),path.get(i).getYOrigin(), WIDTH/10, HEIGHT/10, true); // Draw the rect at this index	
-			
-			ArrayList<Player> players = path.get(i).getPlayers(); // Get the players stored in this space
+        if (gameState.isPaused()) {
+            g.setColor(new Color(0.0f,0.0f,0.0f,.5f));
+            g.fillRect(0, 0, WIDTH, HEIGHT);
+            
+            g.setFont(PAUSED_FONT);
+            
+            g.setColor(PAUSED_COLOR_1);
+            g.drawString(GAME_PAUSED, PAUSED_STRING_X_OFFSET-1, PAUSED_STRING_Y_OFFSET-1);
+            g.setColor(PAUSED_COLOR_3);
+            g.drawString(GAME_PAUSED, PAUSED_STRING_X_OFFSET, PAUSED_STRING_Y_OFFSET);
+            g.setColor(PAUSED_COLOR_2);
+            g.drawString(GAME_PAUSED, PAUSED_STRING_X_OFFSET+1, PAUSED_STRING_Y_OFFSET+1);
+        }
+        
+        gameState.getWarningManager().draw(g, 0, 0);
+        
+    }
 
-			for(int j = 0; j < path.get(i).getNumPlayers(); j++) // Iterate through the Boardspaces's players and draw tokens as necessary
-			{
+    /**
+    *  This function draws the path stored
+    *  in the gameState object. It also draws 
+    *  tokens on their specific locations 
+    *  the path.
+    *  @g The graphics object we are using to draw
+    **/
+    public void drawPath(Graphics g)
+    {
+        ArrayList<BoardSpace> path = gameState.getPath(); // The game board path
 
-				if(j == 0) 
-				{
-					drawToken(g, path.get(i), 0,0,players.get(j)); // Draw the first token in top left of square
-				}
-				else if(j == 1)
-				{
-					drawToken(g, path.get(i), WIDTH/17,0,players.get(j)); // Draw the second token  in top right of square
-				}
-				else if(j == 2)
-				{
-					drawToken(g, path.get(i), 0, HEIGHT/20,players.get(j)); // Draw the third token in bottom left of square
-				}
-				else
-				{
-					drawToken(g, path.get(i), WIDTH/17, HEIGHT/20,players.get(j)); // Draw the fourth token in bottom right of square
-				}
-			
-			}
+        for(int i = 0; i < path.size() - 2;i++) // Draw the path stored in the array
+        {
+            if(path.get(i).specialNum == -1)
+            {
+                g.setColor(path.get(i).getColor()); // Get the color of this specific space
+                g.fill3DRect(path.get(i).getXOrigin(),path.get(i).getYOrigin(), WIDTH/10, HEIGHT/10, true); // Draw the rect at this index  
+            }
+            else
+            {
+                g.setColor(Color.white); // Get the color of this specific space
+                g.fill3DRect(path.get(i).getXOrigin(),path.get(i).getYOrigin(), WIDTH/10, HEIGHT/10, true);   
+                g.drawImage(specialSpaceImg(path.get(i).specialNum), path.get(i).getXOrigin(),path.get(i).getYOrigin(), WIDTH/10, HEIGHT/10, null);
+            }
 
-		}
-		//Draw the start block
-		g.setColor(Color.black);
+            g.drawImage(grandmasHouseImage, path.get(path.size() - 3).getXOrigin(),path.get(path.size() - 3).getYOrigin(),WIDTH/10,HEIGHT/10, null);
+        
+
+            ArrayList<Player> players = path.get(i).getPlayers(); // Get the players stored in this space
+
+            for(int j = 0; j < path.get(i).getNumPlayers(); j++) // Iterate through the Boardspaces's players and draw tokens as necessary
+            {
+
+                if(j == 0) 
+                {
+                    drawToken(g, path.get(i), 0,0,players.get(j)); // Draw the first token in top left of square
+                }
+                else if(j == 1)
+                {
+                    drawToken(g, path.get(i), WIDTH/17,0,players.get(j)); // Draw the second token  in top right of square
+                }
+                else if(j == 2)
+                {
+                    drawToken(g, path.get(i), 0, HEIGHT/20,players.get(j)); // Draw the third token in bottom left of square
+                }
+                else
+                {
+                    drawToken(g, path.get(i), WIDTH/17, HEIGHT/20,players.get(j)); // Draw the fourth token in bottom right of square
+                }
+
+            }
+
+        }
+        //Draw the start block
+        g.setColor(Color.black);
         g.setFont(new Font("Arial", Font.PLAIN|Font.BOLD, HEIGHT/50 + WIDTH/50));
         g.drawString("Start", path.get(0).getXOrigin() + WIDTH/70, path.get(0).getYOrigin()+ HEIGHT/15);
 
-		try 
-		{
-            BufferedImage img = ImageIO.read(new File(Main.getAssetLocale() + "grandma's.jpg"));
-			//img = Scalr.r
-			g.drawImage(img, path.get(path.size() - 3).getXOrigin(),path.get(path.size() - 3).getYOrigin(),WIDTH/10,HEIGHT/10, null);
-		} catch (IOException e) 
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		//Draw the start block
-		//g.setColor(Color.black);
+        
+        //Draw the start block
+        //g.setColor(Color.black);
         //g.setFont(new Font("Arial", Font.PLAIN|Font.BOLD, HEIGHT/50 + WIDTH/50));
         //g.drawString("Grandma's House", path.get(path.size() - 3).getXOrigin() - WIDTH/85, path.get(path.size() - 3).getYOrigin()+ HEIGHT/5);
-	}
-	/**
-	* This function draws a token at an offset from a Boardspace.
-	* @g The graphics object we are using for drawing
-	* @space The board space we are offsetting from
-	* @xOffset The xOffset from the BoardSpace
-	* @yOffset The yOffset from the BoardSpace
-	* @user The player whose token is being drawn
-	*
-	**/
-	public void drawToken(Graphics g, BoardSpace space, int xOffset, int yOffset, Player user)
-	{
-		g.setColor(user.getColor());
-		g.fillArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, WIDTH/25, HEIGHT/20,0, 360);
-		g.fillArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, WIDTH/25, HEIGHT/20,0, 360);
-		g.setColor(Color.black);
-		g.drawArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, WIDTH/25, HEIGHT/20,0, 360);
+    }
+    
+    /**
+    * This function draws a token at an offset from a Boardspace.
+    * @g The graphics object we are using for drawing
+    * @space The board space we are offsetting from
+    * @xOffset The xOffset from the BoardSpace
+    * @yOffset The yOffset from the BoardSpace
+    * @user The player whose token is being drawn
+    *
+    **/
+    public void drawToken(Graphics g, BoardSpace space, int xOffset, int yOffset, Player user)
+    {
+        g.setColor(user.getColor());
+        g.fillArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, WIDTH/25, HEIGHT/20,0, 360);
+        g.fillArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, WIDTH/25, HEIGHT/20,0, 360);
+        g.setColor(Color.black);
+        g.drawArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, WIDTH/25, HEIGHT/20,0, 360);
+
+    }
+
+    public BufferedImage specialSpaceImg(int id)
+    {
+        if(id == 0)
+        {
+            return iceCreamImage;
+        }
+        else if(id == 1)
+        {
+            return chocolateBarImage;
+        }
+        else if(id == 2)
+        {
+            return candyCaneImage;
+        }
+        else if(id == 3)
+        {
+            return lollipopImage;
+        }
+        else if(id == 4)
+        {
+            return candyImage;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+	public ArrayList<Player> getPlayerCountAndNames() {
+		Color[] playerColors = { Color.cyan, Color.black, Color.pink, Color.white};
+		boolean done = false; 	//used to make sure we only accept correct input
+		ArrayList<Player> players = new ArrayList<Player>();
+		int numPlayers = 0;
 		
-	}
-	
-	
-	// Key and Mouse adapters
-	
-	private KeyAdapter initKeyAdapter() {
-		return new KeyAdapter() {
-			@Override
-			public void keyTyped(KeyEvent e) {
-				System.out.println("Key typed: " + e.getKeyChar());
-			}
-		};
-	}
-	
-	private MouseAdapter initMouseListener() {
-		return new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				System.out.println("Mouse button " + e.getButton() + "clicked at " + e.getX() + ", " + e.getY());
-				
-				//Deck button is 125x100 pixels, placed in bottom right corner
-				if (e.getX() <= WIDTH && e.getX() >= (WIDTH - 125) && e.getY() <= HEIGHT && e.getY() >= (HEIGHT - 100)) {
-					gameState.togglePaused();
+		// Get number of players
+		while (!done) {
+            try {
+                
+                String input = JOptionPane.showInputDialog("How many players are playing?");
+                numPlayers = Integer.parseInt(input);
+                
+                if (numPlayers < 5 && numPlayers > 1)
+                    done = true;
+                else {
+                    JOptionPane.showMessageDialog(null, "Please enter a number between 2 and 4");
+                }
+
+                
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "Invalid Input");
+            }
+        }
+        
+		//Get names of players
+		for (int i = 0; i < numPlayers; i++) {
+			
+			String playerName = JOptionPane.showInputDialog("What is player" + (i + 1) + "'s name?");
+			
+			for (int j = 0; j < i; j++) {
+				if (playerName.equals(players.get(j).getName()) || playerName.length() < 1 || playerName.length() > 10) {
+					playerName = JOptionPane.showInputDialog("Please enter a unique name between 1 and 10 characters");
+					j = 0;
 				}
 			}
-		};
+			
+			players.add(i, new Player(playerColors[i], playerName, 0));
+		}
+		
+		return players;
 	}
+	
+	
+    // Key and Mouse adapters
+
+    private KeyAdapter initKeyAdapter() {
+        return new KeyAdapter() {
+            /*
+            @Override
+            public void keyTyped(KeyEvent e) {
+                System.out.println("Key typed: " + e.getKeyChar());
+            }
+            */
+            
+            @Override
+            public void keyPressed(KeyEvent e) {
+                
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    System.out.println("Pause button has been pressed!");
+                    gameState.togglePaused();
+                }
+                
+                System.out.println("Key pressed: " + e.getKeyChar());
+                
+                
+                
+            }
+        };
+    }
+
+    private MouseAdapter initMouseListener() {
+        return new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                System.out.println("Mouse button " + e.getButton() + "clicked at " + e.getX() + ", " + e.getY());
+
+                //Deck button is 125x100 pixels, placed in bottom right corner
+                if (e.getX() <= WIDTH && e.getX() >= (WIDTH - 125) && e.getY() <= HEIGHT && e.getY() >= (HEIGHT - 100)) {
+                    // Only draw a card from the deck if the game is NOT paused.
+                    if (!gameState.isPaused())
+                    { 
+                        gameState.clickDeck();
+                    }
+                }
+            }
+        };
+    }
 }

@@ -8,8 +8,16 @@ public class BoardSpace
 	private int xOrigin; // The x value of the graphical origin of the space.
 	private int yOrigin; // The y value of the graphical origin of the space.
 	private Color spaceColor; // The color of the space
+	private int intColorCode; //The color corresponding to the code in Card.java
 	private ArrayList<Player> players; //Contains list of players currently occupying space
 	private int numPlayers = 0;
+	public int specialNum = -1; // This tells you what type of space this space is. I put a guide below this line
+	// -1 = normal space
+	// 0 = iceCream
+    // 1 = chocolateBar
+    // 2 = candyCane
+    // 3 = lollipop
+    // 4 = candy
 
 	/**
 	* No-arg constructor for a boardSpace
@@ -34,6 +42,41 @@ public class BoardSpace
 		yOrigin = y;
 		spaceColor = color;
 		players = new ArrayList<Player>();
+				
+		int rgbValue = spaceColor.getRGB();
+
+		int red = Color.red.getRGB();
+		int yellow = Color.yellow.getRGB();
+		int blue = Color.blue.getRGB();
+		int green = Color.green.getRGB();
+		int orange = Color.orange.getRGB();
+
+		if(rgbValue == red)
+		{
+			intColorCode = 1;
+		}
+		else if(rgbValue == yellow)
+		{
+			intColorCode = 2;
+		}
+		else if(rgbValue == blue)
+		{
+			intColorCode = 4;
+		}
+		else if(rgbValue == green)
+		{
+			intColorCode = 8;
+		}
+		else if(rgbValue == orange)
+		{
+			intColorCode = 16;
+		}
+		else
+		{
+			intColorCode = -1;
+		}
+
+		
 	}
 
 	/*
@@ -52,6 +95,11 @@ public class BoardSpace
 	public Color getColor()
 	{
 		return spaceColor;
+	}
+	
+	public int getIntColorCode()
+	{
+		return intColorCode;
 	}
 
 	public void setXOrigin(int x)

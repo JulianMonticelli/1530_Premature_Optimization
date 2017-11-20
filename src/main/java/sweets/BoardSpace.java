@@ -2,8 +2,9 @@ package sweets;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.io.Serializable;
 
-public class BoardSpace
+public class BoardSpace implements Serializable
 {
 	private int xOrigin; // The x value of the graphical origin of the space.
 	private int yOrigin; // The y value of the graphical origin of the space.

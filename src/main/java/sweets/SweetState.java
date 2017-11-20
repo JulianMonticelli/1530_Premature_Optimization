@@ -3,9 +3,11 @@ package sweets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.awt.Color;
+import java.io.Serializable;
+import java.io.*;
 //import javax.swing.JOptionPane;
 
-public class SweetState {
+public class SweetState implements Serializable {
     
 
     // Game state statements
@@ -26,7 +28,8 @@ public class SweetState {
     private int numPlayers;
     
     // Multi-threaded Timer
-    private MultithreadedTimer mtTimer;
+    private transient MultithreadedTimer mtTimer;
+	private String time;
     
     // Warning system
     WarningManager warningManager;
@@ -110,6 +113,22 @@ public class SweetState {
         newGame = true;
         warningManager.clearWarningList();
     }
+	
+	public void saveState(String filename) {
+		try {
+			time = mtTimer.getTimerString();
+			FileOutputStream fos = new FileOutputStream(filename + ".ser");
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(this);
+			oos.close();
+		} catch (FileNotFoundException e) {
+			System.out.println("File");
+			System.exit(1);
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+	}
     
     public boolean togglePaused() {
         paused = !paused;
@@ -496,6 +515,15 @@ public class SweetState {
     public MultithreadedTimer getMultithreadedTimer() {
         return mtTimer;
     }
+	
+	public MultithreadedTimer setMTTimer(MultithreadedTimer m) {
+		mtTimer = m;
+		return mtTimer;
+	}
+	
+	public String getTime() {
+		return time;
+	}
     
     public WarningManager getWarningManager() {
         return warningManager;

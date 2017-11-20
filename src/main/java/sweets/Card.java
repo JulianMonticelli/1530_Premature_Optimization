@@ -1,6 +1,8 @@
 package sweets;
 
-public class Card {
+import java.io.Serializable;
+
+public class Card implements Serializable{
     //Bitwise flags for various card attributes
     //Defined as powers of 2
     public static final int COLOR_RED = 1;

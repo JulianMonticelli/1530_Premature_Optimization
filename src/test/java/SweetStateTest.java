@@ -1,10 +1,7 @@
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import sweets.SweetState;
-import sweets.BoardSpace;
-import sweets.Card;
-import sweets.Player;
+import sweets.*;
 import java.util.ArrayList;
 
 public class SweetStateTest {
@@ -489,7 +486,24 @@ public class SweetStateTest {
 
     }
 
-
+	/**
+	* Tests to ensure that players are saved and loaded correctly
+	**/
+	/*@Test
+	public void testPlayerSaving() {
+		ArrayList<Player> testPlayers = new ArrayList<Player>();
+		testPlayers.add(new Player(null, "test player 1", 0));
+		testPlayers.add(new Player(null, "test player 2", 0));
+		testPlayers.add(new Player(null, "test player 3", 0));
+		
+		WorldOfSweets w = new WorldOfSweets(testPlayers);
+	
+		w.getGameState.saveState("test.ser");
+					
+		SweetState gameState2 = w.loadState("test.ser");
+		
+		assertEquals(w.getGameState.getPlayers(), gameState2.getPlayers());
+	}*/
     
 }
 

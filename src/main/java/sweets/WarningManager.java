@@ -9,11 +9,13 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.util.LinkedList;
+import java.io.Serializable;
+
 
 /**
  * @author Julian
  */
-public class WarningManager {
+public class WarningManager implements Serializable{
     
     private static WarningManager instance;
     

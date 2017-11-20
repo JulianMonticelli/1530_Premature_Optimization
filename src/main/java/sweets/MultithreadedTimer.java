@@ -12,7 +12,7 @@ import java.util.logging.Logger;
  *
  * @author Julian
  */
-public class MultithreadedTimer {
+public class MultithreadedTimer{
 
     Timer timer;
     Thread timerThread;

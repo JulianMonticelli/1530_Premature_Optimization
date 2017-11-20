@@ -2,8 +2,9 @@ package sweets;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.io.Serializable;
 
-public class Deck {
+public class Deck implements Serializable{
     private ArrayList<Card> theDeck;
     private int top;
 

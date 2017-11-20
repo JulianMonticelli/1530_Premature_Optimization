@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="SweetStateTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2017-11-20T01:06:38" hostname="Bat-Mobile" time="0.021">
+  <properties/>
+  <testcase name="testSearchForSpecialSquare" classname="SweetStateTest" time="0.012"/>
+  <testcase name="testNumSpecialSpacesInPath" classname="SweetStateTest" time="0.004"/>
+  <testcase name="testValidNum" classname="SweetStateTest" time="0.0"/>
+  <testcase name="testIsDeckClicked" classname="SweetStateTest" time="0.0"/>
+  <testcase name="testStaticSpaceOption" classname="SweetStateTest" time="0.002"/>
+  <testcase name="testRandomSpaceOption" classname="SweetStateTest" time="0.001"/>
+  <testcase name="testPickSpecialSpaces" classname="SweetStateTest" time="0.0"/>
+  <system-out><![CDATA[5 15 25 35 45 
+5 15 25 35 45 
+5 15 25 35 45 
+33 45 8 19 40 
+5 15 25 35 45 
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

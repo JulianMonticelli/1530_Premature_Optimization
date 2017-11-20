@@ -75,12 +75,40 @@ public class WorldOfSweets extends JPanel {
         
         hud = new HUD(WIDTH, HEIGHT);
         gameState = new SweetState();
-        gameState.addPlayers(getPlayerCountAndNames());
+        chooseSpecialSpacePickMode();
         gameState.storePath(WIDTH,HEIGHT);
+        gameState.addPlayers(getPlayerCountAndNames());
 		
 
         running = true;
 
+    }
+
+    public void chooseSpecialSpacePickMode()
+    {
+        String boolString = JOptionPane.showInputDialog("Do you want to randomize locations for special squares? Please type yes or no");
+                    
+        boolean randomSet = false;
+                
+        while(!randomSet)
+        {
+                 
+            if(boolString.equalsIgnoreCase("yes"))
+            {
+                gameState.randomSpaces = true;
+                randomSet = true;
+            }
+            else if(boolString.equalsIgnoreCase("no"))
+            {
+                gameState.randomSpaces = false;
+                randomSet = true;
+            }
+            else
+            {
+                boolString = JOptionPane.showInputDialog("Invalid input please type yes if you want special spaces randomized");
+                    
+            }
+        }
     }    
 
     public void run() {
@@ -329,30 +357,6 @@ public class WorldOfSweets extends JPanel {
 			
 			players.add(i, new Player(playerColors[i], playerName, 0));
 		}
-
-        String boolString = JOptionPane.showInputDialog("Do you want to randomize locations for special squares? Please type yes or no");
-                    
-        boolean randomSet = false;
-                
-        while(!randomSet)
-        {
-                 
-            if(boolString.equalsIgnoreCase("yes"))
-            {
-                gameState.randomSpaces = true;
-                randomSet = true;
-            }
-            else if(boolString.equalsIgnoreCase("no"))
-            {
-                gameState.randomSpaces = false;
-                randomSet = true;
-            }
-            else
-            {
-                boolString = JOptionPane.showInputDialog("Invalid input please type yes if you want special spaces randomized");
-                    
-            }
-        }
 		
 		return players;
 	}

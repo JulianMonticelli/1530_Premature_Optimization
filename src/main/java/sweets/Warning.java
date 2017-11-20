@@ -9,11 +9,12 @@ package sweets;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.io.Serializable;
 
 /**
  * @author Julian
  */
-public class Warning {
+public class Warning implements Serializable{
     public static final int TYPE_WARNING = 0;
     public static final int TYPE_POSITIVE = 1;
     public static final int TYPE_ENDGAME = 2;

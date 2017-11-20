@@ -1,8 +1,9 @@
 package sweets;
 
 import java.util.ArrayList;
+import java.io.Serializable;
 
-public class DeckFactory {
+public class DeckFactory implements Serializable{
   public DeckFactory() {}
 
   public Deck makeDeck() {

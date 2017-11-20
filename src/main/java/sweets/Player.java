@@ -1,7 +1,8 @@
 package sweets;
 import java.awt.Color;
+import java.io.Serializable;
 
-public class Player 
+public class Player implements Serializable
 {
 	private Color playerColor;
 	private String name;

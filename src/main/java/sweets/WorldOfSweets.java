@@ -10,8 +10,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.awt.Font;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -60,7 +59,6 @@ public class WorldOfSweets extends JPanel {
         this.setFocusable(true); // Focusable so we can use keyboard input
         this.addKeyListener(initKeyAdapter()); // Listens to keys, obv 
         this.addMouseListener(initMouseListener());
-
         try {
             backgroundImage = ImageIO.read(new File(Main.getAssetLocale() + "background.jpg"));
             grandmasHouseImage = ImageIO.read(new File(Main.getAssetLocale() + "grandma's.jpg"));
@@ -74,15 +72,92 @@ public class WorldOfSweets extends JPanel {
         }
         
         hud = new HUD(WIDTH, HEIGHT);
-        gameState = new SweetState();
-        chooseSpecialSpacePickMode();
-        gameState.storePath(WIDTH,HEIGHT);
-        gameState.addPlayers(getPlayerCountAndNames());
-		
-
+		int option = JOptionPane.showOptionDialog(null,  
+												"Do you want to load an existing game?",  
+												"Start", JOptionPane.YES_NO_OPTION,  
+												JOptionPane.WARNING_MESSAGE, null, null,  
+												null);
+		if (option == JOptionPane.YES_OPTION) {
+			gameState = loadState(selectSave());	
+			while (!gameState.getMultithreadedTimer().getTimerString().equals(gameState.getTime())) {};
+		}
+		else if (option == JOptionPane.NO_OPTION) {
+			gameState = new SweetState();
+			chooseSpecialSpacePickMode();
+			gameState.storePath(WIDTH,HEIGHT);
+			gameState.addPlayers(getPlayerCountAndNames());
+		}
         running = true;
-
     }
+	
+	public WorldOfSweets(ArrayList<Player> p) {
+        this.setPreferredSize(new Dimension(WIDTH,HEIGHT)); // Preferred size affects packing
+        this.setFocusable(true); // Focusable so we can use keyboard input
+        this.addKeyListener(initKeyAdapter()); // Listens to keys, obv 
+        this.addMouseListener(initMouseListener());
+        try {
+            backgroundImage = ImageIO.read(new File(Main.getAssetLocale() + "background.jpg"));
+            grandmasHouseImage = ImageIO.read(new File(Main.getAssetLocale() + "grandma's.jpg"));
+            iceCreamImage = ImageIO.read(new File(Main.getAssetLocale() + "icon_icecream.png"));
+            chocolateBarImage = ImageIO.read(new File(Main.getAssetLocale() + "icon_chocolate.png"));
+            candyCaneImage = ImageIO.read(new File(Main.getAssetLocale() + "icon_candycane.png"));
+            lollipopImage = ImageIO.read(new File(Main.getAssetLocale() + "icon_lollipop.png"));
+            candyImage = ImageIO.read(new File(Main.getAssetLocale() + "icon_candy.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        hud = new HUD(WIDTH, HEIGHT);
+		gameState = new SweetState();
+		gameState.storePath(WIDTH,HEIGHT);
+		gameState.addPlayers(p);
+		
+        running = true;
+    }
+	
+	public String selectSave() {
+		ArrayList<String> saveFiles = new ArrayList<String>();
+		File dir = new File(".");
+		for (File file : dir.listFiles()) {
+			if (file.getName().endsWith((".ser"))) {
+				saveFiles.add(file.getName());
+			}
+		}
+		String[] options = saveFiles.toArray(new String[saveFiles.size()]);
+		int save = JOptionPane.showOptionDialog(null,
+											"Which save would you like to load?",
+											"Saved Games",
+											JOptionPane.YES_NO_CANCEL_OPTION,
+											JOptionPane.DEFAULT_OPTION,
+											null,
+											options,
+											options[0]);
+		return options[save];									
+	}
+	
+	public static SweetState loadState(String filename) {
+		SweetState state = null;
+		try {
+			FileInputStream fis = new FileInputStream(filename);
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			state = (SweetState) ois.readObject();
+			ois.close();
+		}
+		catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		state.togglePaused();
+		MultithreadedTimer timer = new MultithreadedTimer();
+		state.setMTTimer(timer);	
+		timer.startThread();
+		return state;
+	}
 
     public void chooseSpecialSpacePickMode()
     {
@@ -317,6 +392,10 @@ public class WorldOfSweets extends JPanel {
             return null;
         }
     }
+	
+	public SweetState getGameState() {
+		return gameState;
+	}
 
 	public ArrayList<Player> getPlayerCountAndNames() {
 		Color[] playerColors = { Color.cyan, Color.black, Color.pink, Color.white};
@@ -346,7 +425,7 @@ public class WorldOfSweets extends JPanel {
 		//Get names of players
 		for (int i = 0; i < numPlayers; i++) {
 			
-			String playerName = JOptionPane.showInputDialog("What is player" + (i + 1) + "'s name?");
+			String playerName = JOptionPane.showInputDialog("What is player " + (i + 1) + "'s name?");
 			
 			for (int j = 0; j < i; j++) {
 				if (playerName.equals(players.get(j).getName()) || playerName.length() < 1 || playerName.length() > 10) {
@@ -360,7 +439,6 @@ public class WorldOfSweets extends JPanel {
 		
 		return players;
 	}
-	
 	
     // Key and Mouse adapters
 
@@ -379,6 +457,17 @@ public class WorldOfSweets extends JPanel {
                 if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     System.out.println("Pause button has been pressed!");
                     gameState.togglePaused();
+					if (gameState.isPaused()) {
+						int option = JOptionPane.showOptionDialog(null,  
+																"Do you want to save?",  
+																"Save Game", JOptionPane.YES_NO_OPTION,  
+																JOptionPane.WARNING_MESSAGE, null, null,  
+																null);
+						if (option == JOptionPane.YES_OPTION) {
+							String saveName = JOptionPane.showInputDialog("What would you like to call this save?");
+							gameState.saveState(saveName);
+						}
+					}																
                 }
                 
                 System.out.println("Key pressed: " + e.getKeyChar());

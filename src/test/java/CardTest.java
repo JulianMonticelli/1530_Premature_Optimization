@@ -42,4 +42,16 @@ public class CardTest {
     assertEquals(Card.COLOR_RED, c.getColor());
     assertEquals(true, c.isDouble());
   }
+
+  @Test
+  public void setSpecialMoveCorrectly() {
+    Card s = new Card(Card.SPECIAL_MOVE, -1);
+    assertEquals(true, s.isSpecialMoveCard());
+  }
+
+  @Test
+  public void setSpecialMoveNumberCorrectly() {
+    Card s = new Card(Card.SPECIAL_MOVE, 3);
+    assertEquals(3, s.getSpecialMoveNumber());
+  }
 }

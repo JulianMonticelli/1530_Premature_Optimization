@@ -33,7 +33,7 @@ public class SweetState {
     
     public boolean randomSpaces = false;
     private int colorState = 3;
-    private int specialSpaces[] = {-1,-1,-1,-1,-1}; // This array holds the indexes into the board of the special squares
+    public int specialSpaces[] = {-1,-1,-1,-1,-1}; // This array holds the indexes into the board of the special squares
     // 0 = iceCreamImage
     // 1 = chocolateBar
     // 2 = candyCane

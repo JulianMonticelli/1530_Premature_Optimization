@@ -30,10 +30,10 @@ public class SweetStateTest {
     
     
     /**
-    * Tests to ensure pickSPecialSpaces is always generating
+    * Tests to ensure pickSpecialSpaces is always generating
     * numbers that are at least 5 squares away4
     * from each other
-    *
+    * User Story 24 Special spaces
     **/
     @Test
     public void testPickSpecialSpaces() 
@@ -74,8 +74,8 @@ public class SweetStateTest {
 
     /**
     * Tests to ensure that there are always 
-    * exactly 5 spaces generated in the game path.
-    *
+    * exactly 5 special spaces generated in the game path.
+    * User Story 24 Special spaces
     **/
     @Test
     public void testNumSpecialSpacesInPath() 
@@ -101,7 +101,7 @@ public class SweetStateTest {
     * Tests to ensure that validNum
     * is not allowing numbers within
     * 5 units of each other to be picked
-    *
+    * User Story 25 Random Special spaces
     **/
     @Test
     public void testValidNum() 
@@ -132,7 +132,7 @@ public class SweetStateTest {
     /**
     * Tests to ensure that searchForSpecialSquare
     * returns the correct value
-    *
+    * User Story 25 Random Special spaces
     **/
     @Test
     public void testSearchForSpecialSquare() 
@@ -151,6 +151,65 @@ public class SweetStateTest {
         assertEquals(gameState.searchForSpecialSquare(specialSpaces, 5), 3);
         assertEquals(gameState.searchForSpecialSquare(specialSpaces, 20), 4);
         assertEquals(gameState.searchForSpecialSquare(specialSpaces, 25), -1);
+
+    }
+
+    /**
+    * Tests to ensure that when the static special squares option is selected 
+    * that every time the sweetstate is initialize it contains the same locations for special squares.
+    * User story 28 Static special tiles
+    **/
+    @Test
+    public void testStaticSpaceOption() 
+    {
+       SweetState gameState = new SweetState();
+       gameState.randomSpaces = false;
+       ArrayList<BoardSpace> spaces = gameState.storePath(1200,1000);
+       int specials[] = gameState.specialSpaces;
+
+
+       SweetState gameState1 = new SweetState();
+       gameState.randomSpaces = false;
+       ArrayList<BoardSpace> spaces1 = gameState1.storePath(1200,1000);
+       int specials1[] = gameState1.specialSpaces;
+
+        
+        int specialSpaces = 0;
+
+        for(int i = 0; i < specials.length;i++)
+        {
+            assertEquals(specials[i], specials1[i]);
+        }
+
+    }
+
+
+    /**
+    * Tests to ensure that when the randomize special squares option is selected 
+    * that every time the sweetstate is initialize it contains different locations for special squares.
+    *  User story 28 Static special tiles
+    **/
+    @Test
+    public void testRandomSpaceOption() 
+    {
+       SweetState gameState = new SweetState();
+       gameState.randomSpaces = true;
+       ArrayList<BoardSpace> spaces = gameState.storePath(1200,1000);
+       int specials[] = gameState.specialSpaces;
+
+
+       SweetState gameState1 = new SweetState();
+       gameState.randomSpaces = true;
+       ArrayList<BoardSpace> spaces1 = gameState1.storePath(1200,1000);
+       int specials1[] = gameState1.specialSpaces;
+
+        
+        int specialSpaces = 0;
+
+        for(int i = 0; i < specials.length;i++)
+        {
+            assertNotEquals(specials[i], specials1[i]);
+        }
 
     }
 

@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="DeckTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2017-11-20T17:11:33" hostname="localhost" time="0.003">
+<testsuite name="DeckTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2017-11-26T03:17:18" hostname="localhost" time="0.014">
   <properties/>
-  <testcase name="drawForever" classname="DeckTest" time="0.001"/>
-  <testcase name="lastIsRight" classname="DeckTest" time="0.001"/>
-  <testcase name="correctSize" classname="DeckTest" time="0.0"/>
-  <testcase name="testDeckShuffles" classname="DeckTest" time="0.0"/>
-  <system-out><![CDATA[]]></system-out>
+  <testcase name="drawForever" classname="DeckTest" time="0.005"/>
+  <testcase name="lastIsRight" classname="DeckTest" time="0.002"/>
+  <testcase name="correctSize" classname="DeckTest" time="0.001"/>
+  <testcase name="testDeckShuffles" classname="DeckTest" time="0.006"/>
+  <system-out><![CDATA[00:09
+00:09
+00:09
+]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

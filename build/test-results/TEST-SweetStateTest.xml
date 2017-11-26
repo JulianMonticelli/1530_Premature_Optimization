@@ -1,78 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="SweetStateTest" tests="21" skipped="0" failures="1" errors="0" timestamp="2017-11-26T03:17:09" hostname="localhost" time="0.266">
+<testsuite name="SweetStateTest" tests="21" skipped="0" failures="0" errors="0" timestamp="2017-11-26T03:19:38" hostname="localhost" time="0.191">
   <properties/>
-  <testcase name="testStartNextTurnFirstAgain" classname="SweetStateTest" time="0.062"/>
-  <testcase name="testCalculateDestDistanceSingleCard" classname="SweetStateTest" time="0.006"/>
-  <testcase name="testCalculateDestSpecialCardColor" classname="SweetStateTest" time="0.004"/>
-  <testcase name="testCalculateDestDistanceGreaterThanZero" classname="SweetStateTest" time="0.004"/>
-  <testcase name="testCalculateDestSpecialCard" classname="SweetStateTest" time="0.002"/>
-  <testcase name="testClickDeck" classname="SweetStateTest" time="0.009"/>
-  <testcase name="testSearchForSpecialSquare" classname="SweetStateTest" time="0.003"/>
-  <testcase name="testGetPlayerInFirstAll" classname="SweetStateTest" time="0.007"/>
-  <testcase name="testNumSpecialSpacesInPath" classname="SweetStateTest" time="0.001"/>
-  <testcase name="testStartNextTurn" classname="SweetStateTest" time="0.003"/>
-  <testcase name="testCalculateDestSameColor" classname="SweetStateTest" time="0.028"/>
-  <testcase name="testGetPlayerInFirstDouble" classname="SweetStateTest" time="0.008"/>
-  <testcase name="testValidNum" classname="SweetStateTest" time="0.007"/>
-  <testcase name="testGetPlayerInFirstSingle" classname="SweetStateTest" time="0.009"/>
-  <testcase name="testStaticSpaceOption" classname="SweetStateTest" time="0.012"/>
-  <testcase name="testAddPlayers" classname="SweetStateTest" time="0.01"/>
-  <testcase name="testCalculateDestSkipCard" classname="SweetStateTest" time="0.007"/>
-  <testcase name="testRandomSpaceOption" classname="SweetStateTest" time="0.027">
-    <failure message="java.lang.AssertionError: Values should be different. Actual: 15" type="java.lang.AssertionError">java.lang.AssertionError: Values should be different. Actual: 15
-	at org.junit.Assert.fail(Assert.java:88)
-	at org.junit.Assert.failEquals(Assert.java:185)
-	at org.junit.Assert.assertNotEquals(Assert.java:199)
-	at org.junit.Assert.assertNotEquals(Assert.java:211)
-	at SweetStateTest.testRandomSpaceOption(SweetStateTest.java:484)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
-	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
-	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
-	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
-	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.runTestClass(JUnitTestClassExecuter.java:105)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.execute(JUnitTestClassExecuter.java:56)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassProcessor.processTestClass(JUnitTestClassProcessor.java:64)
-	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:50)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at org.gradle.messaging.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35)
-	at org.gradle.messaging.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
-	at org.gradle.messaging.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:32)
-	at org.gradle.messaging.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:93)
-	at com.sun.proxy.$Proxy2.processTestClass(Unknown Source)
-	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:106)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at org.gradle.messaging.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35)
-	at org.gradle.messaging.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
-	at org.gradle.messaging.remote.internal.hub.MessageHub$Handler.run(MessageHub.java:360)
-	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:54)
-	at org.gradle.internal.concurrent.StoppableExecutorImpl$1.run(StoppableExecutorImpl.java:40)
-	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
-	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
-	at java.lang.Thread.run(Thread.java:748)
-</failure>
-  </testcase>
-  <testcase name="testCalculateDestGrandmaHouse" classname="SweetStateTest" time="0.014"/>
-  <testcase name="testPickSpecialSpaces" classname="SweetStateTest" time="0.005"/>
-  <testcase name="testCalculateDestDistanceDoubleCard" classname="SweetStateTest" time="0.006"/>
+  <testcase name="testStartNextTurnFirstAgain" classname="SweetStateTest" time="0.061"/>
+  <testcase name="testCalculateDestDistanceSingleCard" classname="SweetStateTest" time="0.005"/>
+  <testcase name="testCalculateDestSpecialCardColor" classname="SweetStateTest" time="0.002"/>
+  <testcase name="testCalculateDestDistanceGreaterThanZero" classname="SweetStateTest" time="0.002"/>
+  <testcase name="testCalculateDestSpecialCard" classname="SweetStateTest" time="0.003"/>
+  <testcase name="testClickDeck" classname="SweetStateTest" time="0.001"/>
+  <testcase name="testSearchForSpecialSquare" classname="SweetStateTest" time="0.001"/>
+  <testcase name="testGetPlayerInFirstAll" classname="SweetStateTest" time="0.001"/>
+  <testcase name="testNumSpecialSpacesInPath" classname="SweetStateTest" time="0.007"/>
+  <testcase name="testStartNextTurn" classname="SweetStateTest" time="0.008"/>
+  <testcase name="testCalculateDestSameColor" classname="SweetStateTest" time="0.007"/>
+  <testcase name="testGetPlayerInFirstDouble" classname="SweetStateTest" time="0.005"/>
+  <testcase name="testValidNum" classname="SweetStateTest" time="0.006"/>
+  <testcase name="testGetPlayerInFirstSingle" classname="SweetStateTest" time="0.008"/>
+  <testcase name="testStaticSpaceOption" classname="SweetStateTest" time="0.01"/>
+  <testcase name="testAddPlayers" classname="SweetStateTest" time="0.008"/>
+  <testcase name="testCalculateDestSkipCard" classname="SweetStateTest" time="0.005"/>
+  <testcase name="testRandomSpaceOption" classname="SweetStateTest" time="0.007"/>
+  <testcase name="testCalculateDestGrandmaHouse" classname="SweetStateTest" time="0.004"/>
+  <testcase name="testPickSpecialSpaces" classname="SweetStateTest" time="0.011"/>
+  <testcase name="testCalculateDestDistanceDoubleCard" classname="SweetStateTest" time="0.013"/>
   <system-out><![CDATA[Board has not been created yet!
 5 15 25 35 45 
 5 15 25 35 45 
@@ -88,7 +37,7 @@ Board has not been created yet!
 5 15 25 35 45 
 Board has not been created yet!
 5 15 25 35 45 
-22 15 42 50 30 
+20 4 28 15 42 
 5 15 25 35 45 
 5 15 25 35 45 
 5 15 25 35 45 

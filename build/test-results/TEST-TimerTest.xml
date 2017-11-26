@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="TimerTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2017-11-26T03:17:09" hostname="localhost" time="8.862">
+<testsuite name="TimerTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2017-11-26T03:19:39" hostname="localhost" time="9.097">
   <properties/>
   <testcase name="testTimerIsAccurateToSecondGranularityWithManySmallPauses" classname="TimerTest" time="1.514"/>
-  <testcase name="testTimerIsAccurateToSecondGranularityWithPauses" classname="TimerTest" time="1.077"/>
-  <testcase name="testTimerDoesNotAdvanceWithShortRuntimeAndLongPause" classname="TimerTest" time="2.211"/>
-  <testcase name="testTimerIsAccurateToSecondGranularity" classname="TimerTest" time="1.032"/>
-  <testcase name="testTimerIsAccurateToSecondGranularityThreeSeconds" classname="TimerTest" time="3.027"/>
+  <testcase name="testTimerIsAccurateToSecondGranularityWithPauses" classname="TimerTest" time="1.085"/>
+  <testcase name="testTimerDoesNotAdvanceWithShortRuntimeAndLongPause" classname="TimerTest" time="2.202"/>
+  <testcase name="testTimerIsAccurateToSecondGranularity" classname="TimerTest" time="1.205"/>
+  <testcase name="testTimerIsAccurateToSecondGranularityThreeSeconds" classname="TimerTest" time="3.091"/>
   <system-out><![CDATA[Detected game is paused!
 Detected game unpaused!
 Detected game is paused!
@@ -15,9 +15,6 @@ Detected game unpaused!
 Detected game is paused!
 Detected game unpaused!
 Detected game is paused!
-00:01
-00:01
-00:01
 Detected game unpaused!
 00:01
 00:01
@@ -41,6 +38,9 @@ Detected game unpaused!
 00:01
 00:01
 00:01
+00:01
+00:01
+00:01
 Detected game is paused!
 Detected game unpaused!
 Detected game is paused!
@@ -147,12 +147,6 @@ Detected game unpaused!
 00:05
 00:05
 00:05
-00:06
-00:06
-00:06
-00:06
-00:06
-00:06
 00:01
 00:06
 00:06
@@ -171,6 +165,24 @@ Detected game unpaused!
 00:06
 00:06
 00:06
+00:06
+00:06
+00:06
+00:06
+00:06
+00:06
+00:07
+00:07
+00:07
+00:07
+00:07
+00:07
+00:07
+00:07
+00:07
+00:07
+00:07
+00:07
 00:07
 00:07
 00:07
@@ -183,18 +195,18 @@ Detected game unpaused!
 00:07
 00:07
 00:01
-00:07
-00:07
-00:07
-00:07
-00:07
-00:07
-00:07
-00:07
-00:07
-00:07
-00:07
-00:07
+00:08
+00:08
+00:08
+00:08
+00:08
+00:08
+00:08
+00:08
+00:08
+00:08
+00:08
+00:08
 00:08
 00:08
 00:08
@@ -207,18 +219,19 @@ Detected game unpaused!
 00:08
 00:08
 00:02
-00:08
-00:08
-00:08
-00:08
-00:08
-00:08
-00:08
-00:08
-00:08
-00:08
-00:08
-00:08
+00:09
+00:09
+00:09
+00:09
+00:09
+00:09
+00:09
+00:09
+00:09
+00:09
+00:09
+00:09
+00:09
 00:09
 00:09
 00:09
@@ -230,7 +243,6 @@ Detected game unpaused!
 00:09
 00:09
 00:03
-00:09
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

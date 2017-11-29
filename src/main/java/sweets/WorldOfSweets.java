@@ -51,6 +51,8 @@ public class WorldOfSweets extends JPanel {
     private static final int PAUSED_STRING_Y_OFFSET = HEIGHT/2;
     
     private static final String GAME_PAUSED = "Game Paused";
+
+    
     
     public WorldOfSweets() {
         
@@ -77,17 +79,42 @@ public class WorldOfSweets extends JPanel {
 												"Start", JOptionPane.YES_NO_OPTION,  
 												JOptionPane.WARNING_MESSAGE, null, null,  
 												null);
+
 		if (option == JOptionPane.YES_OPTION) {
 			gameState = loadState(selectSave());	
 			while (!gameState.getMultithreadedTimer().getTimerString().equals(gameState.getTime())) {};
 		}
 		else if (option == JOptionPane.NO_OPTION) {
 			gameState = new SweetState();
+            gameState.gameModeSelection = pickGameMode();
 			chooseSpecialSpacePickMode();
 			gameState.storePath(WIDTH,HEIGHT);
 			gameState.addPlayers(getPlayerCountAndNames());
 		}
+    
         running = true;
+    }
+
+    public int pickGameMode()
+    {
+        int option;
+        
+        option = JOptionPane.showOptionDialog(null,  
+                                           "Do you want to play in strategic mode, please click yes? Otherwise click no for classic mode.",  
+                                            "Start", JOptionPane.YES_NO_OPTION,  
+                                            JOptionPane.WARNING_MESSAGE, null, null,  
+                                            null);
+                
+        if (option == JOptionPane.YES_OPTION) 
+        {
+           return 1;
+        }
+        else if (option == JOptionPane.NO_OPTION) 
+        {
+           return 0;
+        }
+        
+        return -1;
     }
 	
 	public WorldOfSweets(ArrayList<Player> p) {
@@ -161,28 +188,21 @@ public class WorldOfSweets extends JPanel {
 
     public void chooseSpecialSpacePickMode()
     {
-        String boolString = JOptionPane.showInputDialog("Do you want to randomize locations for special squares? Please type yes or no");
-                    
-        boolean randomSet = false;
+        int option = JOptionPane.showOptionDialog(null,  
+                                                "Do you want to randomize locations for special squares?",  
+                                                "Start", JOptionPane.YES_NO_OPTION,  
+                                                JOptionPane.WARNING_MESSAGE, null, null,  
+                                                null);
+
+        
                 
-        while(!randomSet)
+        if (option == JOptionPane.YES_OPTION) 
         {
-                 
-            if(boolString.equalsIgnoreCase("yes"))
-            {
-                gameState.randomSpaces = true;
-                randomSet = true;
-            }
-            else if(boolString.equalsIgnoreCase("no"))
-            {
-                gameState.randomSpaces = false;
-                randomSet = true;
-            }
-            else
-            {
-                boolString = JOptionPane.showInputDialog("Invalid input please type yes if you want special spaces randomized");
-                    
-            }
+           gameState.randomSpaces = true;
+        }
+        else if (option == JOptionPane.NO_OPTION) 
+        {
+           gameState.randomSpaces = false;
         }
     }    
 

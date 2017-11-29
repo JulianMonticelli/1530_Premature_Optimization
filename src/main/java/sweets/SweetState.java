@@ -38,6 +38,8 @@ public class SweetState implements Serializable {
     private int colorState = 3;
     private int specialSpaces[] = {-1,-1,-1,-1,-1}; // This array holds the indexes into the board of the special squares
 	private int grandmaLoc = -1;
+
+    public int gameModeSelection = -1;
     // 0 = iceCreamImage
     // 1 = chocolateBar
     // 2 = candyCane

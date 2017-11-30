@@ -83,12 +83,14 @@ public class SweetState implements Serializable {
 		boolean isWinningMove = false;
 		
 		if (boomerangClicked) {
-			boomerangTarget = 1; // TO DO: method for getting boomerang target
-			// Notify player they've been boomeranged
-			boomerangTarget = boomerangTarget;
-			boomerangClicked = false;
-			//startNextTurn();
-		
+			if (cP.getBoomerangCount > 0) {
+				boomerangTarget = 1; // TO DO: method for getting boomerang target
+				// Notify player they've been boomeranged
+				boomerangTarget = boomerangTarget;
+				boomerangClicked = false;
+				cP.throwBoomerang();
+				//startNextTurn();
+			}
 		} else if (deckClicked) {
 			if (boomerangTarget == -1) {
 				isWinningMove = drawAndMove(cP, false);

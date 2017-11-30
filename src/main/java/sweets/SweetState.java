@@ -16,7 +16,7 @@ public class SweetState implements Serializable {
     private boolean newGame = false; // Game is new (no players yet, no moves made)
     
     private boolean deckClicked = false; // The variable for determining if the deck was clicked
-
+	private boolean boomerangClicked = false; // The variable for determining if the current player's boomerang icon was clicked
     
     private ArrayList<BoardSpace> spaces = new ArrayList<BoardSpace>(); //List of spaces on the board
     private ArrayList<Player> players;
@@ -26,6 +26,7 @@ public class SweetState implements Serializable {
 
     private int playerTurn;
     private int numPlayers;
+	private int boomerangTarget = -1;	// Value is the player targetted by a boomerang. Is -1 when no player is targetted
     
     // Multi-threaded Timer
     private transient MultithreadedTimer mtTimer;
@@ -35,11 +36,10 @@ public class SweetState implements Serializable {
     WarningManager warningManager;
     
 	public boolean randomSpaces = false;
+	public int gameModeSelection = -1;
     private int colorState = 3;
     private int specialSpaces[] = {-1,-1,-1,-1,-1}; // This array holds the indexes into the board of the special squares
 	private int grandmaLoc = -1;
-
-    public int gameModeSelection = -1;
     // 0 = iceCreamImage
     // 1 = chocolateBar
     // 2 = candyCane
@@ -68,37 +68,80 @@ public class SweetState implements Serializable {
 	public boolean isDeckClicked() {
 		return deckClicked;
 	}
-    
-    // Returns 0 if someone won; otherwise return 1
-    public boolean makeTurn() {
-        if (deckClicked){
-            Player currentPlayer = players.get(playerTurn);
-			Card drawnCard = deck.draw();
-            
-            int currentPos = currentPlayer.getPos();
-            int destPos = calculateDest(currentPos, drawnCard);
-            
-            System.out.println(currentPlayer.getName() + " going from " + currentPos + " to " + destPos);
-
-            spaces.get(currentPos).removePlayer(currentPlayer);
-            spaces.get(destPos).addPlayer(currentPlayer);
-            
-            currentPlayer.setPos(destPos);
-
-            //int grandmaLoc = spaces.size() - 3;
-
-            if (destPos == grandmaLoc) {
-                endGame(currentPlayer);
-                return false;
-            }
-
-            startNextTurn();
-
-            deckClicked = false;
-        }
-		
-    	return true;
+	
+	public void clickBoomerang() {
+        boomerangClicked = true;
     }
+	
+	public boolean isBoomerangClicked() {
+		return boomerangClicked;
+	}
+    
+    // Returns true if someone won; otherwise return false
+    public boolean makeTurn() {
+		Player cP = players.get(playerTurn);
+		boolean isWinningMove = false;
+		
+		if (boomerangClicked) {
+			boomerangTarget = 1; // TO DO: method for getting boomerang target
+			// Notify player they've been boomeranged
+			boomerangTarget = boomerangTarget;
+			boomerangClicked = false;
+			//startNextTurn();
+		
+		} else if (deckClicked) {
+			if (boomerangTarget == -1) {
+				isWinningMove = drawAndMove(cP, false);
+			
+			} else  {
+				isWinningMove = drawAndMove(players.get(boomerangTarget), true);
+				boomerangTarget = -1;
+			}
+
+			startNextTurn();
+		}
+				
+		if (isWinningMove) {
+			endGame(cP);
+			return false;
+		}
+		
+		return true;
+    }
+	
+	// Returns true if player move resulted in win; otherwise return false
+	public boolean drawAndMove(Player currentPlayer, boolean isReverseMove) {
+		
+		Card drawnCard = deck.draw();
+		int currentPos;
+		int destPos;
+		
+		currentPos = currentPlayer.getPos();
+		if (!isReverseMove)
+			destPos = calculateDest(currentPos, drawnCard);
+		else
+			destPos = calculateReverseDest(currentPos, drawnCard);
+		
+		movePlayer(currentPlayer, currentPos, destPos);
+		deckClicked = false;
+		
+		if (destPos == grandmaLoc)
+			return true;
+		else
+			return false;
+	}
+	
+	// Returns destination
+	public int movePlayer(Player p, int startLoc, int endLoc) {
+		spaces.get(startLoc).removePlayer(p);
+		spaces.get(endLoc).addPlayer(p);
+		
+		p.setPos(endLoc);
+		
+		System.out.println(p.getName() + " going from " + startLoc + " to " + endLoc);
+		
+		return endLoc;
+	}
 	
     public void endGame(Player winner) {
         // Hacky solution. Creates a warning. These are made to be animated warnings, that
@@ -209,7 +252,6 @@ public class SweetState implements Serializable {
 	public int calculateDest(int startPos, Card drawnCard) {
 
             int destination = startPos;
-            //int grandmaLoc = spaces.size() - 3;
 			int specialNum = drawnCard.getSpecialMoveNumber();
 
             if (drawnCard.isSkipTurn())
@@ -236,6 +278,7 @@ public class SweetState implements Serializable {
                             hasPassedMatchingSquare = true;
                     }
                 }
+				
             } else {
                 for (int i = startPos + 1; i < grandmaLoc + 1; i++) {
                     if (i == grandmaLoc)
@@ -245,7 +288,48 @@ public class SweetState implements Serializable {
                 }
             }
 
+			// If we haven't returned yet, that means we have reached grandma's house
             return grandmaLoc;
+	}
+	
+	// Returns index of destination
+	public int calculateReverseDest(int startPos, Card drawnCard) {
+
+            int destination = startPos;
+			int specialNum = drawnCard.getSpecialMoveNumber();
+
+            if (drawnCard.isSkipTurn())
+                return startPos;
+
+			if (specialNum != -1)
+				return specialSpaces[specialNum];
+			
+            //Middle cards have been removed
+			/*
+			else if (drawnCard.isMiddleCard())
+                return (spaces.size() - 3)/2;
+			*/
+			
+            else if (drawnCard.isDouble()) {
+                boolean hasPassedMatchingSquare = false;
+                for (int i = startPos - 1; i > -1; i--) {
+                    if (spaces.get(i).getIntColorCode() == drawnCard.getColor()) {
+                        if (hasPassedMatchingSquare)
+                            return i;
+                        else
+                            hasPassedMatchingSquare = true;
+                    }
+                }
+				
+            } else {
+                for (int i = startPos - 1; i > -1; i--) {
+                    if (spaces.get(i).getIntColorCode() == drawnCard.getColor())
+                        return i;
+                }
+            }
+
+            // If we haven't returned i yet, that means we have reached the first square
+			return 0;
 	}
 
 	/**

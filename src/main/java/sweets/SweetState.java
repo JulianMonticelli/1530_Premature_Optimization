@@ -85,7 +85,7 @@ public class SweetState implements Serializable {
 		boolean isWinningMove = false;
 		
 		if (boomerangClicked) {
-			if (cP.getBoomerangCount > 0) {
+			if (cP.getBoomerangCount() > 0) {
 				boomerangTarget = 1; // TO DO: method for getting boomerang target
 				// Notify player they've been boomeranged
 				boomerangTarget = boomerangTarget;

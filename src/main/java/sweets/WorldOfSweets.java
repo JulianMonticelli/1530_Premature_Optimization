@@ -86,10 +86,11 @@ public class WorldOfSweets extends JPanel {
 		}
 		else if (option == JOptionPane.NO_OPTION) {
 			gameState = new SweetState();
-            gameState.gameModeSelection = pickGameMode();
+            //gameState.gameModeSelection = pickGameMode();
+			int gameModeSelection = pickGameMode();
 			chooseSpecialSpacePickMode();
 			gameState.storePath(WIDTH,HEIGHT);
-			gameState.addPlayers(getPlayerCountAndNames());
+			gameState.addPlayers(getPlayerCountAndNames(gameModeSelection));
 		}
     
         running = true;
@@ -417,11 +418,19 @@ public class WorldOfSweets extends JPanel {
 		return gameState;
 	}
 
-	public ArrayList<Player> getPlayerCountAndNames() {
+	public ArrayList<Player> getPlayerCountAndNames(int gameModeSelection) {
 		Color[] playerColors = { Color.cyan, Color.black, Color.pink, Color.white};
 		boolean done = false; 	//used to make sure we only accept correct input
 		ArrayList<Player> players = new ArrayList<Player>();
 		int numPlayers = 0;
+		int startLocation = 0;
+		int numBoomerangs;
+		
+		// Set number of boomerangs players will have. If gameModeSelection is 1, we are playing strategic mode
+		if (gameModeSelection == 1)
+			numBoomerangs = 3;
+		else
+			numBoomerangs = 0;
 		
 		// Get number of players
 		while (!done) {
@@ -454,7 +463,7 @@ public class WorldOfSweets extends JPanel {
 				}
 			}
 			
-			players.add(i, new Player(playerColors[i], playerName, 0));
+			players.add(i, new Player(playerColors[i], playerName, startLocation, numBoomerangs));
 		}
 		
 		return players;

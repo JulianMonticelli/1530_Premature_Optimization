@@ -53,6 +53,8 @@ public class WorldOfSweets extends JPanel {
     private static final String GAME_PAUSED = "Game Paused";
 
     
+
+    
     
     public WorldOfSweets() {
         
@@ -378,9 +380,12 @@ public class WorldOfSweets extends JPanel {
     **/
     public void drawToken(Graphics g, BoardSpace space, int xOffset, int yOffset, Player user)
     {
+        user.setPlayerX(space.getXOrigin() + xOffset);
+        user.setPlayerY(space.getYOrigin() + yOffset);
+
         g.setColor(user.getColor());
         g.fillArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, WIDTH/25, HEIGHT/20,0, 360);
-        g.fillArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, WIDTH/25, HEIGHT/20,0, 360);
+        
         g.setColor(Color.black);
         g.drawArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, WIDTH/25, HEIGHT/20,0, 360);
 
@@ -507,12 +512,39 @@ public class WorldOfSweets extends JPanel {
         };
     }
 
+    public float distance(int x1, int y1, int x2, int y2)
+    {
+    	return (float) Math.sqrt(Math.pow((x2-x1),2) + Math.pow((y2-y1),2));
+    }
+
+    public Player checkForPlayer(int x, int y)
+    {
+    	ArrayList<Player> players = gameState.getPlayers();
+    	
+    	for(int i = 0; i < players.size();i++)
+    	{
+    		Player currentPlayer = players.get(i);
+
+    		if(distance(x,y,currentPlayer.getPlayerX(),currentPlayer.getPlayerY()) < HEIGHT/20)
+    		{
+    			return currentPlayer;
+    		}
+    	}
+
+    	return null;
+    }
+
     private MouseAdapter initMouseListener() {
         return new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 System.out.println("Mouse button " + e.getButton() + "clicked at " + e.getX() + ", " + e.getY());
-
+                gameState.setSelectedPlayer(checkForPlayer(e.getX(), e.getY()));
+                if(gameState.getSelectedPlayer() != null)
+                {
+                	 System.out.println(gameState.getSelectedPlayer().getName() + " Has been clicked");
+                }
+                
                 //Deck button is 125x100 pixels, placed in bottom right corner
                 if (e.getX() <= WIDTH && e.getX() >= (WIDTH - 125) && e.getY() <= HEIGHT && e.getY() >= (HEIGHT - 100)) {
                     // Only draw a card from the deck if the game is NOT paused.

@@ -8,6 +8,8 @@ public class Player implements Serializable
 	private String name;
 	private int position;
 	private int boomerangCount;
+	private int playerX;
+	private int playerY;
 	
 	public Player() {
 		playerColor = null;
@@ -30,6 +32,26 @@ public class Player implements Serializable
 	public String getName()
 	{
 		return name;
+	}
+
+	public void setPlayerX(int x)
+	{
+		playerX = x;
+	}
+
+	public int getPlayerX()
+	{
+		return playerX;
+	}
+
+	public void setPlayerY(int y)
+	{
+		playerY = y;
+	}
+
+	public int getPlayerY()
+	{
+		return playerY;
 	}
 	
 	public void setColor(Color colr)

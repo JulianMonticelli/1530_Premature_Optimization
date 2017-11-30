@@ -46,6 +46,8 @@ public class SweetState implements Serializable {
     // 3 = lollipop
     // 4 = candy
 
+    private Player selectedPlayer;
+
     
     public SweetState() {
         newGame = true;
@@ -615,6 +617,16 @@ public class SweetState implements Serializable {
     
     public WarningManager getWarningManager() {
         return warningManager;
+    }
+
+    public void setSelectedPlayer(Player p)
+    {
+        selectedPlayer = p;
+    }
+
+    public Player getSelectedPlayer()
+    {
+        return selectedPlayer;
     }
     
 }

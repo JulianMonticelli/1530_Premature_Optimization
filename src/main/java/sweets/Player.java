@@ -10,6 +10,7 @@ public class Player implements Serializable
 	private int boomerangCount;
 	private int playerX;
 	private int playerY;
+	private boolean isAI = false;
 	
 	public Player() {
 		playerColor = null;
@@ -30,6 +31,16 @@ public class Player implements Serializable
 		name = n;
 		position = p;
 		boomerangCount = 0;
+	}
+
+	public void setIsAI(boolean ai)
+	{
+		isAI = ai;
+	}
+
+	public boolean getIsAI()
+	{
+		return isAI;
 	}
 	
 	public void setName(String n)

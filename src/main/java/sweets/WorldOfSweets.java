@@ -264,7 +264,16 @@ public class WorldOfSweets extends JPanel {
 
     public void tick() {
         // Make player turn
-        running = gameState.makeTurn();
+        if(gameState.getCurrentPlayer().getIsAI())
+        {
+             running = gameState.aiMakeTurn();
+        }
+        else
+        {
+             running = gameState.makeTurn();
+        }
+
+       
         
         // Update HUD 
         hud.update(gameState);
@@ -430,11 +439,13 @@ public class WorldOfSweets extends JPanel {
 
 	public ArrayList<Player> getPlayerCountAndNames(boolean gameModeIsStrategicMode) {
 		Color[] playerColors = { Color.cyan, Color.black, Color.pink, Color.white};
-		boolean done = false; 	//used to make sure we only accept correct input
+		int done = 0; 	//used to make sure we only accept correct input
 		ArrayList<Player> players = new ArrayList<Player>();
 		int numPlayers = 0;
+        int numAIPlayers = 0;
 		int startLocation = 0;
 		int numBoomerangs;
+        int option;
 		
 		// Set number of boomerangs players will have. If gameModeSelection is 1, we are playing strategic mode
 		if (gameModeIsStrategicMode)
@@ -443,21 +454,58 @@ public class WorldOfSweets extends JPanel {
 			numBoomerangs = 0;
 		
 		// Get number of players
-		while (!done) {
+		while (done != 2) {
                     try {
 
                         String input = JOptionPane.showInputDialog("How many players are playing?");
                         numPlayers = Integer.parseInt(input);
 
-                        if (numPlayers < 5 && numPlayers > 1)
-                            done = true;
+                        numPlayers = Integer.parseInt(input);
+
+                        if (numPlayers < 5 && numPlayers > 0)
+                            done++;
                         else {
-                            JOptionPane.showMessageDialog(null, "Please enter a number between 2 and 4");
+                            JOptionPane.showMessageDialog(null, "Only between 1 and 4 total players permitted");
+                            continue;
+                        }
+
+                        if(numPlayers < 4)
+                        {
+                            if(numPlayers != 1)
+                            {
+                                option = JOptionPane.showOptionDialog(null,  
+                                           "Would you like to play against AI players?",  
+                                            "Start", JOptionPane.YES_NO_OPTION,  
+                                            JOptionPane.WARNING_MESSAGE, null, null,  
+                                            null);
+                            }
+                            else
+                            {
+                                option = JOptionPane.YES_OPTION;
+                            }
+                            
+                            if(option == JOptionPane.YES_OPTION) 
+                            {
+                                input = JOptionPane.showInputDialog("How many AI players would you like?");
+                                numAIPlayers = Integer.parseInt(input);
+
+                                if(numAIPlayers + numPlayers <= 4)
+                                {
+                                    done++;
+                                }
+                                else
+                                {
+                                   JOptionPane.showMessageDialog(null, "Only between 1 and 4 total players permitted");
+                                }
+
+                            }
+                        
                         }
 
 
                     } catch (NumberFormatException e) {
                         JOptionPane.showMessageDialog(null, "Invalid Input");
+                        done = 0;
                     }
                 }
         
@@ -474,7 +522,18 @@ public class WorldOfSweets extends JPanel {
                     }
                     
                     players.add(i, new Player(playerColors[i], playerName, startLocation, numBoomerangs));
+
+
 		}
+
+        int aiNum = 1;
+        for(int i = numPlayers; i < numPlayers + numAIPlayers;i++)
+        {
+            String playerName = "AI Player " + aiNum;
+            players.add(i, new Player(playerColors[i], playerName, startLocation, numBoomerangs));
+            players.get(i).setIsAI(true);
+            aiNum++;
+        }
 		
 		return players;
 	}

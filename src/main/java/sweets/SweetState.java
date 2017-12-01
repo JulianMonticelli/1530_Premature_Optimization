@@ -58,6 +58,9 @@ public class SweetState implements Serializable {
     // 2 = candyCane
     // 3 = lollipop
     // 4 = candy
+
+    private int currentFrame = 0;
+    private int decisionFrames = -1;
     
     public SweetState() {
         newGame = true;
@@ -108,9 +111,93 @@ public class SweetState implements Serializable {
 		else
 			return false;
 	}
+
+	public int generateRandomNum(int min, int max)
+	{
+		return min + (int)(Math.random() * max); 
+	}
 	
 	public int getSelectedPlayer() {
 		return selectedPlayer;
+	}
+
+	public boolean aiMakeTurn()
+	{
+		if(decisionFrames == -1)
+		{
+			decisionFrames  = generateRandomNum(30, 100);
+		}
+		else
+		{
+			currentFrame++;
+		}
+
+		if(currentFrame == decisionFrames)
+		{
+			decisionFrames = -1;
+			currentFrame = 0;
+		}
+		else
+		{
+			return true;
+		}
+
+
+		Player cP = players.get(playerTurn);
+		
+		
+		// A boomerang was just thrown and no target is selected
+		if (generateRandomNum(0,5) > 2 && boomerangTarget == -1) // Simulate a boomarang click
+		{
+			if (cP.getBoomerangCount() > 0) {
+				System.out.println("AI Throwing boomerang, waiting for target token to be selected");
+				waitingForTarget = true;
+				boomerangTarget = -1;
+		
+			} else {
+				System.out.println("AI Attempted to throw boomerang when player had no boomerangs left");
+			}
+
+			selectedPlayer = playerTurn;
+			while(selectedPlayer == playerTurn) 
+			{
+				selectedPlayer = generateRandomNum(0,numPlayers);
+				boomerangTarget = selectedPlayer;
+				waitingForTarget = false;
+		
+			}	 
+
+		} 
+		
+		
+		// Waiting for target, meaning we are waiting for player to select another player's token
+		
+		
+		boolean isWinningMove = false;
+				
+		if (boomerangTarget == -1) 
+		{
+			isWinningMove = drawAndMove(cP, false);
+		
+		} else  
+		{
+			isWinningMove = drawAndMove(players.get(boomerangTarget), true);
+			cP.throwBoomerang();
+			boomerangTarget = -1;
+		}
+		
+		if (isWinningMove) 
+		{
+			endGame(cP);
+			return false;
+		}
+
+		startNextTurn();
+		
+		selectedPlayer = -1;
+		deckClicked = false;
+		boomerangClicked = false;
+		return true;
 	}
     
     // Returns false if someone won; otherwise return true

@@ -517,7 +517,7 @@ public class WorldOfSweets extends JPanel {
     	return (float) Math.sqrt(Math.pow((x2-x1),2) + Math.pow((y2-y1),2));
     }
 
-    public Player checkForPlayer(int x, int y)
+    public int checkForPlayer(int x, int y)
     {
     	ArrayList<Player> players = gameState.getPlayers();
     	
@@ -527,11 +527,11 @@ public class WorldOfSweets extends JPanel {
 
     		if(distance(x,y,currentPlayer.getPlayerX(),currentPlayer.getPlayerY()) < HEIGHT/20)
     		{
-    			return currentPlayer;
+    			return i;
     		}
     	}
 
-    	return null;
+    	return -1;
     }
 
     private MouseAdapter initMouseListener() {
@@ -539,10 +539,10 @@ public class WorldOfSweets extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 System.out.println("Mouse button " + e.getButton() + "clicked at " + e.getX() + ", " + e.getY());
-                gameState.setSelectedPlayer(checkForPlayer(e.getX(), e.getY()));
-                if(gameState.getSelectedPlayer() != null)
+                gameState.clickPlayer(checkForPlayer(e.getX(), e.getY()));
+                if(gameState.getSelectedPlayer() != -1)
                 {
-                	 System.out.println(gameState.getSelectedPlayer().getName() + " Has been clicked");
+                	 System.out.println("Player " + gameState.getSelectedPlayer() + " Has been clicked");
                 }
                 
                 //Deck button is 125x100 pixels, placed in bottom right corner

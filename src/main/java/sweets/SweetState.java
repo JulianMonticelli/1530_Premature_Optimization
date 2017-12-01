@@ -17,6 +17,9 @@ public class SweetState implements Serializable {
     
     private boolean deckClicked = false; // The variable for determining if the deck was clicked
 	private boolean boomerangClicked = false; // The variable for determining if the current player's boomerang icon was clicked
+	private int boomerangTarget = -1; // The variable for the target of a boomerang throw. -1 if no target selected
+	private boolean waitingForTarget = false; //The variable for determining if we need to wait for a boomerang target
+	private int selectedPlayer = -1; // Equal to the player id when that player's token is clicked
     
     private ArrayList<BoardSpace> spaces = new ArrayList<BoardSpace>(); //List of spaces on the board
     private ArrayList<Player> players;
@@ -26,7 +29,6 @@ public class SweetState implements Serializable {
 
     private int playerTurn;
     private int numPlayers;
-	private int boomerangTarget = -1;	// Value is the player targetted by a boomerang. Is -1 when no player is targetted
     
     // Multi-threaded Timer
     private transient MultithreadedTimer mtTimer;
@@ -45,9 +47,6 @@ public class SweetState implements Serializable {
     // 2 = candyCane
     // 3 = lollipop
     // 4 = candy
-
-    private Player selectedPlayer;
-
     
     public SweetState() {
         newGame = true;
@@ -78,38 +77,82 @@ public class SweetState implements Serializable {
 	public boolean isBoomerangClicked() {
 		return boomerangClicked;
 	}
+	
+	public boolean isPlayerTargetted() {
+		if (boomerangTarget != -1)
+			return true;
+		else
+			return false;
+	}
+	
+	public void clickPlayer(int playerNumber) {
+        selectedPlayer = playerNumber;
+    }
+	
+	public boolean isPlayerClicked() {
+		if (selectedPlayer != -1)
+			return true;
+		else
+			return false;
+	}
+	
+	public int getSelectedPlayer() {
+		return selectedPlayer;
+	}
     
-    // Returns true if someone won; otherwise return false
+    // Returns false if someone won; otherwise return true
     public boolean makeTurn() {
 		Player cP = players.get(playerTurn);
-		boolean isWinningMove = false;
 		
-		if (boomerangClicked) {
-			if (cP.getBoomerangCount > 0) {
-				boomerangTarget = 1; // TO DO: method for getting boomerang target
-				// Notify player they've been boomeranged
-				boomerangTarget = boomerangTarget;
-				boomerangClicked = false;
-				cP.throwBoomerang();
-				//startNextTurn();
-			}
-		} else if (deckClicked) {
-			if (boomerangTarget == -1) {
-				isWinningMove = drawAndMove(cP, false);
+		if (!waitingForTarget) {
+			// A boomerang was just thrown and no target is selected
+			if (boomerangClicked && boomerangTarget == -1) {
+				if (cP.getBoomerangCount() > 0) {
+					System.out.println("Throwing boomerang, waiting for target token to be selected");
+					waitingForTarget = true;
+					boomerangTarget = -1;
 			
-			} else  {
-				isWinningMove = drawAndMove(players.get(boomerangTarget), true);
-				boomerangTarget = -1;
+				} else {
+					System.out.println("Attempted to throw boomerang when player had no boomerangs left");
+				}
+
+			} 
+			
+			if (isDeckClicked()) {
+				boolean isWinningMove = false;
+				
+				if (boomerangTarget == -1) {
+					isWinningMove = drawAndMove(cP, false);
+				
+				} else  {
+					isWinningMove = drawAndMove(players.get(boomerangTarget), true);
+					cP.throwBoomerang();
+					boomerangTarget = -1;
+				}
+				
+				if (isWinningMove) {
+					endGame(cP);
+					return false;
+				}
+
+				startNextTurn();
+			}
+		
+		// Waiting for target, meaning we are waiting for player to select another player's token
+		} else if (isPlayerClicked()){ 
+			if (selectedPlayer != playerTurn) {
+				boomerangTarget = selectedPlayer;
+				waitingForTarget = false;
+			
+			} else {
+				System.out.println("Player selected their own token as a boomerang target. Waiting until they select someone else's");
 			}
 
-			startNextTurn();
-		}
-				
-		if (isWinningMove) {
-			endGame(cP);
-			return false;
 		}
 		
+		selectedPlayer = -1;
+		deckClicked = false;
+		boomerangClicked = false;
 		return true;
     }
 	
@@ -127,7 +170,6 @@ public class SweetState implements Serializable {
 			destPos = calculateReverseDest(currentPos, drawnCard);
 		
 		movePlayer(currentPlayer, currentPos, destPos);
-		deckClicked = false;
 		
 		if (destPos == grandmaLoc)
 			return true;
@@ -618,15 +660,5 @@ public class SweetState implements Serializable {
     public WarningManager getWarningManager() {
         return warningManager;
     }
-
-    public void setSelectedPlayer(Player p)
-    {
-        selectedPlayer = p;
-    }
-
-    public Player getSelectedPlayer()
-    {
-        return selectedPlayer;
-    }
-    
+	
 }

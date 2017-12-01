@@ -16,10 +16,10 @@ public class SweetState implements Serializable {
     private boolean newGame = false; // Game is new (no players yet, no moves made)
     
     private boolean deckClicked = false; // The variable for determining if the deck was clicked
-	private boolean boomerangClicked = false; // The variable for determining if the current player's boomerang icon was clicked
-	private int boomerangTarget = -1; // The variable for the target of a boomerang throw. -1 if no target selected
-	private boolean waitingForTarget = false; //The variable for determining if we need to wait for a boomerang target
-	private int selectedPlayer = -1; // Equal to the player id when that player's token is clicked
+    private boolean boomerangClicked = false; // The variable for determining if the current player's boomerang icon was clicked
+    private int boomerangTarget = -1; // The variable for the target of a boomerang throw. -1 if no target selected
+    private boolean waitingForTarget = false; //The variable for determining if we need to wait for a boomerang target
+    private int selectedPlayer = -1; // Equal to the player id when that player's token is clicked
     
     private ArrayList<BoardSpace> spaces = new ArrayList<BoardSpace>(); //List of spaces on the board
     private ArrayList<Player> players;
@@ -37,8 +37,19 @@ public class SweetState implements Serializable {
     // Warning system
     WarningManager warningManager;
     
-	public boolean randomSpaces = false;
-	public int gameModeSelection = -1;
+    public boolean randomSpaces = false;
+    
+    // I changed this variable to make more sense to callers
+    private boolean gameModeIsStrategicMode = true;
+    
+    public void setGameModeIsStrategicMode(boolean isStrategicMode) {
+        this.gameModeIsStrategicMode = isStrategicMode;
+    }
+    
+    public boolean isGameModeStrategicMode() {
+        return gameModeIsStrategicMode;
+    }
+    
     private int colorState = 3;
     private int specialSpaces[] = {-1,-1,-1,-1,-1}; // This array holds the indexes into the board of the special squares
 	private int grandmaLoc = -1;
@@ -56,10 +67,12 @@ public class SweetState implements Serializable {
 
         warningManager = WarningManager.getInstance();
         
+    }
+    
+    public void initializeTimer() {
         // Initialize timer and start thread
         mtTimer = new MultithreadedTimer();
         mtTimer.startThread();
-		
     }
     
     public void clickDeck() {
@@ -71,8 +84,8 @@ public class SweetState implements Serializable {
 	}
 	
 	public void clickBoomerang() {
-        boomerangClicked = true;
-    }
+            boomerangClicked = true;
+        }
 	
 	public boolean isBoomerangClicked() {
 		return boomerangClicked;
@@ -261,6 +274,10 @@ public class SweetState implements Serializable {
     public String getCurrentPlayerTurn() {
         String playerName = players.get(playerTurn).getName();
         return playerName;
+    }
+    
+    public Player getCurrentPlayer() {
+        return players.get(playerTurn);
     }
 
     public ArrayList<BoardSpace> getPath()

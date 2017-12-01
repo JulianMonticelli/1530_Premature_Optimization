@@ -36,6 +36,9 @@ public class HUD {
     private static BufferedImage HUD_BACKGROUND_IMAGE_3;
     private static BufferedImage HUD_TIMER_BACKGROUND_IMAGE;
     
+    private static BufferedImage HUD_BOOMERANG_BOX;
+    private static BufferedImage HUD_BOOMERANG_ICON;
+    
     // colors
     private static final Color TEXT_BEHIND_COLOR = Color.decode("#FFBF00");
     private static final Color TEXT_MIDDLE_COLOR = Color.decode("#4C3900");
@@ -54,9 +57,20 @@ public class HUD {
     private static final int TIMER_BACKGROUND_OFFSET_X = 964;
     private static final int TIMER_BACKGROUND_OFFSET_Y = 801;
     
-    
     private static final int TIMER_TEXT_OFFSET_X = TIMER_BACKGROUND_OFFSET_X + 72;
     private static final int TIMER_TEXT_OFFSET_Y = TIMER_BACKGROUND_OFFSET_Y + 62;
+    
+    // ...also more absolute pixel resolution. Pixel math is beautiful when everything is a static size :)
+    private static final int BOOMERANG_BOX_OFFSET_X = 968;
+    private static final int BOOMERANG_BOX_OFFSET_Y = 706;
+    
+    private static final int BOOMERANG_ICON_X_OFFSET = 71; // distance between boomerang icons
+    
+    private static final int BOOMERANG_ICON_FIRST_X_OFFSET = BOOMERANG_BOX_OFFSET_X
+                                                            + BOOMERANG_ICON_X_OFFSET * 2
+                                                            + 13;
+    private static final int BOOMERANG_ICON_Y_OFFSET = BOOMERANG_BOX_OFFSET_Y + 8;
+    
     
     private static final Font fontHUD = new Font("Arial", Font.PLAIN|Font.BOLD, 36);
     
@@ -71,6 +85,9 @@ public class HUD {
     private BufferedImage lastCardPicked;
     
     private String timerTimeStamp = "Not Initialized";
+    
+    private boolean drawBoomerangBox = false;
+    private int currentPlayerBoomerangs = 0;
     
     private boolean wasLastCardPickedDouble;
     
@@ -107,6 +124,9 @@ public class HUD {
             HUD_BACKGROUND_IMAGE_3 = ImageIO.read(new File(Main.getAssetLocale() + "hud/choco_bar_wrapper.png"));
             HUD_TIMER_BACKGROUND_IMAGE = ImageIO.read(new File(Main.getAssetLocale() + "hud/timer_background.png"));
             
+            HUD_BOOMERANG_BOX = ImageIO.read(new File(Main.getAssetLocale()  + "hud/boomerang_box.png"));
+            HUD_BOOMERANG_ICON = ImageIO.read(new File(Main.getAssetLocale() + "hud/boomerang.png"));
+            
             HUD_BACKGROUND_IMAGE.getHeight();
             
             this.screenWidth = screenWidth;
@@ -131,16 +151,24 @@ public class HUD {
         updatePlayerTurn(gameState);
         updateDeckDisplay(gameState.getDeck());
         updateLastCardPicked(gameState.getDeck());
+        updateBoomerangs(gameState);
         updateTimer(gameState);
     }
     
-    public String updateTimer(SweetState gameState) {
+    private void updateBoomerangs(SweetState gameState) {
+        if (gameState.isGameModeStrategicMode()) {
+            drawBoomerangBox = true;
+            currentPlayerBoomerangs = gameState.getCurrentPlayer().getBoomerangCount();
+        }
+    }
+    
+    private String updateTimer(SweetState gameState) {
         // Update Timer timestamp
         timerTimeStamp = gameState.getMultithreadedTimer().getTimerString();
         return timerTimeStamp;
     } 
     
-    public String updateFirstPlace(SweetState gameState) {
+    private String updateFirstPlace(SweetState gameState) {
         ArrayList<String> playerNames = gameState.getPlayerInFirst();
         
         // WARNING: Requires Java 1.8 - but this is wayyyyyy cool:
@@ -149,7 +177,7 @@ public class HUD {
         return playerFirstPlace;
     }
 
-    public String updatePlayerTurn(SweetState gameState) {
+    private String updatePlayerTurn(SweetState gameState) {
         // TODO: Fix player turn to make it more obvious that it is the player's turn
         playerTurn = gameState.getCurrentPlayerTurn();
         return playerTurn;
@@ -166,6 +194,8 @@ public class HUD {
 
         drawHUDTimer(g, timerTimeStamp);
         
+        drawBoomerangBox(g);
+        
         // Last Card
         if (lastCardPicked != null) {
             g.drawImage(lastCardPicked, screenWidth-HUD_OFFSET_WIDTH-HUD_ELEMENT_SIZE, screenHeight-HUD_OFFSET_HEIGHT, null);
@@ -181,6 +211,21 @@ public class HUD {
         
         // Players in first
         drawHUDString(g, playerFirstPlace, 400, y);
+    }
+    
+    private void drawBoomerangBox(Graphics g) {
+        if (drawBoomerangBox) {
+            // Draw the box first...
+            g.drawImage(HUD_BOOMERANG_BOX, BOOMERANG_BOX_OFFSET_X, BOOMERANG_BOX_OFFSET_Y, null);
+            
+            // Then do this funky logic...
+            for (int i = 0; i < currentPlayerBoomerangs; i++) {
+                g.drawImage(HUD_BOOMERANG_ICON, 
+                            BOOMERANG_ICON_FIRST_X_OFFSET
+                          -(BOOMERANG_ICON_X_OFFSET * i), 
+                            BOOMERANG_ICON_Y_OFFSET, null);
+            }
+        }
     }
     
     private void drawHUDTimer(Graphics g, String timerTimeStamp) {
@@ -252,29 +297,29 @@ public class HUD {
         }
 		*/
 			
-		if (c.isSpecialMoveCard()) {
-			switch(c.getSpecialMoveNumber()) {
-				case 0:
-					lastCardPicked = SPECIAL_ICECREAM_CARD;
-					break;
-				case 1:
-					lastCardPicked = SPECIAL_CHOCOLATE_CARD;
-					break;
-				case 2:
-					lastCardPicked = SPECIAL_CANDYCANE_CARD;
-					break;
-				case 3:
-					lastCardPicked = SPECIAL_LOLLIPOP_CARD;
-					break;
-				case 4:
-					lastCardPicked = SPECIAL_CANDY_CARD;
-					break;
-				default:
-					System.out.println(c.getSpecialMoveNumber());
-					System.err.println("Not a valid special card value. ");
-			}
-			return c;
-		}
+        if (c.isSpecialMoveCard()) {
+            switch(c.getSpecialMoveNumber()) {
+                case 0:
+                    lastCardPicked = SPECIAL_ICECREAM_CARD;
+                    break;
+                case 1:
+                    lastCardPicked = SPECIAL_CHOCOLATE_CARD;
+                    break;
+                case 2:
+                    lastCardPicked = SPECIAL_CANDYCANE_CARD;
+                    break;
+                case 3:
+                    lastCardPicked = SPECIAL_LOLLIPOP_CARD;
+                    break;
+                case 4:
+                    lastCardPicked = SPECIAL_CANDY_CARD;
+                    break;
+                default:
+                    System.out.println(c.getSpecialMoveNumber());
+                    System.err.println("Not a valid special card value. ");
+            }
+            return c;
+        }
         
         switch(c.getColor()) {
             case Card.COLOR_RED:

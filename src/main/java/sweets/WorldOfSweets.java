@@ -77,10 +77,11 @@ public class WorldOfSweets extends JPanel {
         
         hud = new HUD(WIDTH, HEIGHT);
 		int option = JOptionPane.showOptionDialog(null,  
-												"Do you want to load an existing game?",  
-												"Start", JOptionPane.YES_NO_OPTION,  
-												JOptionPane.WARNING_MESSAGE, null, null,  
-												null);
+                                                            "Do you want to load an existing game?",  
+                                                            "Start", JOptionPane.YES_NO_OPTION,  
+                                                            JOptionPane.WARNING_MESSAGE, null, null,  
+                                                            null
+                                                         );
 
 		if (option == JOptionPane.YES_OPTION) {
 			gameState = loadState(selectSave());	
@@ -88,39 +89,41 @@ public class WorldOfSweets extends JPanel {
 		}
 		else if (option == JOptionPane.NO_OPTION) {
 			gameState = new SweetState();
-            //gameState.gameModeSelection = pickGameMode();
-			int gameModeSelection = pickGameMode();
+			boolean gameModeIsStrategic = pickGameMode();
 			chooseSpecialSpacePickMode();
 			gameState.storePath(WIDTH,HEIGHT);
-			gameState.addPlayers(getPlayerCountAndNames(gameModeSelection));
+			gameState.addPlayers(getPlayerCountAndNames(gameModeIsStrategic));
+                        // WARNING: IF you change any of the code in this method remember:
+                        // INITIALIZING THE TIMER SHOULD HAPPEN L A S T!
+                        gameState.initializeTimer();
 		}
     
         running = true;
     }
 
-    public int pickGameMode()
+    public boolean pickGameMode()
     {
         int option;
         
         option = JOptionPane.showOptionDialog(null,  
-                                           "Do you want to play in strategic mode, please click yes? Otherwise click no for classic mode.",  
+                                           "Do you want to play in strategic mode?",  
                                             "Start", JOptionPane.YES_NO_OPTION,  
                                             JOptionPane.WARNING_MESSAGE, null, null,  
                                             null);
                 
         if (option == JOptionPane.YES_OPTION) 
         {
-           return 1;
+            gameState.setGameModeIsStrategicMode(true);
+            return true;
         }
         else if (option == JOptionPane.NO_OPTION) 
         {
-           return 0;
+            gameState.setGameModeIsStrategicMode(false);
         }
-        
-        return -1;
+        return false;
     }
 	
-	public WorldOfSweets(ArrayList<Player> p) {
+    public WorldOfSweets(ArrayList<Player> p) {
         this.setPreferredSize(new Dimension(WIDTH,HEIGHT)); // Preferred size affects packing
         this.setFocusable(true); // Focusable so we can use keyboard input
         this.addKeyListener(initKeyAdapter()); // Listens to keys, obv 
@@ -138,64 +141,66 @@ public class WorldOfSweets extends JPanel {
         }
         
         hud = new HUD(WIDTH, HEIGHT);
-		gameState = new SweetState();
-		gameState.storePath(WIDTH,HEIGHT);
-		gameState.addPlayers(p);
+        gameState = new SweetState();
+        gameState.storePath(WIDTH,HEIGHT);
+        gameState.addPlayers(p);
 		
         running = true;
     }
 	
-	public String selectSave() {
-		ArrayList<String> saveFiles = new ArrayList<String>();
-		File dir = new File(".");
-		for (File file : dir.listFiles()) {
-			if (file.getName().endsWith((".ser"))) {
-				saveFiles.add(file.getName());
-			}
-		}
-		String[] options = saveFiles.toArray(new String[saveFiles.size()]);
-		int save = JOptionPane.showOptionDialog(null,
-											"Which save would you like to load?",
-											"Saved Games",
-											JOptionPane.YES_NO_CANCEL_OPTION,
-											JOptionPane.DEFAULT_OPTION,
-											null,
-											options,
-											options[0]);
-		return options[save];									
-	}
+    public String selectSave() {
+            ArrayList<String> saveFiles = new ArrayList<String>();
+            File dir = new File(".");
+            for (File file : dir.listFiles()) {
+                if (file.getName().endsWith((".ser"))) {
+                        saveFiles.add(file.getName());
+                }
+            }
+            String[] options = saveFiles.toArray(new String[saveFiles.size()]);
+            int save = JOptionPane.showOptionDialog(null,
+                "Which save would you like to load?",
+                "Saved Games",
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.DEFAULT_OPTION,
+                null,
+                options,
+                options[0]
+            );
+            return options[save];									
+    }
 	
-	public static SweetState loadState(String filename) {
-		SweetState state = null;
-		try {
-			FileInputStream fis = new FileInputStream(filename);
-			ObjectInputStream ois = new ObjectInputStream(fis);
-			state = (SweetState) ois.readObject();
-			ois.close();
-		}
-		catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-		catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		state.togglePaused();
-		MultithreadedTimer timer = new MultithreadedTimer();
-		state.setMTTimer(timer);	
-		timer.startThread();
-		return state;
-	}
+    public static SweetState loadState(String filename) {
+        SweetState state = null;
+        try {
+            FileInputStream fis = new FileInputStream(filename);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            state = (SweetState) ois.readObject();
+            ois.close();
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        state.togglePaused();
+        MultithreadedTimer timer = new MultithreadedTimer();
+        state.setMTTimer(timer);	
+        timer.startThread();
+        return state;
+    }
 
     public void chooseSpecialSpacePickMode()
     {
         int option = JOptionPane.showOptionDialog(null,  
-                                                "Do you want to randomize locations for special squares?",  
-                                                "Start", JOptionPane.YES_NO_OPTION,  
-                                                JOptionPane.WARNING_MESSAGE, null, null,  
-                                                null);
+            "Do you want to randomize locations for special squares?",  
+            "Start", JOptionPane.YES_NO_OPTION,  
+            JOptionPane.WARNING_MESSAGE, null, null,  
+            null
+        );
 
         
                 
@@ -423,7 +428,7 @@ public class WorldOfSweets extends JPanel {
 		return gameState;
 	}
 
-	public ArrayList<Player> getPlayerCountAndNames(int gameModeSelection) {
+	public ArrayList<Player> getPlayerCountAndNames(boolean gameModeIsStrategicMode) {
 		Color[] playerColors = { Color.cyan, Color.black, Color.pink, Color.white};
 		boolean done = false; 	//used to make sure we only accept correct input
 		ArrayList<Player> players = new ArrayList<Player>();
@@ -432,43 +437,43 @@ public class WorldOfSweets extends JPanel {
 		int numBoomerangs;
 		
 		// Set number of boomerangs players will have. If gameModeSelection is 1, we are playing strategic mode
-		if (gameModeSelection == 1)
+		if (gameModeIsStrategicMode)
 			numBoomerangs = 3;
 		else
 			numBoomerangs = 0;
 		
 		// Get number of players
 		while (!done) {
-            try {
-                
-                String input = JOptionPane.showInputDialog("How many players are playing?");
-                numPlayers = Integer.parseInt(input);
-                
-                if (numPlayers < 5 && numPlayers > 1)
-                    done = true;
-                else {
-                    JOptionPane.showMessageDialog(null, "Please enter a number between 2 and 4");
-                }
+                    try {
 
-                
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, "Invalid Input");
-            }
-        }
+                        String input = JOptionPane.showInputDialog("How many players are playing?");
+                        numPlayers = Integer.parseInt(input);
+
+                        if (numPlayers < 5 && numPlayers > 1)
+                            done = true;
+                        else {
+                            JOptionPane.showMessageDialog(null, "Please enter a number between 2 and 4");
+                        }
+
+
+                    } catch (NumberFormatException e) {
+                        JOptionPane.showMessageDialog(null, "Invalid Input");
+                    }
+                }
         
 		//Get names of players
 		for (int i = 0; i < numPlayers; i++) {
 			
-			String playerName = JOptionPane.showInputDialog("What is player " + (i + 1) + "'s name?");
-			
-			for (int j = 0; j < i; j++) {
-				if (playerName.equals(players.get(j).getName()) || playerName.length() < 1 || playerName.length() > 10) {
-					playerName = JOptionPane.showInputDialog("Please enter a unique name between 1 and 10 characters");
-					j = 0;
-				}
-			}
-			
-			players.add(i, new Player(playerColors[i], playerName, startLocation, numBoomerangs));
+                    String playerName = JOptionPane.showInputDialog("What is player " + (i + 1) + "'s name?");
+
+                    for (int j = 0; j < i; j++) {
+                        if (playerName.equals(players.get(j).getName()) || playerName.length() < 1 || playerName.length() > 10) {
+                            playerName = JOptionPane.showInputDialog("Please enter a unique name between 1 and 10 characters");
+                            j = 0;
+                        }
+                    }
+                    
+                    players.add(i, new Player(playerColors[i], playerName, startLocation, numBoomerangs));
 		}
 		
 		return players;
@@ -491,17 +496,18 @@ public class WorldOfSweets extends JPanel {
                 if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     System.out.println("Pause button has been pressed!");
                     gameState.togglePaused();
-					if (gameState.isPaused()) {
-						int option = JOptionPane.showOptionDialog(null,  
-																"Do you want to save?",  
-																"Save Game", JOptionPane.YES_NO_OPTION,  
-																JOptionPane.WARNING_MESSAGE, null, null,  
-																null);
-						if (option == JOptionPane.YES_OPTION) {
-							String saveName = JOptionPane.showInputDialog("What would you like to call this save?");
-							gameState.saveState(saveName);
-						}
-					}																
+                    if (gameState.isPaused()) {
+                        int option = JOptionPane.showOptionDialog(null,  
+                                                                    "Do you want to save?",  
+                                                                    "Save Game", JOptionPane.YES_NO_OPTION,  
+                                                                    JOptionPane.WARNING_MESSAGE, null, null,  
+                                                                    null
+                                                                 );
+                        if (option == JOptionPane.YES_OPTION) {
+                                String saveName = JOptionPane.showInputDialog("What would you like to call this save?");
+                                gameState.saveState(saveName);
+                        }
+                    }																
                 }
                 
                 System.out.println("Key pressed: " + e.getKeyChar());
@@ -534,6 +540,12 @@ public class WorldOfSweets extends JPanel {
     	return -1;
     }
 
+    private static final int BB_X_LEFT = 968;
+    private static final int BB_X_RIGHT = 1191;
+    private static final int BB_Y_TOP = 706;
+    private static final int BB_Y_BOTTOM = 800;
+    
+    
     private MouseAdapter initMouseListener() {
         return new MouseAdapter() {
             @Override
@@ -551,7 +563,12 @@ public class WorldOfSweets extends JPanel {
                     if (!gameState.isPaused())
                     { 
                         gameState.clickDeck();
+                        System.out.println(gameState.getCurrentPlayerTurn() + " clicked the deck!");
                     }
+                } else if (gameState.isGameModeStrategicMode() && e.getX() >= BB_X_LEFT 
+                        && e.getX() <= BB_X_RIGHT && e.getY() >= BB_Y_TOP && e.getY() <= BB_Y_BOTTOM) {
+                    gameState.clickBoomerang();
+                    System.out.println(gameState.getCurrentPlayerTurn() + " clicked the boomerang box!");
                 }
             }
         };

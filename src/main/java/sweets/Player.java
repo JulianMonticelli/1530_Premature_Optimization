@@ -24,6 +24,14 @@ public class Player implements Serializable
 		boomerangCount = bCount;
 	}
 	
+	// If # of boomerangs is not specified, it will default to 0
+	public Player(Color c, String n, int p) {
+		playerColor = c;
+		name = n;
+		position = p;
+		boomerangCount = 0;
+	}
+	
 	public void setName(String n)
 	{
 		name = n;

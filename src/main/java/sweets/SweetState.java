@@ -228,6 +228,7 @@ public class SweetState implements Serializable {
 					isWinningMove = drawAndMove(players.get(boomerangTarget), true);
 					cP.throwBoomerang();
 					boomerangTarget = -1;
+					selectedPlayer = -1;
 				}
 				
 				if (isWinningMove) {
@@ -246,11 +247,12 @@ public class SweetState implements Serializable {
 			
 			} else {
 				System.out.println("Player selected their own token as a boomerang target. Waiting until they select someone else's");
+				selectedPlayer = -1;
 			}
 
 		}
 		
-		selectedPlayer = -1;
+		//selectedPlayer = -1;
 		deckClicked = false;
 		boomerangClicked = false;
 		return true;

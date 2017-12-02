@@ -400,7 +400,16 @@ public class WorldOfSweets extends JPanel {
         g.setColor(user.getColor());
         g.fillArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, WIDTH/25, HEIGHT/20,0, 360);
         
-        g.setColor(Color.black);
+        
+        if(user.getPlayerNumber() == gameState.getSelectedPlayer())
+        {
+            g.setColor(Color.red);
+        }
+        else
+        {
+            g.setColor(Color.black);
+        }
+        
         g.drawArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, WIDTH/25, HEIGHT/20,0, 360);
 
     }
@@ -508,10 +517,10 @@ public class WorldOfSweets extends JPanel {
                         done = 0;
                     }
                 }
-        
+        int playerNum = 0;
 		//Get names of players
 		for (int i = 0; i < numPlayers; i++) {
-			
+			        
                     String playerName = JOptionPane.showInputDialog("What is player " + (i + 1) + "'s name?");
 
                     for (int j = 0; j < i; j++) {
@@ -521,7 +530,8 @@ public class WorldOfSweets extends JPanel {
                         }
                     }
                     
-                    players.add(i, new Player(playerColors[i], playerName, startLocation, numBoomerangs));
+                    players.add(i, new Player(playerColors[i], playerName, startLocation, numBoomerangs, playerNum));
+                    playerNum++;
 
 
 		}
@@ -530,9 +540,10 @@ public class WorldOfSweets extends JPanel {
         for(int i = numPlayers; i < numPlayers + numAIPlayers;i++)
         {
             String playerName = "AI Player " + aiNum;
-            players.add(i, new Player(playerColors[i], playerName, startLocation, numBoomerangs));
+            players.add(i, new Player(playerColors[i], playerName, startLocation, numBoomerangs, playerNum));
             players.get(i).setIsAI(true);
             aiNum++;
+            playerNum++;
         }
 		
 		return players;
@@ -582,9 +593,8 @@ public class WorldOfSweets extends JPanel {
     	return (float) Math.sqrt(Math.pow((x2-x1),2) + Math.pow((y2-y1),2));
     }
 
-    public int checkForPlayer(int x, int y)
+    public int checkForPlayer(int x, int y, ArrayList<Player> players)
     {
-    	ArrayList<Player> players = gameState.getPlayers();
     	
     	for(int i = 0; i < players.size();i++)
     	{
@@ -610,7 +620,7 @@ public class WorldOfSweets extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 System.out.println("Mouse button " + e.getButton() + "clicked at " + e.getX() + ", " + e.getY());
-                gameState.clickPlayer(checkForPlayer(e.getX(), e.getY()));
+                gameState.clickPlayer(checkForPlayer(e.getX(), e.getY(),gameState.getPlayers()));
                 if(gameState.getSelectedPlayer() != -1)
                 {
                 	 System.out.println("Player " + gameState.getSelectedPlayer() + " Has been clicked");

@@ -11,6 +11,7 @@ public class Player implements Serializable
 	private int playerX;
 	private int playerY;
 	private boolean isAI = false;
+	private int playerNumber;
 	
 	public Player() {
 		playerColor = null;
@@ -18,11 +19,12 @@ public class Player implements Serializable
 		position = 0;
 	}
 	
-	public Player(Color c, String n, int p, int bCount) {
+	public Player(Color c, String n, int p, int bCount, int num) {
 		playerColor = c;
 		name = n;
 		position = p;
 		boomerangCount = bCount;
+		playerNumber = num;
 	}
 	
 	// If # of boomerangs is not specified, it will default to 0
@@ -31,6 +33,11 @@ public class Player implements Serializable
 		name = n;
 		position = p;
 		boomerangCount = 0;
+	}
+
+	public int getPlayerNumber()
+	{
+		return playerNumber;
 	}
 
 	public void setIsAI(boolean ai)

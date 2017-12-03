@@ -16,6 +16,11 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.JOptionPane;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 
 public class WorldOfSweets extends JPanel {    
@@ -75,30 +80,61 @@ public class WorldOfSweets extends JPanel {
             e.printStackTrace();
         }
         
+        // Prompt to load a game from a saved file
+        gameState = getSweetStateFromLoad(true);
+        
+        
         hud = new HUD(WIDTH, HEIGHT);
-		int option = JOptionPane.showOptionDialog(null,  
-                                                            "Do you want to load an existing game?",  
-                                                            "Start", JOptionPane.YES_NO_OPTION,  
-                                                            JOptionPane.WARNING_MESSAGE, null, null,  
-                                                            null
-                                                         );
-
-		if (option == JOptionPane.YES_OPTION) {
-			gameState = loadState(selectSave());	
-			while (!gameState.getMultithreadedTimer().getTimerString().equals(gameState.getTime())) {};
-		}
-		else if (option == JOptionPane.NO_OPTION) {
-			gameState = new SweetState();
-			boolean gameModeIsStrategic = pickGameMode();
-			chooseSpecialSpacePickMode();
-			gameState.storePath(WIDTH,HEIGHT);
-			gameState.addPlayers(getPlayerCountAndNames(gameModeIsStrategic));
-                        // WARNING: IF you change any of the code in this method remember:
-                        // INITIALIZING THE TIMER SHOULD HAPPEN L A S T!
-                        gameState.initializeTimer();
-		}
+                
+        if (gameState == null) {
+            gameState = new SweetState();
+            boolean gameModeIsStrategic = pickGameMode();
+            chooseSpecialSpacePickMode();
+            gameState.storePath(WIDTH,HEIGHT);
+            gameState.addPlayers(getPlayerCountAndNames(gameModeIsStrategic));
+            // WARNING: IF you change any of the code in this method remember:
+            // INITIALIZING THE TIMER SHOULD HAPPEN L A S T!
+            gameState.initializeTimer();
+        }
+        
     
         running = true;
+    }
+    
+    public SweetState getSweetStateFromLoad(boolean showLoadConfirmation) {
+        // Initially, this is set to yes because if we skip showing load confirmation
+        // then, we want to have it automatically be yes.
+        int option = JOptionPane.YES_OPTION; 
+        
+        if (showLoadConfirmation) {
+            option = JOptionPane.showOptionDialog(null,  
+                                                    "Do you want to load an existing game?",  
+                                                    "Start", JOptionPane.YES_NO_OPTION,  
+                                                    JOptionPane.WARNING_MESSAGE, null, null,  
+                                                    null
+                                                 );
+        }
+        
+        if (option == JOptionPane.YES_OPTION) {
+            SweetState loadState = loadState(selectLoadFile());
+            if (loadState == null) {
+                int loadCancelOption = JOptionPane.showOptionDialog(null,
+                                                    "It appears you have cancelled loading a save file.\n"
+                                                   +"This will, then, start a new game. Are you sure you wish"
+                                                   +" to cancel loading?",
+                                                    "Load cancelled!",
+                                                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,
+                                                    null, null, null);
+                if (loadCancelOption == JOptionPane.YES_OPTION) {
+                    return null;
+                } else {
+                    loadState = getSweetStateFromLoad(false);
+                }
+            }
+            return loadState;
+        } else {
+            return null;
+        }
     }
 
     public boolean pickGameMode()
@@ -148,33 +184,100 @@ public class WorldOfSweets extends JPanel {
         running = true;
     }
 	
-    public String selectSave() {
-            ArrayList<String> saveFiles = new ArrayList<String>();
-            File dir = new File(".");
-            for (File file : dir.listFiles()) {
-                if (file.getName().endsWith((".ser"))) {
-                        saveFiles.add(file.getName());
+    public File selectLoadFile() {
+            JFrame frame = new JFrame("Select file...");
+            JFileChooser jfc = new JFileChooser();
+            
+            // Filter only for .wosv files
+            FileNameExtensionFilter fef = new FileNameExtensionFilter("World of"
+                                        +" Sweets save files (*.wosv)", "wosv");
+            jfc.setFileFilter(fef);
+            frame.add(jfc);
+            
+            
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            frame.setVisible(false);
+            
+            File file = null;
+            
+            if(jfc.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
+                file = jfc.getSelectedFile();
+                // If the file isn't the appropriate filetype, prompt again to 
+                // select a file after dumping a warning.
+                if(!file.getPath().endsWith(".wosv")) {
+                    JOptionPane.showMessageDialog(null, "You cannot select a "
+                          + "file that does not have a .wosv extension!", 
+                            "Wrong filetype!", JOptionPane.WARNING_MESSAGE);
+                    file = selectLoadFile(); 
                 }
+                frame.setVisible(false);
+                frame.setEnabled(false);
+            } else {
+                frame.setVisible(false);
+                frame.setEnabled(false);
             }
-            String[] options = saveFiles.toArray(new String[saveFiles.size()]);
-            int save = JOptionPane.showOptionDialog(null,
-                "Which save would you like to load?",
-                "Saved Games",
-                JOptionPane.YES_NO_CANCEL_OPTION,
-                JOptionPane.DEFAULT_OPTION,
-                null,
-                options,
-                options[0]
-            );
-            return options[save];									
+            return file;					
+    }
+    
+    public File selectSaveFile() { 
+        gameState.setPaused(true);
+        JFrame frame = new JFrame("Select file...");
+        JFileChooser jfc = new JFileChooser();
+        
+        FileNameExtensionFilter fef = new FileNameExtensionFilter("World of"
+                                    +" Sweets save files (*.wosv)", "wosv");
+        jfc.setFileFilter(fef);
+        
+        jfc.setApproveButtonText("Save");
+        
+        frame.add(jfc);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setVisible(false);
+        File file = null;
+
+        if(jfc.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
+            file = jfc.getSelectedFile();
+            // If the file isn't the appropriate filetype, prompt again to 
+            // select a file after dumping a warning.
+            if(!file.getPath().endsWith(".wosv")) {
+                file = new File(file.getPath() + ".wosv");
+            }
+            frame.setVisible(false);
+            frame.setEnabled(false);
+        } else {
+            frame.setVisible(false);
+            frame.setEnabled(false);
+        }
+        return file;
+    }
+    
+    
+    public void saveStateFile() {
+        gameState.saveState(selectSaveFile());
+    }
+    
+    public void loadStateFile() {
+        gameState.setPaused(true);
+        SweetState loadedState = loadState(selectLoadFile());
+        if (loadedState != null) {
+            gameState.killTimerThread();
+            gameState = loadedState;
+            gameState.togglePaused();
+        }
     }
 	
-    public static SweetState loadState(String filename) {
+    public SweetState loadState(File file) {
+        // First, and foremost, catch a null file.
+        if (file == null) {
+            return null;
+        }
+        
+        StateFile sf = null;
         SweetState state = null;
         try {
-            FileInputStream fis = new FileInputStream(filename);
+            FileInputStream fis = new FileInputStream(file);
             ObjectInputStream ois = new ObjectInputStream(fis);
-            state = (SweetState) ois.readObject();
+            sf = (StateFile) ois.readObject();
             ois.close();
         }
         catch (FileNotFoundException e) {
@@ -186,11 +289,26 @@ public class WorldOfSweets extends JPanel {
         catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        state.togglePaused();
-        MultithreadedTimer timer = new MultithreadedTimer();
-        state.setMTTimer(timer);	
-        timer.startThread();
-        return state;
+        
+        if (sf == null) {
+            return null;
+        }
+        
+        if (sf.verifyContent()) {
+            state = sf.getGameState();
+            if (state != null) {            
+                state.applySavedTime();
+            }
+            return state;
+        } else {
+            JOptionPane.showMessageDialog(null, "The save file has been corrupted."
+                                          + "\nFor the integrity of World of Sweets,"
+                                          + " we cannot load this file.",
+                                            "Corrupt save file",
+                                            JOptionPane.WARNING_MESSAGE);
+            return null;
+        }
+        
     }
 
     public void chooseSpecialSpacePickMode()
@@ -221,6 +339,13 @@ public class WorldOfSweets extends JPanel {
             long targetTime = (1000L/targetFPS);
             long startTime = System.currentTimeMillis();
 
+            
+
+            // Perform turn
+            tick();
+
+            // Redraw screen
+            repaint();
 
             // Game pause loop
             if (gameState.isPaused()) {
@@ -240,29 +365,26 @@ public class WorldOfSweets extends JPanel {
 
                 // When we unpause the game, unpause the timer thread
                 gameState.getMultithreadedTimer().unpauseThread();
-
+                
             }
 
-            // Perform turn
-            tick();
 
-            // Redraw screen
-            repaint();
-
-            // Frame limiting code
-            long totalSleepTime = targetTime - (System.currentTimeMillis() - startTime);
-            if (totalSleepTime > 0) {
-                try {
-                        Thread.sleep(totalSleepTime);
-                } catch (InterruptedException e) {
-                        e.printStackTrace(); // This shouldn't happen - but in case it does throw an error!
+                // Frame limiting code
+                long totalSleepTime = targetTime - (System.currentTimeMillis() - startTime);
+                if (totalSleepTime > 0) {
+                    try {
+                            Thread.sleep(totalSleepTime);
+                    } catch (InterruptedException e) {
+                            e.printStackTrace(); // This shouldn't happen - but in case it does throw an error!
+                    }
                 }
-            }
+            
         }
     }
 
 
     public void tick() {
+        //System.out.println(identityHashCode(gameState));
         // Make player turn
         if(gameState.getCurrentPlayer().getIsAI())
         {
@@ -442,81 +564,81 @@ public class WorldOfSweets extends JPanel {
         }
     }
 	
-	public SweetState getGameState() {
-		return gameState;
-	}
+    public SweetState getGameState() {
+            return gameState;
+    }
 
-	public ArrayList<Player> getPlayerCountAndNames(boolean gameModeIsStrategicMode) {
-		Color[] playerColors = { Color.cyan, Color.black, Color.pink, Color.white};
-		int done = 0; 	//used to make sure we only accept correct input
-		ArrayList<Player> players = new ArrayList<Player>();
-		int numPlayers = 0;
+    public ArrayList<Player> getPlayerCountAndNames(boolean gameModeIsStrategicMode) {
+        Color[] playerColors = { Color.cyan, Color.black, Color.pink, Color.white};
+        int done = 0; 	// Used to make sure we only accept correct input
+        ArrayList<Player> players = new ArrayList<Player>();
+        int numPlayers = 0;
         int numAIPlayers = 0;
-		int startLocation = 0;
-		int numBoomerangs;
+        int startLocation = 0;
+        int numBoomerangs;
         int option;
 		
-		// Set number of boomerangs players will have. If gameModeSelection is 1, we are playing strategic mode
-		if (gameModeIsStrategicMode)
-			numBoomerangs = 3;
-		else
-			numBoomerangs = 0;
-		
-		// Get number of players
-		while (done != 2) {
-                    try {
+        // Set number of boomerangs players will have. 
+        // If gameModeSelection is 1, we are playing strategic mode
+        if (gameModeIsStrategicMode)
+            numBoomerangs = 3;
+        else
+            numBoomerangs = 0;
 
-                        String input = JOptionPane.showInputDialog("How many players are playing?");
-                        numPlayers = Integer.parseInt(input);
+        // Get number of players
+        while (done != 2) {
+            try {
 
-                        numPlayers = Integer.parseInt(input);
+                String input = JOptionPane.showInputDialog("How many players are playing?");
+                numPlayers = Integer.parseInt(input);
 
-                        if (numPlayers < 5 && numPlayers > 0)
-                            done++;
-                        else {
-                            JOptionPane.showMessageDialog(null, "Only between 1 and 4 total players permitted");
-                            continue;
-                        }
 
-                        if(numPlayers < 4)
+                if (numPlayers < 5 && numPlayers > 0)
+                    done++;
+                else {
+                    JOptionPane.showMessageDialog(null, "Only between 1 and 4 total players permitted");
+                    continue;
+                }
+
+                if(numPlayers < 4)
+                {
+                    if(numPlayers != 1)
+                    {
+                        option = JOptionPane.showOptionDialog(null,  
+                                   "Would you like to play against AI players?",  
+                                    "Start", JOptionPane.YES_NO_OPTION,  
+                                    JOptionPane.WARNING_MESSAGE, null, null,  
+                                    null);
+                    }
+                    else
+                    {
+                        option = JOptionPane.YES_OPTION;
+                    }
+
+                    if(option == JOptionPane.YES_OPTION) 
+                    {
+                        input = JOptionPane.showInputDialog("How many AI players would you like?");
+                        numAIPlayers = Integer.parseInt(input);
+
+                        if(numAIPlayers + numPlayers <= 4)
                         {
-                            if(numPlayers != 1)
-                            {
-                                option = JOptionPane.showOptionDialog(null,  
-                                           "Would you like to play against AI players?",  
-                                            "Start", JOptionPane.YES_NO_OPTION,  
-                                            JOptionPane.WARNING_MESSAGE, null, null,  
-                                            null);
-                            }
-                            else
-                            {
-                                option = JOptionPane.YES_OPTION;
-                            }
-                            
-                            if(option == JOptionPane.YES_OPTION) 
-                            {
-                                input = JOptionPane.showInputDialog("How many AI players would you like?");
-                                numAIPlayers = Integer.parseInt(input);
-
-                                if(numAIPlayers + numPlayers <= 4)
-                                {
-                                    done++;
-                                }
-                                else
-                                {
-                                   JOptionPane.showMessageDialog(null, "Only between 1 and 4 total players permitted");
-                                }
-
-                            }
-                        
+                            done++;
                         }
-
-
-                    } catch (NumberFormatException e) {
-                        JOptionPane.showMessageDialog(null, "Invalid Input");
-                        done = 0;
+                        else
+                        {
+                           JOptionPane.showMessageDialog(null, "Only between 1 and 4 total players permitted");
+                        }
+                    } else {
+                        done++;
                     }
                 }
+
+
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "Invalid Input");
+                done = 0;
+            }
+        }
         int playerNum = 0;
 		//Get names of players
 		for (int i = 0; i < numPlayers; i++) {
@@ -565,19 +687,7 @@ public class WorldOfSweets extends JPanel {
                 
                 if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     System.out.println("Pause button has been pressed!");
-                    gameState.togglePaused();
-                    if (gameState.isPaused()) {
-                        int option = JOptionPane.showOptionDialog(null,  
-                                                                    "Do you want to save?",  
-                                                                    "Save Game", JOptionPane.YES_NO_OPTION,  
-                                                                    JOptionPane.WARNING_MESSAGE, null, null,  
-                                                                    null
-                                                                 );
-                        if (option == JOptionPane.YES_OPTION) {
-                                String saveName = JOptionPane.showInputDialog("What would you like to call this save?");
-                                gameState.saveState(saveName);
-                        }
-                    }																
+                    gameState.togglePaused();														
                 }
                 
                 System.out.println("Key pressed: " + e.getKeyChar());

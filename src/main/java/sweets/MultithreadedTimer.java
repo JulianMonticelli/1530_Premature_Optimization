@@ -40,6 +40,14 @@ public class MultithreadedTimer{
     public String getTimerString() {
         return timer.getTimerString();
     }
+    
+    public void setTimeInSeconds(int timeInSeconds) {
+        timer.setTimeInSeconds(timeInSeconds);
+    }
+    
+    public int getTimeInSeconds() {
+        return timer.getTimeInSeconds();
+    }
 
     
     // Timer Subclass
@@ -68,6 +76,14 @@ public class MultithreadedTimer{
         
         // The amount of time into an elapsing second when we paused the timer
         private long extraTime;
+        
+        public int getTimeInSeconds() {
+            return timeInSeconds;
+        }
+        
+        public void setTimeInSeconds(int timeInSeconds) {
+            this.timeInSeconds = timeInSeconds;
+        }
         
         public void setGamePaused(boolean set) {
             gameIsPaused = set;

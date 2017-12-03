@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="SweetStateTest" tests="21" skipped="0" failures="0" errors="0" timestamp="2017-12-03T02:08:03" hostname="DESKTOP-B6C5CLH" time="0.004">
+  <properties/>
+  <testcase name="testStartNextTurnFirstAgain" classname="SweetStateTest" time="0.0"/>
+  <testcase name="testCalculateDestDistanceSingleCard" classname="SweetStateTest" time="0.001"/>
+  <testcase name="testCalculateDestSpecialCardColor" classname="SweetStateTest" time="0.0"/>
+  <testcase name="testCalculateDestDistanceGreaterThanZero" classname="SweetStateTest" time="0.0"/>
+  <testcase name="testCalculateDestSpecialCard" classname="SweetStateTest" time="0.0"/>
+  <testcase name="testClickDeck" classname="SweetStateTest" time="0.0"/>
+  <testcase name="testSearchForSpecialSquare" classname="SweetStateTest" time="0.0"/>
+  <testcase name="testGetPlayerInFirstAll" classname="SweetStateTest" time="0.0"/>
+  <testcase name="testNumSpecialSpacesInPath" classname="SweetStateTest" time="0.0"/>
+  <testcase name="testStartNextTurn" classname="SweetStateTest" time="0.0"/>
+  <testcase name="testCalculateDestSameColor" classname="SweetStateTest" time="0.0"/>
+  <testcase name="testGetPlayerInFirstDouble" classname="SweetStateTest" time="0.0"/>
+  <testcase name="testValidNum" classname="SweetStateTest" time="0.001"/>
+  <testcase name="testGetPlayerInFirstSingle" classname="SweetStateTest" time="0.0"/>
+  <testcase name="testStaticSpaceOption" classname="SweetStateTest" time="0.0"/>
+  <testcase name="testAddPlayers" classname="SweetStateTest" time="0.0"/>
+  <testcase name="testCalculateDestSkipCard" classname="SweetStateTest" time="0.0"/>
+  <testcase name="testRandomSpaceOption" classname="SweetStateTest" time="0.0"/>
+  <testcase name="testCalculateDestGrandmaHouse" classname="SweetStateTest" time="0.0"/>
+  <testcase name="testPickSpecialSpaces" classname="SweetStateTest" time="0.0"/>
+  <testcase name="testCalculateDestDistanceDoubleCard" classname="SweetStateTest" time="0.0"/>
+  <system-out><![CDATA[Board has not been created yet!
+5 15 25 35 45 
+5 15 25 35 45 
+5 15 25 35 45 
+5 15 25 35 45 
+Board has not been created yet!
+5 15 25 35 45 
+Board has not been created yet!
+5 15 25 35 45 
+Board has not been created yet!
+Board has not been created yet!
+5 15 25 35 45 
+5 15 25 35 45 
+Board has not been created yet!
+5 15 25 35 45 
+13 19 8 28 3 
+5 15 25 35 45 
+5 15 25 35 45 
+5 15 25 35 45 
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,12 +1,9 @@
 package sweets;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.awt.Color;
 import java.io.Serializable;
 import java.io.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 //import javax.swing.JOptionPane;
 
 public class SweetState implements Serializable {
@@ -97,7 +94,14 @@ public class SweetState implements Serializable {
 	}
 
 	public void clickBoomerang() {
-            boomerangClicked = true;
+            if (!boomerangClicked) {
+                if (players.get(playerTurn).getBoomerangCount() > 0) {
+                    boomerangClicked = true;
+                    WarningManager.getInstance().createWarning("Click on a player token", Warning.TYPE_INFORMATION);
+                } else {
+                    WarningManager.getInstance().createWarning("Player has no boomerangs!", Warning.TYPE_INFORMATION);
+                }
+            }
         }
 
 	public boolean isBoomerangClicked() {
@@ -112,8 +116,8 @@ public class SweetState implements Serializable {
 	}
 
 	public void clickPlayer(int playerNumber) {
-        selectedPlayer = playerNumber;
-    }
+            selectedPlayer = playerNumber;
+        }
 
 	public boolean isPlayerClicked() {
 		if (selectedPlayer != -1)

@@ -18,6 +18,7 @@ public class Warning implements Serializable{
     public static final int TYPE_WARNING = 0;
     public static final int TYPE_POSITIVE = 1;
     public static final int TYPE_ENDGAME = 2;
+    public static final int TYPE_INFORMATION = 3;
     
     int ticksTillKilled;
     int ticksSinceDispatch;

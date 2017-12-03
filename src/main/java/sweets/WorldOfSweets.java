@@ -3,7 +3,6 @@ package sweets;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -22,11 +21,11 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 
 public class WorldOfSweets extends JPanel {    
-	public static final int WIDTH = 1200;
-	public static final int HEIGHT = 1000;
+    public static final int WIDTH = 1200;
+    public static final int HEIGHT = 1000;
 
 
-	ArrayList<BoardSpace> path;
+    ArrayList<BoardSpace> path;
         
     private HUD hud;
     private SweetState gameState;
@@ -49,6 +48,8 @@ public class WorldOfSweets extends JPanel {
     private static final Color PAUSED_COLOR_1 = Color.RED;
     private static final Color PAUSED_COLOR_2 = Color.WHITE;
     private static final Color PAUSED_COLOR_3 = Color.BLACK;
+    
+    private static final int RADIUS_OF_TOKEN_HIGHLIGHTING = 7;
     
     private static final int PAUSED_STRING_X_OFFSET = WIDTH/2-250;
     private static final int PAUSED_STRING_Y_OFFSET = HEIGHT/2;
@@ -399,7 +400,7 @@ public class WorldOfSweets extends JPanel {
         hud.update(gameState);
         
         // Update WarningSystem
-        gameState.getWarningManager().update();
+        WarningManager.getInstance().update();
     }
 
 
@@ -434,7 +435,7 @@ public class WorldOfSweets extends JPanel {
             g.drawString(GAME_PAUSED, PAUSED_STRING_X_OFFSET+1, PAUSED_STRING_Y_OFFSET+1);
         }
         
-        gameState.getWarningManager().draw(g, 0, 0);
+        WarningManager.getInstance().draw(g, 0, 0);
         
     }
 
@@ -449,7 +450,7 @@ public class WorldOfSweets extends JPanel {
     {
         ArrayList<BoardSpace> path = gameState.getPath(); // The game board path
 
-        for(int i = 0; i < path.size() - 2;i++) // Draw the path stored in the array
+        for(int i = 0; i < path.size() - 2; i++) // Draw the path stored in the array
         {
             if(path.get(i).specialNum == -1)
             {
@@ -464,8 +465,11 @@ public class WorldOfSweets extends JPanel {
             }
 
             g.drawImage(grandmasHouseImage, path.get(path.size() - 3).getXOrigin(),path.get(path.size() - 3).getYOrigin(),WIDTH/10,HEIGHT/10, null);
-        
 
+        }
+        
+        for(int i = 0; i < path.size() - 2; i++) // Draw the users stored in the array
+        {
             ArrayList<Player> players = path.get(i).getPlayers(); // Get the players stored in this space
 
             for(int j = 0; j < path.get(i).getNumPlayers(); j++) // Iterate through the Boardspaces's players and draw tokens as necessary
@@ -521,16 +525,33 @@ public class WorldOfSweets extends JPanel {
         g.fillArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, WIDTH/25, HEIGHT/20,0, 360);
         
         
+        g.setColor(Color.black);
+        g.drawArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, WIDTH/25, HEIGHT/20,0, 360);
+        
+        // If we should highlight
         if(user.getPlayerNumber() == gameState.getSelectedPlayer())
-        {
-            g.setColor(Color.red);
-        }
-        else
-        {
-            g.setColor(Color.black);
+        {            
+            g.setColor(new Color(255, 255, 255, 255));
+            for (int i = 0; i <= RADIUS_OF_TOKEN_HIGHLIGHTING; i++) {
+                int alpha = g.getColor().getAlpha();
+                int red = g.getColor().getRed();
+                int green = g.getColor().getGreen();
+                int blue = g.getColor().getBlue();
+                
+                alpha -= 10;
+                red -= 10;
+                blue -= 5;
+                if (green > 51) {
+                    green -= 51;
+                }
+                
+                g.setColor(new Color(red, green, blue, alpha));
+                g.drawArc(space.getXOrigin() + xOffset - i, space.getYOrigin() + yOffset - i,
+                                    WIDTH/25 + (i*2), HEIGHT/20 + (i*2), 0, 360);
+            }
+            
         }
         
-        g.drawArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, WIDTH/25, HEIGHT/20,0, 360);
 
     }
 
@@ -727,11 +748,11 @@ public class WorldOfSweets extends JPanel {
         return new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                System.out.println("Mouse button " + e.getButton() + "clicked at " + e.getX() + ", " + e.getY());
+                System.out.println("Mouse button " + e.getButton() + " clicked at " + e.getX() + ", " + e.getY());
                 gameState.clickPlayer(checkForPlayer(e.getX(), e.getY(),gameState.getPlayers()));
                 if(gameState.getSelectedPlayer() != -1)
                 {
-                	 System.out.println("Player " + gameState.getSelectedPlayer() + " Has been clicked");
+                    System.out.println("Player " + gameState.getSelectedPlayer() + " has been clicked");
                 }
                 
                 //Deck button is 125x100 pixels, placed in bottom right corner

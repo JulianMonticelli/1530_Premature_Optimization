@@ -3,7 +3,7 @@
  * can be used if credit is given to its author and any project or program
  * released with the source code is released under the same stipulations.
  */
-package sweets; // via SupremeMayor
+package sweets;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -21,10 +21,11 @@ public class WarningManager implements Serializable{
     
     private static WarningManager instance;
     
-    private static int WARNING_X_POS = 200;
-    private static int WARNING_Y_POS = 100;
+    private static int WARNING_X_POS = 400;
+    private static int WARNING_Y_POS = 400;
     
     private static Font WARNING_FONT_DEFAULT = new Font("Verdana", Font.BOLD, 72);
+    private static Font WARNING_FONT_INFORMATION = new Font("Verdana", Font.BOLD, 36);
     
     // Singleton system
     public static WarningManager getInstance() {
@@ -67,6 +68,9 @@ public class WarningManager implements Serializable{
                 break;
             case Warning.TYPE_ENDGAME:
                 warningList.add(new Warning(warning, 90, WARNING_FONT_DEFAULT, x, y, Color.BLACK));
+                break;
+            case Warning.TYPE_INFORMATION:
+                warningList.add(new Warning(warning, 51, WARNING_FONT_INFORMATION, x, y, Color.black));
                 break;
             default:
                 System.err.println("Warning " + warningType + " not available!");

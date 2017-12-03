@@ -164,8 +164,12 @@ public class HUD {
     
     private String updateTimer(SweetState gameState) {
         // Update Timer timestamp
-        timerTimeStamp = gameState.getMultithreadedTimer().getTimerString();
-        return timerTimeStamp;
+        if (gameState.getMultithreadedTimer() != null) {
+            timerTimeStamp = gameState.getMultithreadedTimer().getTimerString();
+            return timerTimeStamp;
+        } else {
+            return timerTimeStamp;
+        }
     } 
     
     private String updateFirstPlace(SweetState gameState) {

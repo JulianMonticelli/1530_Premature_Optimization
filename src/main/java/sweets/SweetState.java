@@ -5,10 +5,13 @@ import java.util.Arrays;
 import java.awt.Color;
 import java.io.Serializable;
 import java.io.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 //import javax.swing.JOptionPane;
 
 public class SweetState implements Serializable {
-
+    // This needs to exist to allow serializability
+    private static final long serialVersionUID = 489021829075290170L;
 
     // Game state statements
     private boolean paused = false; // Game is paused (no UI update)
@@ -32,8 +35,9 @@ public class SweetState implements Serializable {
 
     // Multi-threaded Timer
     private transient MultithreadedTimer mtTimer;
-	private String time;
-
+  
+    private int timeInSeconds;
+    
     // Warning system
     WarningManager warningManager;
 
@@ -49,7 +53,12 @@ public class SweetState implements Serializable {
     public boolean isGameModeStrategicMode() {
         return gameModeIsStrategicMode;
     }
-
+  
+    public void applySavedTime() {
+        initializeTimer();
+        mtTimer.setTimeInSeconds(timeInSeconds);
+    }
+    
     private int colorState = 3;
     private int specialSpaces[] = {-1,-1,-1,-1,-1}; // This array holds the indexes into the board of the special squares
 	private int grandmaLoc = -1;
@@ -203,100 +212,105 @@ public class SweetState implements Serializable {
 
     // Returns false if someone won; otherwise return true
     public boolean makeTurn() {
-		Player cP = players.get(playerTurn);
+        Player cP = players.get(playerTurn);
 
-		if (!waitingForTarget) {
-			// A boomerang was just thrown and no target is selected
-			if (boomerangClicked && boomerangTarget == -1) {
-				if (cP.getBoomerangCount() > 0) {
-					System.out.println("Throwing boomerang, waiting for target token to be selected");
-					waitingForTarget = true;
-					boomerangTarget = -1;
+        if (!waitingForTarget) {
+            // A boomerang was just thrown and no target is selected
+            if (boomerangClicked && boomerangTarget == -1) {
+                if (cP.getBoomerangCount() > 0) {
+                    System.out.println("Throwing boomerang, waiting for target token to be selected");
+                    waitingForTarget = true;
+                    boomerangTarget = -1;
 
-				} else {
-					System.out.println("Attempted to throw boomerang when player had no boomerangs left");
-				}
+                } else {
+                        System.out.println("Attempted to throw boomerang when player had no boomerangs left");
+                }
 
-			}
+            } 
 
-			if (isDeckClicked()) {
-				boolean isWinningMove = false;
+            if (isDeckClicked()) {
+                boolean isWinningMove = false;
 
-				if (boomerangTarget == -1) {
-					isWinningMove = drawAndMove(cP, false);
+                if (boomerangTarget == -1) {
+                    isWinningMove = drawAndMove(cP, false);
 
-				} else  {
-					isWinningMove = drawAndMove(players.get(boomerangTarget), true);
-					cP.throwBoomerang();
-					boomerangTarget = -1;
-					selectedPlayer = -1;
-				}
+                } else  {
+                    isWinningMove = drawAndMove(players.get(boomerangTarget), true);
+                    cP.throwBoomerang();
+                    boomerangTarget = -1;
+                    selectedPlayer = -1;
+                }
 
-				if (isWinningMove) {
-					endGame(cP);
-					return false;
-				}
+                if (isWinningMove) {
+                    endGame(cP);
+                    return false;
+                }
 
-				startNextTurn();
-			}
+                startNextTurn();
+            }
 
-		// Waiting for target, meaning we are waiting for player to select another player's token
-		} else if (isPlayerClicked()){
-			if (selectedPlayer != playerTurn) {
-				boomerangTarget = selectedPlayer;
-				waitingForTarget = false;
+        // Waiting for target, meaning we are waiting for player to select another player's token
+        } else if (isPlayerClicked()){ 
+            if (selectedPlayer != playerTurn) {
+                boomerangTarget = selectedPlayer;
+                waitingForTarget = false;
 
-			} else {
-				System.out.println("Player selected their own token as a boomerang target. Waiting until they select someone else's");
-				selectedPlayer = -1;
-			}
+            } else {
+                System.out.println("Player selected their own token as a boomerang target. Waiting until they select someone else's");
+                selectedPlayer = -1;
+            }
 
-		}
+        }
 
-		//selectedPlayer = -1;
-		deckClicked = false;
-		boomerangClicked = false;
-		return true;
+        //selectedPlayer = -1;
+        deckClicked = false;
+        boomerangClicked = false;
+        return true;
     }
 
 	// Returns true if player move resulted in win; otherwise return false
-	public boolean drawAndMove(Player currentPlayer, boolean isReverseMove) {
+    public boolean drawAndMove(Player currentPlayer, boolean isReverseMove) {
 
-		Card drawnCard = null;
+        Card drawnCard = null;
         if (currentPlayer.isDad()) {
             drawnCard = deck.dadDraw(currentPlayer.getPos());
         } else {
             drawnCard = deck.draw();
         }
-		int currentPos;
-		int destPos;
+        int currentPos;
+        int destPos;
 
-		currentPos = currentPlayer.getPos();
-		if (!isReverseMove)
-			destPos = calculateDest(currentPos, drawnCard);
-		else
-			destPos = calculateReverseDest(currentPos, drawnCard);
+        currentPos = currentPlayer.getPos();
+        if (!isReverseMove)
+            destPos = calculateDest(currentPos, drawnCard);
+        else
+            destPos = calculateReverseDest(currentPos, drawnCard);
 
-		movePlayer(currentPlayer, currentPos, destPos);
+        movePlayer(currentPlayer, currentPos, destPos);
 
-		if (destPos == grandmaLoc)
-			return true;
-		else
-			return false;
-	}
+        if (destPos == grandmaLoc)
+            return true;
+        else
+            return false;
+    }
 
-	// Returns destination
-	public int movePlayer(Player p, int startLoc, int endLoc) {
-		spaces.get(startLoc).removePlayer(p);
-		spaces.get(endLoc).addPlayer(p);
+    // Returns destination
+    public int movePlayer(Player p, int startLoc, int endLoc) {
+        spaces.get(startLoc).removePlayer(p);
+        spaces.get(endLoc).addPlayer(p);
 
-		p.setPos(endLoc);
+        p.setPos(endLoc);
 
-		System.out.println(p.getName() + " going from " + startLoc + " to " + endLoc);
+        System.out.println(p.getName() + " going from " + startLoc + " to " + endLoc);
 
-		return endLoc;
-	}
-
+        return endLoc;
+    }
+	
+    // To be used to avoid doubling Timer Threads
+    public void killTimerThread() {
+        mtTimer.killThread();
+    }
+    
     public void endGame(Player winner) {
         // Hacky solution. Creates a warning. These are made to be animated warnings, that
         // fade and travel up the screen.
@@ -313,27 +327,60 @@ public class SweetState implements Serializable {
         warningManager.clearWarningList();
     }
 
-	public void saveState(String filename) {
-		try {
-			time = mtTimer.getTimerString();
-			FileOutputStream fos = new FileOutputStream(filename + ".ser");
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			oos.writeObject(this);
-			oos.close();
-		} catch (FileNotFoundException e) {
-			System.out.println("File");
-			System.exit(1);
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
-	}
-
+    public boolean saveState(File file) {
+        paused = true; // Assure that the game is paused.
+        
+        // If the file is a null file (say the user cancelled the save)
+        // then resume the game and don't worry about saving anything.
+        if (file == null) {
+            togglePaused();
+            return false;
+        }
+        
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        
+        try {
+             // Set timeInSeconds to time in timer
+            timeInSeconds = mtTimer.getTimeInSeconds();
+            
+            // Create FOS and OOS 
+            FileOutputStream fos = new FileOutputStream(file);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            
+            // Create a statefile, which will get a messageDigest of the
+            // GameState method, and write it to file
+            StateFile sf = new StateFile(this);
+            oos.writeObject(sf);
+            
+            // Close OOS and FFS and return true
+            oos.close();
+            fos.close();
+            return true;
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found. This should have been caught earlier!");
+            System.exit(1);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+        return false;
+    }
+    
     public boolean togglePaused() {
         paused = !paused;
         return paused;
     }
 
+    public void setPaused(boolean paused) {
+        this.paused = paused;
+    }
+    
     public boolean isPaused() {
         return paused;
     }
@@ -701,22 +748,22 @@ public class SweetState implements Serializable {
     {
     	for(int i = 0; i < specials.length;i++)
     	{
-    		if(specials[i] == -1)
-    		{
-    			return true;
-    		}
+            if(specials[i] == -1)
+            {
+                return true;
+            }
 
-    		if(i == index)
-    		{
-    			continue;
-    		}
-    		else
-    		{
-    			if( Math.abs(specials[i] - number) < 5)
-    			{
-    				return false;
-    			}
-    		}
+            if(i == index)
+            {
+                continue;
+            }
+            else
+            {
+                if( Math.abs(specials[i] - number) < 5)
+                {
+                    return false;
+                }
+            }  
     	}
 
     	return true;
@@ -761,12 +808,12 @@ public class SweetState implements Serializable {
     }
 
 	public MultithreadedTimer setMTTimer(MultithreadedTimer m) {
-		mtTimer = m;
-		return mtTimer;
+            mtTimer = m;
+            return mtTimer;
 	}
 
 	public String getTime() {
-		return time;
+            return mtTimer.getTimerString();
 	}
 
     public WarningManager getWarningManager() {

@@ -5,6 +5,7 @@ import java.util.Random;
 import java.io.Serializable;
 
 public class Deck implements Serializable{
+    private SweetState gameState = null;
     private ArrayList<Card> theDeck;
     private int top;
 
@@ -16,6 +17,10 @@ public class Deck implements Serializable{
     public Deck(ArrayList<Card> d) {
         theDeck = d; //Could convert to array.
         reshuffleDeck();
+    }
+
+    public void addSweetState(SweetState s) {
+        gameState = s;
     }
 
     //NKD: Would prefer to call "shuffle"
@@ -47,21 +52,20 @@ public class Deck implements Serializable{
 		return theDeck.get(top);
     }
 
-    public Card dadDraw(BoardSpace currentSpace) {
+    public Card dadDraw(int playerPosition) {
 		draw(); //Deal with deck state update, but don't return
         int worstCardIndex = top;
+        int worstMoveDistance = INTEGER.MAX_VALUE;
         for (int i = top + 1; i < theDeck.size(); i++) {
-            if (moveDistance(theDeck.get(worstCardIndex), currentSpace)
-                > moveDistance(theDeck.get(i), currentSpace)) {
+            int currentMoveDistance = gameState.calculateDest(playerPosition,
+                                                              theDeck.get(i));
+            if (currentMoveDistinace < worstMoveDistance) {
                 worstCardIndex = i;
+                worstMoveDistance = currentMoveDistinace
             }
         }
         swap(theDeck, top, worstCardIndex);
         return theDeck.get(top);
-    }
-
-    public int moveDistance(Card aCard, BoardSpace currentSpace) {
-        return 0;
     }
 
     public void swap(ArrayList<Card> theDeck, int first, int second) {

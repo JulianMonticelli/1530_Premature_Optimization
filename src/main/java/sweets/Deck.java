@@ -5,6 +5,9 @@ import java.util.Random;
 import java.io.Serializable;
 
 public class Deck implements Serializable{
+    // This needs to exist to allow serializability
+    private static final long serialVersionUID = 489021829075290170L;
+    
     private SweetState gameState = null;
     private ArrayList<Card> theDeck;
     private int top;

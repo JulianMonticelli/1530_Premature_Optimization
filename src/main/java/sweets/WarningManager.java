@@ -16,6 +16,8 @@ import java.io.Serializable;
  * @author Julian
  */
 public class WarningManager implements Serializable{
+    // This needs to exist to allow serializability
+    private static final long serialVersionUID = 489021829075290170L;
     
     private static WarningManager instance;
     

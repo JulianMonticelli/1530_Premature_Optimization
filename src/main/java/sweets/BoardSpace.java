@@ -6,15 +6,18 @@ import java.io.Serializable;
 
 public class BoardSpace implements Serializable
 {
-	private int xOrigin; // The x value of the graphical origin of the space.
-	private int yOrigin; // The y value of the graphical origin of the space.
-	private Color spaceColor; // The color of the space
-	private int intColorCode; //The color corresponding to the code in Card.java
-	private ArrayList<Player> players; //Contains list of players currently occupying space
-	private int numPlayers = 0;
-	public int specialNum = -1; // This tells you what type of space this space is. I put a guide below this line
-	// -1 = normal space
-	// 0 = iceCream
+    // This needs to exist to allow serializability
+    private static final long serialVersionUID = 489021829075290170L;
+    
+    private int xOrigin; // The x value of the graphical origin of the space.
+    private int yOrigin; // The y value of the graphical origin of the space.
+    private Color spaceColor; // The color of the space
+    private int intColorCode; //The color corresponding to the code in Card.java
+    private ArrayList<Player> players; //Contains list of players currently occupying space
+    private int numPlayers = 0;
+    public int specialNum = -1; // This tells you what type of space this space is. I put a guide below this line
+    // -1 = normal space
+    // 0 = iceCream
     // 1 = chocolateBar
     // 2 = candyCane
     // 3 = lollipop

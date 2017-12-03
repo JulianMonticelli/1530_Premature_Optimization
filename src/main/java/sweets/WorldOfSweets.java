@@ -254,6 +254,7 @@ public class WorldOfSweets extends JPanel {
     
     public void saveStateFile() {
         gameState.saveState(selectSaveFile());
+        gameState.setPaused(false);
     }
     
     public void loadStateFile() {
@@ -262,7 +263,6 @@ public class WorldOfSweets extends JPanel {
         if (loadedState != null) {
             gameState.killTimerThread();
             gameState = loadedState;
-            gameState.togglePaused();
         }
     }
 	
@@ -298,6 +298,7 @@ public class WorldOfSweets extends JPanel {
             state = sf.getGameState();
             if (state != null) {            
                 state.applySavedTime();
+                state.setPaused(false);
             }
             return state;
         } else {

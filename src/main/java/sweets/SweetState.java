@@ -95,8 +95,12 @@ public class SweetState implements Serializable {
 
 	public void clickBoomerang() {
             if (!boomerangClicked) {
-                boomerangClicked = true;
-                WarningManager.getInstance().createWarning("Click on a player token", Warning.TYPE_INFORMATION);
+                if (players.get(playerTurn).getBoomerangCount() > 0) {
+                    boomerangClicked = true;
+                    WarningManager.getInstance().createWarning("Click on a player token", Warning.TYPE_INFORMATION);
+                } else {
+                    WarningManager.getInstance().createWarning("Player has no boomerangs!", Warning.TYPE_INFORMATION);
+                }
             }
         }
 

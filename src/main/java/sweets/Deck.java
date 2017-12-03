@@ -5,6 +5,7 @@ import java.util.Random;
 import java.io.Serializable;
 
 public class Deck implements Serializable{
+    private SweetState gameState = null;
     private ArrayList<Card> theDeck;
     private int top;
 
@@ -16,6 +17,10 @@ public class Deck implements Serializable{
     public Deck(ArrayList<Card> d) {
         theDeck = d; //Could convert to array.
         reshuffleDeck();
+    }
+
+    public void addSweetState(SweetState s) {
+        gameState = s;
     }
 
     //NKD: Would prefer to call "shuffle"
@@ -45,6 +50,28 @@ public class Deck implements Serializable{
 			reshuffleDeck();
 		top++;
 		return theDeck.get(top);
+    }
+
+    public Card dadDraw(int playerPosition) {
+		draw(); //Deal with deck state update, but don't return
+        int worstCardIndex = top;
+        int worstMoveDistance = Integer.MAX_VALUE;
+        for (int i = top + 1; i < theDeck.size(); i++) {
+            int currentMoveDistance = gameState.calculateDest(playerPosition,
+                                                              theDeck.get(i));
+            if (currentMoveDistance < worstMoveDistance) {
+                worstCardIndex = i;
+                worstMoveDistance = currentMoveDistance;
+            }
+        }
+        swap(theDeck, top, worstCardIndex);
+        return theDeck.get(top);
+    }
+
+    public void swap(ArrayList<Card> theDeck, int first, int second) {
+        Card c = theDeck.get(first);
+        theDeck.set(first, theDeck.get(second));
+        theDeck.set(second, c);
     }
 
     //NKD: Need to define error handling for case where no card was drawn

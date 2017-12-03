@@ -14,16 +14,16 @@ public class SweetState implements Serializable {
     private static final long serialVersionUID = 489021829075290170L;
 
     // Game state statements
-    private boolean paused = false; // Game is paused (no UI update)    
+    private boolean paused = false; // Game is paused (no UI update)
     private boolean finished = false; // Game is finished
     private boolean newGame = false; // Game is new (no players yet, no moves made)
-    
+
     private boolean deckClicked = false; // The variable for determining if the deck was clicked
     private boolean boomerangClicked = false; // The variable for determining if the current player's boomerang icon was clicked
     private int boomerangTarget = -1; // The variable for the target of a boomerang throw. -1 if no target selected
     private boolean waitingForTarget = false; //The variable for determining if we need to wait for a boomerang target
     private int selectedPlayer = -1; // Equal to the player id when that player's token is clicked
-    
+
     private ArrayList<BoardSpace> spaces = new ArrayList<BoardSpace>(); //List of spaces on the board
     private ArrayList<Player> players;
 
@@ -32,27 +32,28 @@ public class SweetState implements Serializable {
 
     private int playerTurn;
     private int numPlayers;
-    
+
     // Multi-threaded Timer
     private transient MultithreadedTimer mtTimer;
+  
     private int timeInSeconds;
     
     // Warning system
     WarningManager warningManager;
-    
+
     public boolean randomSpaces = false;
-    
+
     // I changed this variable to make more sense to callers
     private boolean gameModeIsStrategicMode = true;
-    
+
     public void setGameModeIsStrategicMode(boolean isStrategicMode) {
         this.gameModeIsStrategicMode = isStrategicMode;
     }
-    
+
     public boolean isGameModeStrategicMode() {
         return gameModeIsStrategicMode;
     }
-    
+  
     public void applySavedTime() {
         initializeTimer();
         mtTimer.setTimeInSeconds(timeInSeconds);
@@ -69,50 +70,51 @@ public class SweetState implements Serializable {
 
     private int currentFrame = 0;
     private int decisionFrames = -1;
-    
+
     public SweetState() {
         newGame = true;
         deckCreator = new DeckFactory();
         deck = deckCreator.makeDeck();
+        deck.addSweetState(this);
         playerTurn = 0;
 
         warningManager = WarningManager.getInstance();
-        
+
     }
-    
+
     public void initializeTimer() {
         // Initialize timer and start thread
         mtTimer = new MultithreadedTimer();
         mtTimer.startThread();
     }
-    
+
     public void clickDeck() {
         deckClicked = true;
     }
-	
+
 	public boolean isDeckClicked() {
 		return deckClicked;
 	}
-	
+
 	public void clickBoomerang() {
             boomerangClicked = true;
         }
-	
+
 	public boolean isBoomerangClicked() {
 		return boomerangClicked;
 	}
-	
+
 	public boolean isPlayerTargetted() {
 		if (boomerangTarget != -1)
 			return true;
 		else
 			return false;
 	}
-	
+
 	public void clickPlayer(int playerNumber) {
         selectedPlayer = playerNumber;
     }
-	
+
 	public boolean isPlayerClicked() {
 		if (selectedPlayer != -1)
 			return true;
@@ -122,9 +124,9 @@ public class SweetState implements Serializable {
 
 	public int generateRandomNum(int min, int max)
 	{
-		return min + (int)(Math.random() * max); 
+		return min + (int)(Math.random() * max);
 	}
-	
+
 	public int getSelectedPlayer() {
 		return selectedPlayer;
 	}
@@ -152,8 +154,8 @@ public class SweetState implements Serializable {
 
 
 		Player cP = players.get(playerTurn);
-		
-		
+
+
 		// A boomerang was just thrown and no target is selected
 		if (generateRandomNum(0,5) > 2 && boomerangTarget == -1) // Simulate a boomarang click
 		{
@@ -161,53 +163,53 @@ public class SweetState implements Serializable {
 				System.out.println("AI Throwing boomerang, waiting for target token to be selected");
 				waitingForTarget = true;
 				boomerangTarget = -1;
-		
+
 			} else {
 				System.out.println("AI Attempted to throw boomerang when player had no boomerangs left");
 			}
 
 			selectedPlayer = playerTurn;
-			while(selectedPlayer == playerTurn) 
+			while(selectedPlayer == playerTurn)
 			{
 				selectedPlayer = generateRandomNum(0,numPlayers);
 				boomerangTarget = selectedPlayer;
 				waitingForTarget = false;
-		
-			}	 
 
-		} 
-		
-		
+			}
+
+		}
+
+
 		// Waiting for target, meaning we are waiting for player to select another player's token
-		
-		
+
+
 		boolean isWinningMove = false;
-				
-		if (boomerangTarget == -1) 
+
+		if (boomerangTarget == -1)
 		{
 			isWinningMove = drawAndMove(cP, false);
-		
-		} else  
+
+		} else
 		{
 			isWinningMove = drawAndMove(players.get(boomerangTarget), true);
 			cP.throwBoomerang();
 			boomerangTarget = -1;
 		}
-		
-		if (isWinningMove) 
+
+		if (isWinningMove)
 		{
 			endGame(cP);
 			return false;
 		}
 
 		startNextTurn();
-		
+
 		selectedPlayer = -1;
 		deckClicked = false;
 		boomerangClicked = false;
 		return true;
 	}
-    
+
     // Returns false if someone won; otherwise return true
     public boolean makeTurn() {
         Player cP = players.get(playerTurn);
@@ -265,11 +267,16 @@ public class SweetState implements Serializable {
         boomerangClicked = false;
         return true;
     }
-	
+
 	// Returns true if player move resulted in win; otherwise return false
     public boolean drawAndMove(Player currentPlayer, boolean isReverseMove) {
 
-        Card drawnCard = deck.draw();
+        Card drawnCard = null;
+        if (currentPlayer.isDad()) {
+            drawnCard = deck.dadDraw(currentPlayer.getPos());
+        } else {
+            drawnCard = deck.draw();
+        }
         int currentPos;
         int destPos;
 
@@ -309,17 +316,17 @@ public class SweetState implements Serializable {
         // fade and travel up the screen.
         WarningManager.getInstance().createWarning("Game Over", Warning.TYPE_ENDGAME, 400, 475);
         mtTimer.killThread();
-        
+
         // Display some sort of "Play another game?" message?
     }
-    
+
     public void resetGameState() {
         paused = false;
         finished = false;
         newGame = true;
         warningManager.clearWarningList();
     }
-	
+
     public boolean saveState(File file) {
         paused = true; // Assure that the game is paused.
         
@@ -369,7 +376,7 @@ public class SweetState implements Serializable {
         paused = !paused;
         return paused;
     }
-    
+
     public void setPaused(boolean paused) {
         this.paused = paused;
     }
@@ -377,19 +384,19 @@ public class SweetState implements Serializable {
     public boolean isPaused() {
         return paused;
     }
-    
+
     public boolean isFinished() {
         return finished;
     }
-    
+
     public boolean isNewGame() {
         return newGame;
     }
-    
+
     public Deck getDeck() {
         return deck;
     }
-    
+
     public ArrayList<String> getPlayerInFirst() {
         ArrayList<String> firstPlace = new ArrayList<String>(numPlayers);
             int maxPos = 0;
@@ -402,7 +409,7 @@ public class SweetState implements Serializable {
                     firstPlace.add(players.get(i).getName());
                 }
             }
-		
+
         return firstPlace;
     }
 
@@ -410,7 +417,7 @@ public class SweetState implements Serializable {
         String playerName = players.get(playerTurn).getName();
         return playerName;
     }
-    
+
     public Player getCurrentPlayer() {
         return players.get(playerTurn);
     }
@@ -419,17 +426,17 @@ public class SweetState implements Serializable {
     {
         return spaces;
     }
-	
+
 	public int startNextTurn() {
             playerTurn = ++playerTurn % players.size();
 
             return playerTurn;
 	}
-	
+
 	public int addPlayers(ArrayList<Player> playersInfo) {
 		players = playersInfo;
 		numPlayers = playersInfo.size();
-		
+
 		//Add tokens to board
 		try {
 			for (int i = 0; i < numPlayers; i++) {
@@ -441,11 +448,11 @@ public class SweetState implements Serializable {
 		}
             return 0;
 	}
-	
+
 	public ArrayList<Player> getPlayers() {
 		return players;
 	}
-	
+
 	//Returns index of destination
 	public int calculateDest(int startPos, Card drawnCard) {
 
@@ -457,13 +464,13 @@ public class SweetState implements Serializable {
 
 			if (specialNum != -1)
 				return specialSpaces[specialNum];
-			
+
             //Middle cards have been removed
 			/*
 			else if (drawnCard.isMiddleCard())
                 return (spaces.size() - 3)/2;
 			*/
-			
+
             else if (drawnCard.isDouble()) {
                 boolean hasPassedMatchingSquare = false;
                 for (int i = startPos + 1; i < grandmaLoc + 1; i++) {
@@ -476,7 +483,7 @@ public class SweetState implements Serializable {
                             hasPassedMatchingSquare = true;
                     }
                 }
-				
+
             } else {
                 for (int i = startPos + 1; i < grandmaLoc + 1; i++) {
                     if (i == grandmaLoc)
@@ -489,7 +496,7 @@ public class SweetState implements Serializable {
 			// If we haven't returned yet, that means we have reached grandma's house
             return grandmaLoc;
 	}
-	
+
 	// Returns index of destination
 	public int calculateReverseDest(int startPos, Card drawnCard) {
 
@@ -501,13 +508,13 @@ public class SweetState implements Serializable {
 
 			if (specialNum != -1)
 				return specialSpaces[specialNum];
-			
+
             //Middle cards have been removed
 			/*
 			else if (drawnCard.isMiddleCard())
                 return (spaces.size() - 3)/2;
 			*/
-			
+
             else if (drawnCard.isDouble()) {
                 boolean hasPassedMatchingSquare = false;
                 for (int i = startPos - 1; i > -1; i--) {
@@ -518,7 +525,7 @@ public class SweetState implements Serializable {
                             hasPassedMatchingSquare = true;
                     }
                 }
-				
+
             } else {
                 for (int i = startPos - 1; i > -1; i--) {
                     if (spaces.get(i).getIntColorCode() == drawnCard.getColor())
@@ -540,7 +547,7 @@ public class SweetState implements Serializable {
 		{
 			if(index == specials[i])
 			{
-				
+
 				return i;
 			}
 		}
@@ -551,7 +558,7 @@ public class SweetState implements Serializable {
     /**
      * Generates a zig-zag box pattern for the CandyLand path.
      * It works by drawing boxes from right to left across the screen,
-     * then drawing a bridge box. It continues this process until 
+     * then drawing a bridge box. It continues this process until
      * it reaches the bottom of the screen. Then stores the result
      * in the spaces array.
      * @param The graphics object used to draw to the JPanel
@@ -562,18 +569,18 @@ public class SweetState implements Serializable {
         // Current x and y keep track of our x and y indexes into the Jpanel
         int currentX = 0;
         int currentY = 0;
-        
+
         // X and Y distance are multiplied by the current x or y index to get the total distance for the origin of the rectangle to be drawn.
         int xDistance = WIDTH/10;
         int yDistance = HEIGHT/10;
-        
+
         // The variables that will hold distance times current
         int rowDistance = 0;
         int columnDistance = 0;
-        
+
         // Path state determines whether we should draw a bridge on near x or far x side of the window.
-        int pathState = 0; 
-        
+        int pathState = 0;
+
 		if(randomSpaces == true)
         {
              specialSpaces = pickSpecialSpaces(specialSpaces, 2, 49);
@@ -585,15 +592,15 @@ public class SweetState implements Serializable {
             specialSpaces[2] = 25;
             specialSpaces[3] = 35;
             specialSpaces[4] = 45;
-             
+
         }
-		
-		
+
+
         while(rowDistance < (HEIGHT - yDistance)) // While we have not reached the bottom of the screen (y).
         {
             rowDistance = currentY * yDistance; // Get the current height we want to draw at.
-            
-            if(pathState == 0) 
+
+            if(pathState == 0)
             {
                 while(columnDistance < (WIDTH - xDistance)) // While we have not reached the edge of the screen (x).
                 {
@@ -601,7 +608,7 @@ public class SweetState implements Serializable {
                     columnDistance = currentX * xDistance; // Get the current width we want to draw at.
                     //g.fill3DRect(columnDistance,rowDistance, xDistance, yDistance, true); // Draw a rect at current calculated height and width.
                     int searchValue = searchForSpecialSquare(specialSpaces, spaces.size());
-                    
+
                     if(searchValue == -1)
                     {
                     	spaces.add(new BoardSpace(columnDistance,rowDistance, colorPick()));
@@ -611,7 +618,7 @@ public class SweetState implements Serializable {
                     	spaces.add(new BoardSpace(columnDistance,rowDistance, Color.black));
                     	spaces.get(spaces.size()-1).specialNum = searchValue;
                     }
-                    
+
                     currentX++;
                 }
                 currentY++;
@@ -622,7 +629,7 @@ public class SweetState implements Serializable {
                 currentX = 1;
                 while(columnDistance > 0) // While we have not reached the edge of the screen (x).
                 {
-                    
+
                     //g.setColor(colorPick());
                     columnDistance = WIDTH - xDistance * currentX;
                     //g.fill3DRect(columnDistance,rowDistance, xDistance, yDistance, true); // Draw a rect at current calculated height and width.
@@ -641,13 +648,13 @@ public class SweetState implements Serializable {
                 }
                 currentY++;
             }
-            
+
             // After we have drawn a row we need to draw a row of size one so move down one y index.
             rowDistance = currentY * yDistance;
-            
+
             if(rowDistance < HEIGHT - yDistance) // Make sure we are not off the screen in the y direction
             {
-                
+
                 // Alternate drawing the bridge path on the right and left.
                 if(pathState == 0)
                 {
@@ -674,13 +681,13 @@ public class SweetState implements Serializable {
                     }
                     else
                     {
-                    	
+
                     	spaces.add(new BoardSpace(0,rowDistance, Color.black));
                     	spaces.get(spaces.size()-1).specialNum = searchValue;
                     }
                     pathState = 0;
                 }
-                
+
             }
             // Move down in y and reset x variable to move left to right again.
             currentY++;
@@ -688,11 +695,11 @@ public class SweetState implements Serializable {
             columnDistance = 0;
         }
 
-        System.out.println(specialSpaces[0] + " " + specialSpaces[1] + " " + specialSpaces[2] + " " + specialSpaces[3] + " " + specialSpaces[4] + " ");        
+        System.out.println(specialSpaces[0] + " " + specialSpaces[1] + " " + specialSpaces[2] + " " + specialSpaces[3] + " " + specialSpaces[4] + " ");
 		grandmaLoc = spaces.size() - 3;
         return spaces;
     }
-	
+
 	public int getGrandmaLoc() {
 		return grandmaLoc;
 	}
@@ -708,14 +715,14 @@ public class SweetState implements Serializable {
     public int[] pickSpecialSpaces(int[] specials, int min, int max)
     {
     	int randomNum = -1;
-    	
-    	
+
+
     	for(int i = 0; i < specials.length;i++)
     	{
-    		
+
     		do
     		{
-    			randomNum = min + (int)(Math.random() * max); 	
+    			randomNum = min + (int)(Math.random() * max);
     		}while(!validNum(specials,randomNum, i));
 
     		specials[i] = randomNum;
@@ -727,9 +734,9 @@ public class SweetState implements Serializable {
 	public int[] getSpecialSpaces() {
 		return specialSpaces;
 	}
-	
+
     /**
-     * This funtion verifies that a sppace is an 
+     * This funtion verifies that a sppace is an
      * acceptable distance from another space to
      * ensure that they do not appear together
      * @param specials The array of ints representing special blocks.
@@ -759,11 +766,11 @@ public class SweetState implements Serializable {
             }  
     	}
 
-    	return true;  	
+    	return true;
     }
-    
+
     /**
-     * This function assigns returns 
+     * This function assigns returns
      * a color based on the current colorstate
      * @return The color to be applied.
      */
@@ -772,12 +779,12 @@ public class SweetState implements Serializable {
         if(colorState == 0)
         {
             colorState = 1;
-            return Color.red; 
+            return Color.red;
         }
         else if(colorState == 1)
         {
             colorState = 2;
-            return Color.yellow;   
+            return Color.yellow;
         }
         else if(colorState == 2)
         {
@@ -793,24 +800,24 @@ public class SweetState implements Serializable {
         {
             colorState = 0;
             return Color.orange;
-        }   
+        }
     }
-    
+
     public MultithreadedTimer getMultithreadedTimer() {
         return mtTimer;
     }
-	
+
 	public MultithreadedTimer setMTTimer(MultithreadedTimer m) {
             mtTimer = m;
             return mtTimer;
 	}
-	
+
 	public String getTime() {
             return mtTimer.getTimerString();
 	}
-    
+
     public WarningManager getWarningManager() {
         return warningManager;
     }
-	
+
 }

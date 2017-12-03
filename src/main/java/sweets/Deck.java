@@ -47,6 +47,29 @@ public class Deck implements Serializable{
 		return theDeck.get(top);
     }
 
+    public Card dadDraw(BoardSpace currentSpace) {
+		draw(); //Deal with deck state update, but don't return
+        int worstCardIndex = top;
+        for (int i = top + 1; i < theDeck.size(); i++) {
+            if (moveDistance(theDeck.get(worstCardIndex), currentSpace)
+                > moveDistance(theDeck.get(i), currentSpace)) {
+                worstCardIndex = i;
+            }
+        }
+        swap(theDeck, top, worstCardIndex);
+        return theDeck.get(top);
+    }
+
+    public int moveDistance(Card aCard, BoardSpace currentSpace) {
+        return 0;
+    }
+
+    public void swap(ArrayList<Card> theDeck, int first, int second) {
+        Card c = theDeck.get(first);
+        theDeck.set(first, theDeck.get(second));
+        theDeck.set(second, c);
+    }
+
     //NKD: Need to define error handling for case where no card was drawn
     //Currently, returns null
     public Card getLastCard() {

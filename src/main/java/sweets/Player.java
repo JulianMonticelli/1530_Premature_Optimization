@@ -11,22 +11,24 @@ public class Player implements Serializable
 	private int playerX;
 	private int playerY;
 	private boolean isAI = false;
+	private boolean isDad = false;
 	private int playerNumber;
-	
+
 	public Player() {
 		playerColor = null;
 		name = "";
 		position = 0;
 	}
-	
+
 	public Player(Color c, String n, int p, int bCount, int num) {
 		playerColor = c;
 		name = n;
 		position = p;
 		boomerangCount = bCount;
 		playerNumber = num;
+		isDad = name.equals("Dad");
 	}
-	
+
 	// If # of boomerangs is not specified, it will default to 0
 	public Player(Color c, String n, int p) {
 		playerColor = c;
@@ -49,7 +51,7 @@ public class Player implements Serializable
 	{
 		return isAI;
 	}
-	
+
 	public void setName(String n)
 	{
 		name = n;
@@ -79,7 +81,7 @@ public class Player implements Serializable
 	{
 		return playerY;
 	}
-	
+
 	public void setColor(Color colr)
 	{
 		playerColor = colr;
@@ -89,26 +91,30 @@ public class Player implements Serializable
 	{
 		return playerColor;
 	}
-	
+
 	public int getPos() {
 		return position;
 	}
-	
+
 	public void setPos(int pos) {
 		position = pos;
-	}	
-	
+	}
+
 	// Return 1 if a boomerang is thrown; if no boomerangs are left, return 0
 	public int throwBoomerang() {
 		if (boomerangCount > 0) {
 			boomerangCount--;
 			return 1;
 		}
-		
+
 		return 0;
 	}
-	
+
 	public int getBoomerangCount() {
 		return boomerangCount;
+	}
+
+	public boolean isDad() {
+		return isDad;
 	}
 }

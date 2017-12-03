@@ -262,7 +262,12 @@ public class SweetState implements Serializable {
 	// Returns true if player move resulted in win; otherwise return false
 	public boolean drawAndMove(Player currentPlayer, boolean isReverseMove) {
 
-		Card drawnCard = deck.draw();
+		Card drawnCard = null;
+        if (currentPlayer.isDad()) {
+            drawnCard = deck.dadDraw();
+        } else {
+            drawnCard = deck.draw();
+        }
 		int currentPos;
 		int destPos;
 

@@ -55,13 +55,13 @@ public class Deck implements Serializable{
     public Card dadDraw(int playerPosition) {
 		draw(); //Deal with deck state update, but don't return
         int worstCardIndex = top;
-        int worstMoveDistance = INTEGER.MAX_VALUE;
+        int worstMoveDistance = Integer.MAX_VALUE;
         for (int i = top + 1; i < theDeck.size(); i++) {
             int currentMoveDistance = gameState.calculateDest(playerPosition,
                                                               theDeck.get(i));
-            if (currentMoveDistinace < worstMoveDistance) {
+            if (currentMoveDistance < worstMoveDistance) {
                 worstCardIndex = i;
-                worstMoveDistance = currentMoveDistinace
+                worstMoveDistance = currentMoveDistance;
             }
         }
         swap(theDeck, top, worstCardIndex);

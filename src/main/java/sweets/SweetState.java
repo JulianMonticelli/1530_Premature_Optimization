@@ -264,7 +264,7 @@ public class SweetState implements Serializable {
 
 		Card drawnCard = null;
         if (currentPlayer.isDad()) {
-            drawnCard = deck.dadDraw();
+            drawnCard = deck.dadDraw(currentPlayer.getPos());
         } else {
             drawnCard = deck.draw();
         }

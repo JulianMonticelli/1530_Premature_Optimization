@@ -16,8 +16,6 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.JOptionPane;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -280,14 +278,13 @@ public class WorldOfSweets extends JPanel {
             sf = (StateFile) ois.readObject();
             ois.close();
         }
-        catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "The save file has been either"
+                                        + " structurally corrupted or does not"
+                                        + " exist on the filesystem.",
+                                            "Save file missing or corrupted",
+                                            JOptionPane.WARNING_MESSAGE);
+            return null;
         }
         
         if (sf == null) {

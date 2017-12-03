@@ -67,14 +67,8 @@ public class Deck implements Serializable{
                 worstMoveDistance = currentMoveDistance;
             }
         }
-        swap(theDeck, top, worstCardIndex);
+        swap(top, worstCardIndex);
         return theDeck.get(top);
-    }
-
-    public void swap(ArrayList<Card> theDeck, int first, int second) {
-        Card c = theDeck.get(first);
-        theDeck.set(first, theDeck.get(second));
-        theDeck.set(second, c);
     }
 
     //NKD: Need to define error handling for case where no card was drawn
@@ -92,14 +86,7 @@ public class Deck implements Serializable{
     public boolean wasLastCardSkipCard() {
         return getLastCard().isSkipTurn();
     }
-
-	// Deprecated
-	/*
-    public boolean wasLastCardMiddleCard() {
-        return getLastCard().isMiddleCard();
-    }
-	*/
-
+    
     private void swap(int a, int b) {
         Card c = theDeck.get(a);
         theDeck.set(a, theDeck.get(b));

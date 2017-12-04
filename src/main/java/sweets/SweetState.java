@@ -318,7 +318,7 @@ public class SweetState implements Serializable {
     public void endGame(Player winner) {
         // Hacky solution. Creates a warning. These are made to be animated warnings, that
         // fade and travel up the screen.
-        WarningManager.getInstance().createWarning("Game Over", Warning.TYPE_ENDGAME, 400, 475);
+        WarningManager.getInstance().createWarning("Game Over", Warning.TYPE_ENDGAME);
         mtTimer.killThread();
 
         // Display some sort of "Play another game?" message?

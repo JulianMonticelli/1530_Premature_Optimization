@@ -21,16 +21,16 @@ public class WarningManager implements Serializable{
     
     private static WarningManager instance;
     
-    private static int WARNING_X_POS = 400;
-    private static int WARNING_Y_POS = 400;
+    private final int warningXPos;
+    private final int warningYPos;
     
-    private static Font WARNING_FONT_DEFAULT = new Font("Verdana", Font.BOLD, 72);
-    private static Font WARNING_FONT_INFORMATION = new Font("Verdana", Font.BOLD, 36);
+    private Font warningFontDefault;
+    private Font warningFontInformation;
     
     // Singleton system
     public static WarningManager getInstance() {
         if (instance == null)
-            instance = new WarningManager();
+            instance = new WarningManager(1.0, 1.0);
         return instance;
     }
     
@@ -39,9 +39,15 @@ public class WarningManager implements Serializable{
     LinkedList<Warning> warningList;
     LinkedList<Warning> removeList;
     
-    private WarningManager() {
+    public WarningManager(double widthRatio, double heightRatio) {
+        warningFontDefault = new Font("Verdana", Font.BOLD, (int)(72*widthRatio));
+        warningFontInformation  = new Font("Verdana", Font.BOLD, (int)(36*heightRatio));
+        warningXPos = (int)(400*widthRatio);
+        warningYPos = (int)(400*heightRatio);
+        
         warningList = new LinkedList<>();
         removeList = new LinkedList<>();
+        instance = this;
     }
     
     /*******************************************************************
@@ -50,7 +56,7 @@ public class WarningManager implements Serializable{
      * @param warning String that will be displayed on-screen
      */
     public void createWarning(String warning, int warningType) {
-            createWarning(warning, warningType, WARNING_X_POS, WARNING_Y_POS);
+            createWarning(warning, warningType, warningXPos, warningYPos);
     }
     
     /*******************************************************************
@@ -61,16 +67,16 @@ public class WarningManager implements Serializable{
     public void createWarning(String warning, int warningType, int x, int y) {
         switch (warningType) {
             case Warning.TYPE_WARNING:
-                warningList.add(new Warning(warning, 60,  WARNING_FONT_DEFAULT, x, y, Color.RED));
+                warningList.add(new Warning(warning, 60,  warningFontDefault, x, y, Color.RED));
                 break;
             case Warning.TYPE_POSITIVE:
-                warningList.add(new Warning(warning, 90,  WARNING_FONT_DEFAULT, x, y, Color.GREEN));
+                warningList.add(new Warning(warning, 90,  warningFontDefault, x, y, Color.GREEN));
                 break;
             case Warning.TYPE_ENDGAME:
-                warningList.add(new Warning(warning, 90, WARNING_FONT_DEFAULT, x, y, Color.BLACK));
+                warningList.add(new Warning(warning, 90, warningFontDefault, x, y, Color.BLACK));
                 break;
             case Warning.TYPE_INFORMATION:
-                warningList.add(new Warning(warning, 51, WARNING_FONT_INFORMATION, x, y, Color.black));
+                warningList.add(new Warning(warning, 51, warningFontInformation, x, y, Color.black));
                 break;
             default:
                 System.err.println("Warning " + warningType + " not available!");

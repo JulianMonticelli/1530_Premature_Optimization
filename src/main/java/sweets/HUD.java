@@ -49,6 +49,12 @@ public class HUD {
     private static final Color TIMER_TEXT_MAIN_COLOR = Color.decode("#FFFFFF");
     
     
+    private static final int OLD_HEIGHT = 1000;
+    private static final int OLD_WIDTH = 1200;
+    
+    private final double currentOldHeightRatio;
+    private final double currentOldWidthRatio;
+    
     private static final int HUD_ELEMENT_SIZE = 128;
     private static final int HUD_OFFSET_HEIGHT = HUD_ELEMENT_SIZE-10; // 128 pixel images, drawn an extra 20 pixels down the bottom
     private static final int HUD_OFFSET_WIDTH = HUD_ELEMENT_SIZE;
@@ -72,7 +78,7 @@ public class HUD {
     private static final int BOOMERANG_ICON_Y_OFFSET = BOOMERANG_BOX_OFFSET_Y + 8;
     
     
-    private static final Font fontHUD = new Font("Arial", Font.PLAIN|Font.BOLD, 36);
+    private final Font fontHUD;
     
     
     private BufferedImage hudBackground = null;
@@ -96,6 +102,7 @@ public class HUD {
     
     private int screenWidth = -1;
     private int screenHeight = -1;
+    
     
     public HUD(int screenWidth, int screenHeight) {
         try {
@@ -129,22 +136,34 @@ public class HUD {
             
             HUD_BACKGROUND_IMAGE.getHeight();
             
-            this.screenWidth = screenWidth;
-            this.screenHeight = screenHeight;
             
-            backgroundDrawY = screenHeight - HUD_BACKGROUND_MARGIN - HUD_BACKGROUND_IMAGE.getHeight();
-            backgroundDrawX = HUD_BACKGROUND_MARGIN;
-            
-            hudBackground = HUD_BACKGROUND_IMAGE_3;
             
         } catch (IOException e) {
             e.printStackTrace();
         }
         
+        currentOldHeightRatio = (double)screenHeight/OLD_HEIGHT;        
+        currentOldWidthRatio = (double)screenWidth/OLD_WIDTH;
+        
+        this.screenWidth = screenWidth;
+        this.screenHeight = screenHeight;
+
+        backgroundDrawY = screenHeight - HUD_BACKGROUND_MARGIN - (int)(HUD_BACKGROUND_IMAGE.getHeight()*currentOldHeightRatio);
+        backgroundDrawX = HUD_BACKGROUND_MARGIN;
+
+        hudBackground = HUD_BACKGROUND_IMAGE_3;
+        
         currentDeckImage = DECK_FULL; // Deck starts as full
+        fontHUD  = new Font("Arial", Font.PLAIN|Font.BOLD, (int)(36*currentOldWidthRatio));;
     }
     
+    public double getWidthRatio() {
+        return currentOldWidthRatio;
+    }
     
+    public double getHeightRatio() {
+        return currentOldHeightRatio;
+    }
     
     public void update(SweetState gameState) {
         updateFirstPlace(gameState);
@@ -191,10 +210,16 @@ public class HUD {
     public void draw(Graphics g, int screenWidth, int screenHeight) {
         
         // HUD background
-        g.drawImage(hudBackground, backgroundDrawX, backgroundDrawY, null);
+        g.drawImage(hudBackground, backgroundDrawX, backgroundDrawY, 
+                (int)(hudBackground.getWidth()*currentOldWidthRatio), 
+                (int)(hudBackground.getHeight()*currentOldHeightRatio), null);
         
         // Deck
-        g.drawImage(currentDeckImage, screenWidth-HUD_OFFSET_WIDTH, screenHeight-HUD_OFFSET_HEIGHT, null);
+        g.drawImage(currentDeckImage,
+                screenWidth-(int)(HUD_OFFSET_WIDTH*currentOldWidthRatio),
+                screenHeight-(int)(HUD_OFFSET_HEIGHT*currentOldHeightRatio),
+                (int)(currentDeckImage.getWidth()*currentOldWidthRatio), 
+                (int)(currentDeckImage.getHeight()*currentOldHeightRatio), null);
 
         drawHUDTimer(g, timerTimeStamp);
         
@@ -202,9 +227,19 @@ public class HUD {
         
         // Last Card
         if (lastCardPicked != null) {
-            g.drawImage(lastCardPicked, screenWidth-HUD_OFFSET_WIDTH-HUD_ELEMENT_SIZE, screenHeight-HUD_OFFSET_HEIGHT, null);
+            g.drawImage(lastCardPicked, 
+                    screenWidth-(int)((HUD_OFFSET_WIDTH+HUD_ELEMENT_SIZE)*currentOldWidthRatio),
+                    screenHeight-(int)(HUD_OFFSET_HEIGHT*currentOldHeightRatio),
+                    (int)(lastCardPicked.getWidth()*currentOldWidthRatio), 
+                    (int)(lastCardPicked.getHeight()*currentOldHeightRatio),
+                    null);
             if (wasLastCardPickedDouble) {
-                g.drawImage(CARD_DOUBLE_OVERLAY, screenWidth-HUD_OFFSET_WIDTH - HUD_ELEMENT_SIZE, screenHeight-HUD_OFFSET_HEIGHT, null);
+                g.drawImage(CARD_DOUBLE_OVERLAY,
+                    screenWidth-(int)((HUD_OFFSET_WIDTH+HUD_ELEMENT_SIZE)*currentOldWidthRatio),
+                    screenHeight-(int)(HUD_OFFSET_HEIGHT*currentOldHeightRatio),
+                    (int)(CARD_DOUBLE_OVERLAY.getWidth()*currentOldWidthRatio), 
+                    (int)(CARD_DOUBLE_OVERLAY.getHeight()*currentOldHeightRatio),
+                    null);
             }
         }
         
@@ -220,31 +255,50 @@ public class HUD {
     private void drawBoomerangBox(Graphics g) {
         if (drawBoomerangBox) {
             // Draw the box first...
-            g.drawImage(HUD_BOOMERANG_BOX, BOOMERANG_BOX_OFFSET_X, BOOMERANG_BOX_OFFSET_Y, null);
+            g.drawImage(HUD_BOOMERANG_BOX,
+                    (int)(BOOMERANG_BOX_OFFSET_X*currentOldWidthRatio),
+                    (int)(BOOMERANG_BOX_OFFSET_Y*currentOldHeightRatio),
+                    (int)(HUD_BOOMERANG_BOX.getWidth()*currentOldWidthRatio),
+                    (int)(HUD_BOOMERANG_BOX.getHeight()*currentOldHeightRatio),
+                    null);
             
             // Then do this funky logic...
             for (int i = 0; i < currentPlayerBoomerangs; i++) {
                 g.drawImage(HUD_BOOMERANG_ICON, 
-                            BOOMERANG_ICON_FIRST_X_OFFSET
-                          -(BOOMERANG_ICON_X_OFFSET * i), 
-                            BOOMERANG_ICON_Y_OFFSET, null);
+                            (int)(BOOMERANG_ICON_FIRST_X_OFFSET*currentOldWidthRatio)
+                          - (int)(BOOMERANG_ICON_X_OFFSET*currentOldWidthRatio * i), 
+                            (int)(BOOMERANG_ICON_Y_OFFSET*currentOldHeightRatio),
+                            (int)(HUD_BOOMERANG_ICON.getWidth()*currentOldWidthRatio),
+                            (int)(HUD_BOOMERANG_ICON.getHeight()*currentOldHeightRatio),
+                            null);
             }
         }
     }
     
     private void drawHUDTimer(Graphics g, String timerTimeStamp) {
-        g.drawImage(HUD_TIMER_BACKGROUND_IMAGE, TIMER_BACKGROUND_OFFSET_X, TIMER_BACKGROUND_OFFSET_Y, null);
+        g.drawImage(HUD_TIMER_BACKGROUND_IMAGE,
+                (int)(TIMER_BACKGROUND_OFFSET_X*currentOldWidthRatio),
+                (int)(TIMER_BACKGROUND_OFFSET_Y*currentOldHeightRatio),
+                (int)(HUD_TIMER_BACKGROUND_IMAGE.getWidth()*currentOldWidthRatio),
+                (int)(HUD_TIMER_BACKGROUND_IMAGE.getHeight()*currentOldHeightRatio),
+                null);
         
         g.setFont(fontHUD);
         
         g.setColor(TIMER_TEXT_BEHIND_COLOR);
-        g.drawString(timerTimeStamp, TIMER_TEXT_OFFSET_X-2, TIMER_TEXT_OFFSET_Y-2);
+        g.drawString(timerTimeStamp,
+                (int)(TIMER_TEXT_OFFSET_X*currentOldWidthRatio)-2,
+                (int)(TIMER_TEXT_OFFSET_Y*currentOldHeightRatio)-2);
         
         g.setColor(TIMER_TEXT_MIDDLE_COLOR);
-        g.drawString(timerTimeStamp, TIMER_TEXT_OFFSET_X-1, TIMER_TEXT_OFFSET_Y-1);
+        g.drawString(timerTimeStamp,
+                (int)(TIMER_TEXT_OFFSET_X*currentOldWidthRatio)-1,
+                (int)(TIMER_TEXT_OFFSET_Y*currentOldHeightRatio)-1);
         
         g.setColor(TIMER_TEXT_MAIN_COLOR);
-        g.drawString(timerTimeStamp, TIMER_TEXT_OFFSET_X, TIMER_TEXT_OFFSET_Y);
+        g.drawString(timerTimeStamp,
+                (int)(TIMER_TEXT_OFFSET_X*currentOldWidthRatio),
+                (int)(TIMER_TEXT_OFFSET_Y*currentOldHeightRatio));
         
     }
     
@@ -252,13 +306,13 @@ public class HUD {
     private void drawHUDString(Graphics g, String str, int x, int y) {
     	g.setColor(TEXT_BEHIND_COLOR);
         g.setFont(fontHUD);
-        g.drawString(str, x, y);
+        g.drawString(str, (int)(x*currentOldWidthRatio), (int)(y*currentOldHeightRatio));
         
         g.setColor(TEXT_MIDDLE_COLOR);
-        g.drawString(str, x+1, y+1);
+        g.drawString(str, (int)(x*currentOldWidthRatio)+1, (int)(y*currentOldHeightRatio)+1);
         
         g.setColor(TEXT_MAIN_COLOR);
-        g.drawString(str, x+2, y+2);
+        g.drawString(str, (int)(x*currentOldWidthRatio)+2, (int)(y*currentOldHeightRatio)+2);
     }
     
     private int updateDeckDisplay(Deck deck) {

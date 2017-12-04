@@ -21,12 +21,14 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 
 public class WorldOfSweets extends JPanel {    
-    public static final int WIDTH = 1200;
-    public static final int HEIGHT = 1000;
+    public static final int WIDTH = 800;
+    public static final int HEIGHT = 600;
 
 
     ArrayList<BoardSpace> path;
-        
+    
+    private WarningManager wm;
+    
     private HUD hud;
     private SweetState gameState;
 
@@ -84,6 +86,7 @@ public class WorldOfSweets extends JPanel {
         
         
         hud = new HUD(WIDTH, HEIGHT);
+        wm = new WarningManager(hud.getWidthRatio(), hud.getHeightRatio());
                 
         if (gameState == null) {
             gameState = new SweetState();
@@ -755,16 +758,20 @@ public class WorldOfSweets extends JPanel {
                     System.out.println("Player " + gameState.getSelectedPlayer() + " has been clicked");
                 }
                 
-                //Deck button is 125x100 pixels, placed in bottom right corner
-                if (e.getX() <= WIDTH && e.getX() >= (WIDTH - 125) && e.getY() <= HEIGHT && e.getY() >= (HEIGHT - 100)) {
+                //Deck button is 125x100 pixels in old resolution, placed in bottom right corner
+                if ( e.getX() <= WIDTH && e.getX() >= ( WIDTH - (int)(125*hud.getWidthRatio()) )  
+                    && e.getY() <= HEIGHT && e.getY() >= (HEIGHT - (int)(100*hud.getHeightRatio()))) {
                     // Only draw a card from the deck if the game is NOT paused.
                     if (!gameState.isPaused())
                     { 
                         gameState.clickDeck();
                         System.out.println(gameState.getCurrentPlayerTurn() + " clicked the deck!");
                     }
-                } else if (gameState.isGameModeStrategicMode() && e.getX() >= BB_X_LEFT 
-                        && e.getX() <= BB_X_RIGHT && e.getY() >= BB_Y_TOP && e.getY() <= BB_Y_BOTTOM) {
+                } else if (gameState.isGameModeStrategicMode() 
+                        && e.getX() >= (int)(BB_X_LEFT*hud.getWidthRatio()) 
+                        && e.getX() <= (int)(BB_X_RIGHT*hud.getWidthRatio())
+                        && e.getY() >= (int)(BB_Y_TOP*hud.getHeightRatio())
+                        && e.getY() <= (int)(BB_Y_BOTTOM*hud.getHeightRatio())) {
                     gameState.clickBoomerang();
                     System.out.println(gameState.getCurrentPlayerTurn() + " clicked the boomerang box!");
                 }

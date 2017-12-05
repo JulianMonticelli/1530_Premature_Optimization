@@ -1,5 +1,6 @@
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import sweets.*;
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ public class SweetStateTest {
     // Also, if you haven't taken 1632, I HIGHLY suggest you do before you graduate.
 
 	
-		@Test
+	@Test
 	public void testClickDeck()
 	{
 		SweetState gameState = new SweetState();
@@ -470,19 +471,79 @@ public class SweetStateTest {
        ArrayList<BoardSpace> spaces = gameState.storePath(1200,1000);
        int specials[] = gameState.getSpecialSpaces();
 
-
        SweetState gameState1 = new SweetState();
        gameState.randomSpaces = true;
        ArrayList<BoardSpace> spaces1 = gameState1.storePath(1200,1000);
        int specials1[] = gameState1.getSpecialSpaces();
 
         
-        int specialSpaces = 0;
+        int specialSpacesEqual = 0;
 
         for(int i = 0; i < specials.length;i++)
         {
-            assertNotEquals(specials[i], specials1[i]);
+            if(specials[i] == specials1[i])
+            {
+            	specialSpacesEqual++;
+            }
         }
+
+        assertNotEquals(specialSpacesEqual, 4);
+
+    }
+
+    /**
+    * Test to ensure that an AI player cannot throw bommarangs when they have none
+    * and they decide to
+    *  User story 36: AI Players
+    **/
+    @Test
+    public void testAINotThrowNullBoomarang() 
+    {
+       SweetState testState = new SweetState();
+       
+       Player player = new Player();
+       player.setBoomerangCount(0);
+       testState.setBoomerangTarget(-1);
+
+       assertFalse(testState.aiWillThrowBoomarang(player, 4));
+
+    }
+
+    /**
+    * Test to ensure that an AI will throw bommarangs when they have 
+    * boomarangs and the correct randomnum is generated
+    *  User story 36: AI Players
+    **/
+    @Test
+    public void testAIThrowBoomarang() 
+    {
+       SweetState testState = new SweetState();
+       
+       Player player = new Player();
+       player.setBoomerangCount(3);
+       testState.setBoomerangTarget(-1);
+
+
+       assertTrue(testState.aiWillThrowBoomarang(player, 4));
+
+    }
+
+    /**
+    * Test to ensure that an AI will not throw boomarangs when they have 
+    * boomarangs and the incorrect randomnum is not generated
+    *  User story 36: AI Players
+    **/
+    @Test
+    public void testAINotThrowBoomarangDecision() 
+    {
+       SweetState testState = new SweetState();
+       
+       Player player = new Player();
+       player.setBoomerangCount(3);
+       testState.setBoomerangTarget(-1);
+
+
+       assertFalse(testState.aiWillThrowBoomarang(player, 1));
 
     }
 

@@ -114,6 +114,10 @@ public class Player implements Serializable
 		return boomerangCount;
 	}
 
+	public void setBoomerangCount(int bCount) {
+		boomerangCount = bCount;
+	}
+
 	public boolean isDad() {
 		return isDad;
 	}

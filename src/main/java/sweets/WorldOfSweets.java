@@ -20,6 +20,7 @@ import javax.swing.JFrame;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 
+
 public class WorldOfSweets extends JPanel {    
     public static final int WIDTH = 800;
     public static final int HEIGHT = 600;
@@ -748,7 +749,12 @@ public class WorldOfSweets extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 System.out.println("Mouse button " + e.getButton() + " clicked at " + e.getX() + ", " + e.getY());
-                gameState.clickPlayer(checkForPlayer(e.getX(), e.getY(),gameState.getPlayers()));
+                
+                if(gameState.getCurrentPlayer().getIsAI() == false)
+                {
+                    gameState.clickPlayer(checkForPlayer(e.getX(), e.getY(),gameState.getPlayers()));
+                }
+                
                 if(gameState.getSelectedPlayer() != -1)
                 {
                     System.out.println("Player " + gameState.getSelectedPlayer() + " has been clicked");

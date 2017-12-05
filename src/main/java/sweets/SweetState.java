@@ -158,7 +158,7 @@ public class SweetState implements Serializable {
            
 
         }
-        
+
         return false;
     }
 
@@ -255,6 +255,7 @@ public class SweetState implements Serializable {
                 } else  {
                     isWinningMove = drawAndMove(players.get(boomerangTarget), true);
                     cP.throwBoomerang();
+                    boomerangClicked = false;
                     boomerangTarget = -1;
                     selectedPlayer = -1;
                 }
@@ -282,7 +283,7 @@ public class SweetState implements Serializable {
 
         //selectedPlayer = -1;
         deckClicked = false;
-        boomerangClicked = false;
+        
         return true;
     }
 
@@ -434,6 +435,11 @@ public class SweetState implements Serializable {
     public String getCurrentPlayerTurn() {
         String playerName = players.get(playerTurn).getName();
         return playerName;
+    }
+
+    public int getPlayerTurn() {
+        
+        return playerTurn;
     }
 
     public Player getCurrentPlayer() {

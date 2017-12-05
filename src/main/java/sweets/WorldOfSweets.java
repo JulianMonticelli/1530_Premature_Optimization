@@ -95,6 +95,33 @@ public class WorldOfSweets extends JPanel {
             chooseSpecialSpacePickMode();
             gameState.storePath(WIDTH,HEIGHT);
             gameState.addPlayers(getPlayerCountAndNames(gameModeIsStrategic));
+            
+            JFrame frame = new JFrame("JOptionPane showMessageDialog example");
+            JOptionPane.showMessageDialog(frame, 
+            "Tutorial:"
+            + "\n"
+            + "\n"
+            + "    How to play:"
+            + "\n"
+            + "\n"
+            + "        Classic Mode:"
+            + "\n"
+            +"             In Classic mode players simply move by clicking the deck.\n"
+            +"             When the deck is clicked the player's token will be moved\n"
+            +"             to the appropriate space.\n"
+            + "        Strategic Mode:"
+            + "\n"
+            +"             In Strategic mode players players start with 3 boomarangs.\n"
+            +"             Players are then able to throw these boomarangs at other players.\n"
+            +"             Players hit by these boomarangs are sent back to last space of the\n" 
+            +"             same color as the next card the current player draws, or to the start\n"
+            +"             square if there are no squares of that color behind them.\n"
+            + "\n"
+            +"             To use a boomarang simply click the boomarang box then click on the\n"
+            +"             player you would like to throw the boomarang at. Then simply draw a card\n"
+            +"             and it will hit that player\n"
+            + "\n"
+            );
             // WARNING: IF you change any of the code in this method remember:
             // INITIALIZING THE TIMER SHOULD HAPPEN L A S T!
             gameState.initializeTimer();
@@ -731,7 +758,25 @@ public class WorldOfSweets extends JPanel {
 
     		if(distance <= (HEIGHT/20))
     		{
-    			return i;
+                if(i != gameState.getPlayerTurn())
+                {
+                    if(gameState.isBoomerangClicked())
+                    {
+                        WarningManager.getInstance().createWarning("Click the deck to throw the boomarang!", Warning.TYPE_INFORMATION);
+                        return i;   
+                    }
+                    else
+                    {
+                         WarningManager.getInstance().createWarning("Please select the boomarang option first!", Warning.TYPE_INFORMATION);
+                    }
+                    
+                    
+                }
+                else
+                {
+                    WarningManager.getInstance().createWarning("You cannot select your own token!", Warning.TYPE_INFORMATION);
+                    return -1;
+                }
     		}
     	}
 

@@ -799,6 +799,10 @@ public class WorldOfSweets extends JPanel {
                 {
                     gameState.clickPlayer(checkForPlayer(e.getX(), e.getY(),gameState.getPlayers()));
                 }
+                else
+                {
+                    WarningManager.getInstance().createWarning("It is not your turn!", Warning.TYPE_INFORMATION);
+                }
                 
                 if(gameState.getSelectedPlayer() != -1)
                 {

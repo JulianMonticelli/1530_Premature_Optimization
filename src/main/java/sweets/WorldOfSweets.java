@@ -58,7 +58,7 @@ public class WorldOfSweets extends JPanel {
     private static final int PAUSED_STRING_Y_OFFSET = HEIGHT/2;
     
     private static final String GAME_PAUSED = "Game Paused";
-
+    private boolean gameModeIsStrategic;
     
 
     
@@ -91,7 +91,7 @@ public class WorldOfSweets extends JPanel {
                 
         if (gameState == null) {
             gameState = new SweetState();
-            boolean gameModeIsStrategic = pickGameMode();
+            gameModeIsStrategic = pickGameMode();
             chooseSpecialSpacePickMode();
             gameState.storePath(WIDTH,HEIGHT);
             gameState.addPlayers(getPlayerCountAndNames(gameModeIsStrategic));
@@ -795,14 +795,18 @@ public class WorldOfSweets extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 System.out.println("Mouse button " + e.getButton() + " clicked at " + e.getX() + ", " + e.getY());
                 
-                if(gameState.getCurrentPlayer().getIsAI() == false)
+                if(gameModeIsStrategic)
                 {
-                    gameState.clickPlayer(checkForPlayer(e.getX(), e.getY(),gameState.getPlayers()));
+                   if(gameState.getCurrentPlayer().getIsAI() == false)
+                    {
+                        gameState.clickPlayer(checkForPlayer(e.getX(), e.getY(),gameState.getPlayers()));
+                    }
+                    else
+                    {
+                        WarningManager.getInstance().createWarning("It is not your turn!", Warning.TYPE_INFORMATION);
+                    } 
                 }
-                else
-                {
-                    WarningManager.getInstance().createWarning("It is not your turn!", Warning.TYPE_INFORMATION);
-                }
+                    
                 
                 if(gameState.getSelectedPlayer() != -1)
                 {

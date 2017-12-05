@@ -525,11 +525,11 @@ public class WorldOfSweets extends JPanel {
         user.setPlayerY(space.getYOrigin() + yOffset);
 
         g.setColor(user.getColor());
-        g.fillArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, WIDTH/25, HEIGHT/20,0, 360);
+        g.fillArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, HEIGHT/20, HEIGHT/20,0, 360);
         
         
         g.setColor(Color.black);
-        g.drawArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, WIDTH/25, HEIGHT/20,0, 360);
+        g.drawArc(space.getXOrigin() + xOffset, space.getYOrigin() + yOffset, HEIGHT/20, HEIGHT/20,0, 360);
         
         // If we should highlight
         if(user.getPlayerNumber() == gameState.getSelectedPlayer())
@@ -550,7 +550,7 @@ public class WorldOfSweets extends JPanel {
                 
                 g.setColor(new Color(red, green, blue, alpha));
                 g.drawArc(space.getXOrigin() + xOffset - i, space.getYOrigin() + yOffset - i,
-                                    WIDTH/25 + (i*2), HEIGHT/20 + (i*2), 0, 360);
+                                    HEIGHT/20 + (i*2), HEIGHT/20 + (i*2), 0, 360);
             }
             
         }
@@ -592,7 +592,7 @@ public class WorldOfSweets extends JPanel {
 
     public ArrayList<Player> getPlayerCountAndNames(boolean gameModeIsStrategicMode) {
         Color[] playerColors = { Color.cyan, Color.black, Color.pink, Color.white};
-        int done = 0; 	// Used to make sure we only accept correct input
+        boolean done = false; 	// Used to make sure we only accept correct input
         ArrayList<Player> players = new ArrayList<Player>();
         int numPlayers = 0;
         int numAIPlayers = 0;
@@ -608,88 +608,82 @@ public class WorldOfSweets extends JPanel {
             numBoomerangs = 0;
 
         // Get number of players
-        while (done != 2) {
-            try {
+        while (done == false) 
+        {
+            try 
+            {
 
                 String input = JOptionPane.showInputDialog("How many players are playing?");
                 numPlayers = Integer.parseInt(input);
 
 
-                if (numPlayers < 5 && numPlayers > 0)
-                    done++;
-                else {
+                if (numPlayers < 5 && numPlayers > 1)
+                {
+                    done  = true;
+                }
+                else 
+                {
                     JOptionPane.showMessageDialog(null, "Only between 1 and 4 total players permitted");
+                    done  = false;
                     continue;
                 }
 
-                if(numPlayers < 4)
-                {
-                    if(numPlayers != 1)
-                    {
-                        option = JOptionPane.showOptionDialog(null,  
-                                   "Would you like to play against AI players?",  
-                                    "Start", JOptionPane.YES_NO_OPTION,  
-                                    JOptionPane.WARNING_MESSAGE, null, null,  
-                                    null);
-                    }
-                    else
-                    {
-                        option = JOptionPane.YES_OPTION;
-                    }
 
-                    if(option == JOptionPane.YES_OPTION) 
-                    {
-                        input = JOptionPane.showInputDialog("How many AI players would you like?");
-                        numAIPlayers = Integer.parseInt(input);
-
-                        if(numAIPlayers + numPlayers <= 4)
-                        {
-                            done++;
-                        }
-                        else
-                        {
-                           JOptionPane.showMessageDialog(null, "Only between 1 and 4 total players permitted");
-                        }
-                    } else {
-                        done++;
-                    }
-                }
-
-
-            } catch (NumberFormatException e) {
+            } 
+            catch (NumberFormatException e) 
+            {
                 JOptionPane.showMessageDialog(null, "Invalid Input");
-                done = 0;
+                done = false;
             }
         }
         int playerNum = 0;
 		//Get names of players
-		for (int i = 0; i < numPlayers; i++) {
+		for (int i = 0; i < numPlayers; i++) 
+        {
 			        
-                    String playerName = JOptionPane.showInputDialog("What is player " + (i + 1) + "'s name?");
+                    String aiMessage = "Would you like player " + (playerNum +1) + " to be AI controlled?";
+                    
+                    option = JOptionPane.showOptionDialog(null,  
+                                   aiMessage,  
+                                    "Start", JOptionPane.YES_NO_OPTION,  
+                                    JOptionPane.WARNING_MESSAGE, null, null,  
+                                    null);
 
-                    for (int j = 0; j < i; j++) {
-                        if (playerName.equals(players.get(j).getName()) || playerName.length() < 1 || playerName.length() > 10) {
+                    String playerName;
+
+                    if(option == JOptionPane.NO_OPTION) 
+                    {
+                         playerName = JOptionPane.showInputDialog("What is player " + (i + 1) + "'s name?");
+                    }
+                    else
+                    {
+                        playerName = "AIPlayer " + (playerNum + 1);
+                    }
+
+                    
+
+                    for (int j = 0; j < i; j++) 
+                    {
+                        if (playerName.equals(players.get(j).getName()) || playerName.length() < 1 || playerName.length() > 10) 
+                        {
                             playerName = JOptionPane.showInputDialog("Please enter a unique name between 1 and 10 characters");
+
+
                             j = 0;
                         }
                     }
                     
                     players.add(i, new Player(playerColors[i], playerName, startLocation, numBoomerangs, playerNum));
+
+
+                    if(option == JOptionPane.YES_OPTION) 
+                    {
+                         players.get(i).setIsAI(true);
+                    }
+
                     playerNum++;
-
-
 		}
 
-        int aiNum = 1;
-        for(int i = numPlayers; i < numPlayers + numAIPlayers;i++)
-        {
-            String playerName = "AI Player " + aiNum;
-            players.add(i, new Player(playerColors[i], playerName, startLocation, numBoomerangs, playerNum));
-            players.get(i).setIsAI(true);
-            aiNum++;
-            playerNum++;
-        }
-		
 		return players;
 	}
 	
@@ -732,7 +726,9 @@ public class WorldOfSweets extends JPanel {
     	{
     		Player currentPlayer = players.get(i);
 
-    		if(distance(x,y,currentPlayer.getPlayerX(),currentPlayer.getPlayerY()) < HEIGHT/20)
+            float distance =  distance(x,y,currentPlayer.getPlayerX(),currentPlayer.getPlayerY()+(HEIGHT/20)/4);
+
+    		if(distance <= (HEIGHT/20))
     		{
     			return i;
     		}

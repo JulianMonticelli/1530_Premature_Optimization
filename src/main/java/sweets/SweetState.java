@@ -135,6 +135,33 @@ public class SweetState implements Serializable {
 		return selectedPlayer;
 	}
 
+    public boolean aiWillThrowBoomarang(Player currentPlayer, float randomNum)
+    {
+    
+        // A boomerang was just thrown and no target is selected
+        if(randomNum > 2 && boomerangTarget == -1) // Simulate a boomarang click
+        {
+            if (currentPlayer.getBoomerangCount() > 0) 
+            {
+                System.out.println("AI Throwing boomerang, waiting for target token to be selected");
+                waitingForTarget = true;
+                boomerangTarget = -1;
+                return true;
+
+            } 
+            else 
+            {
+                System.out.println("AI Attempted to throw boomerang when player had no boomerangs left");
+                return false;
+            }
+
+           
+
+        }
+        
+        return false;
+    }
+
 	public boolean aiMakeTurn()
 	{
 		if(decisionFrames == -1)
@@ -156,32 +183,19 @@ public class SweetState implements Serializable {
 			return true;
 		}
 
+        Player cP = players.get(playerTurn);
+		
+        if(aiWillThrowBoomarang(cP, generateRandomNum(0,5)))
+        {
+            selectedPlayer = playerTurn;
+            while(selectedPlayer == playerTurn)
+            {
+                selectedPlayer = generateRandomNum(0,numPlayers);
+                boomerangTarget = selectedPlayer;
+                waitingForTarget = false;
 
-		Player cP = players.get(playerTurn);
-
-
-		// A boomerang was just thrown and no target is selected
-		if (generateRandomNum(0,5) > 2 && boomerangTarget == -1) // Simulate a boomarang click
-		{
-			if (cP.getBoomerangCount() > 0) {
-				System.out.println("AI Throwing boomerang, waiting for target token to be selected");
-				waitingForTarget = true;
-				boomerangTarget = -1;
-
-			} else {
-				System.out.println("AI Attempted to throw boomerang when player had no boomerangs left");
-			}
-
-			selectedPlayer = playerTurn;
-			while(selectedPlayer == playerTurn)
-			{
-				selectedPlayer = generateRandomNum(0,numPlayers);
-				boomerangTarget = selectedPlayer;
-				waitingForTarget = false;
-
-			}
-
-		}
+            }
+        }
 
 
 		// Waiting for target, meaning we are waiting for player to select another player's token
@@ -822,6 +836,11 @@ public class SweetState implements Serializable {
 
     public WarningManager getWarningManager() {
         return warningManager;
+    }
+
+    public void setBoomerangTarget(int t)
+    {
+        boomerangTarget = t;
     }
 
 }

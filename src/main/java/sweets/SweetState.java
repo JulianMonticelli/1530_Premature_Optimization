@@ -291,7 +291,7 @@ public class SweetState implements Serializable {
     public boolean drawAndMove(Player currentPlayer, boolean isReverseMove) {
 
         Card drawnCard = null;
-        if (currentPlayer.isDad()) {
+        if (currentPlayer.isDad() && !boomerangClicked) {
             drawnCard = deck.dadDraw(currentPlayer.getPos());
         } else {
             drawnCard = deck.draw();

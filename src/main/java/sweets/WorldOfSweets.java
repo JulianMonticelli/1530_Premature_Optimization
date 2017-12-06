@@ -426,7 +426,6 @@ public class WorldOfSweets extends JPanel {
         {
              running = gameState.makeTurn();
         }
-
        
         
         // Update HUD 
@@ -680,7 +679,7 @@ public class WorldOfSweets extends JPanel {
                                     JOptionPane.WARNING_MESSAGE, null, null,  
                                     null);
 
-                    String playerName;
+                    String playerName = null;
 
                     if(option == JOptionPane.NO_OPTION) 
                     {
@@ -691,7 +690,9 @@ public class WorldOfSweets extends JPanel {
                         playerName = "Bot " + (playerNum + 1);
                     }
 
-                    
+                    while (playerName == null || playerName.isEmpty()) {
+                        playerName = JOptionPane.showInputDialog("Player name cannot empty! Please try again!");
+                    }
 
                     for (int j = 0; j < i; j++) 
                     {

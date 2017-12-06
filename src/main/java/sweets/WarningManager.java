@@ -21,6 +21,9 @@ public class WarningManager implements Serializable{
     
     private static WarningManager instance;
     
+    private double widthRatio;
+    private double heightRatio;
+    
     private final int warningXPos;
     private final int warningYPos;
     
@@ -42,6 +45,10 @@ public class WarningManager implements Serializable{
     public WarningManager(double widthRatio, double heightRatio) {
         warningFontDefault = new Font("Verdana", Font.BOLD, (int)(72*widthRatio));
         warningFontInformation  = new Font("Verdana", Font.BOLD, (int)(36*heightRatio));
+        
+        this.widthRatio = widthRatio;
+        this.heightRatio = heightRatio;
+        
         warningXPos = (int)(400*widthRatio);
         warningYPos = (int)(400*heightRatio);
         
@@ -56,7 +63,21 @@ public class WarningManager implements Serializable{
      * @param warning String that will be displayed on-screen
      */
     public void createWarning(String warning, int warningType) {
-            createWarning(warning, warningType, warningXPos, warningYPos);
+            if (warningType == Warning.TYPE_ENDGAME) {
+                int warnLength = warning.length();
+                
+                // TRY to center this to the screen...
+                int letterDifferencePixel = (int)(25*widthRatio);
+                int xDiff = (warnLength - 10) * letterDifferencePixel;
+                                
+                int actualX = warningXPos - xDiff;
+                int actualY = warningYPos - (int)(10 * heightRatio);
+                
+                createWarning(warning, warningType, actualX, actualY);
+            }
+            else {
+                createWarning(warning, warningType, warningXPos, warningYPos);
+            }
     }
     
     /*******************************************************************

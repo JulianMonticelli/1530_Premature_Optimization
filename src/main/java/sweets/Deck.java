@@ -58,7 +58,7 @@ public class Deck implements Serializable{
     public Card dadDraw(int playerPosition) {
 	    draw(); //Deal with deck state update, but don't return
         int worstCardIndex = top;
-        int worstMoveDistance = getDistance(playerPosition, theDeck.get(i));
+        int worstMoveDistance = getDistance(playerPosition, theDeck.get(top));
         for (int i = top + 1; i < theDeck.size(); i++) {
             int currentMoveDistance = getDistance(playerPosition,
                                                   theDeck.get(i));

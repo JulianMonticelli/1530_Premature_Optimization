@@ -152,6 +152,21 @@ public class SweetStateTest {
 	}
 	
 	/**
+    * Tests to make sure calculateReverseDest will return the same value as the start position when a skip card is drawn
+    **/
+	@Test
+	public void testCalculateReverseDestSkipCard()
+	{
+		SweetState gameState = new SweetState();
+		Card testCard = new Card(Card.SKIP_TURN, -1);
+		
+		gameState.storePath(1200, 1000);
+		int startPos = 1;
+		int resultDest = gameState.calculateReverseDest(startPos, testCard);
+		assertTrue(resultDest == startPos);
+	}
+	
+	/**
     * When a special card is drawn, calculateDest should return the location of the special tile corresponding to that card
 	* This test will let the board generate normally, then attempt to find the destination of every special tile
     **/
@@ -165,6 +180,24 @@ public class SweetStateTest {
 		
 		for (int i = 0; i < testSpecialSpaces.length; i++) {
 			resultDest = gameState.calculateDest(0, new Card(Card.SPECIAL_MOVE, i));
+			assertTrue(resultDest == testSpecialSpaces[i]);
+		}
+	}
+	
+	/**
+    * When a special card is drawn, calculateReverseDest should return the location of the special tile corresponding to that card
+	* This test will let the board generate normally, then attempt to find the destination of every special tile
+    **/
+	@Test
+	public void testCalculateReverseDestSpecialCard()
+	{
+		SweetState gameState = new SweetState();
+		gameState.storePath(1200, 1000);
+		int testSpecialSpaces[] = gameState.getSpecialSpaces();
+		int resultDest = -1;
+		
+		for (int i = 0; i < testSpecialSpaces.length; i++) {
+			resultDest = gameState.calculateReverseDest(0, new Card(Card.SPECIAL_MOVE, i));
 			assertTrue(resultDest == testSpecialSpaces[i]);
 		}
 	}
@@ -206,6 +239,43 @@ public class SweetStateTest {
 	}
 	
 	/**
+    * The starting tile counts as every color. This test will place a token on the second tile. 
+	* For every non-skip and non-special card, calculateReverseDest should return the location of the first tile.
+	* This will test the single and double versions of all 5 color cards.
+    **/
+	@Test
+	public void testCalculateReverseDestStartingTile()
+	{
+		SweetState gameState = new SweetState();
+		gameState.storePath(1200, 1000);
+		int startTile = 0;
+		int startPos = 1;
+
+		for(int i = 1; i < 32; i *= 2) {
+			assertEquals(startTile, gameState.calculateReverseDest(startPos, new Card(i, -1)));
+			assertEquals(startTile, gameState.calculateReverseDest(startPos, new Card(i | Card.DOUBLE, -1)));
+		}
+	}
+	
+	/**
+    * If a player is on the starting tile and gets boomeranged, they should remain on the starting tile.
+	* This will test the single and double versions of all 5 color cards.
+    **/
+	@Test
+	public void testCalculateReverseDestAreadyStartingTile()
+	{
+		SweetState gameState = new SweetState();
+		gameState.storePath(1200, 1000);
+		int startTile = 0;
+		int startPos = 0;
+
+		for(int i = 1; i < 32; i *= 2) {
+			assertEquals(startTile, gameState.calculateReverseDest(startPos, new Card(i, -1)));
+			assertEquals(startTile, gameState.calculateReverseDest(startPos, new Card(i | Card.DOUBLE, -1)));
+		}
+	}
+	
+	/**
     * Tests to make sure the destination tile is the same color as the drawn card.
 	* All colors are tested for both single and double cards.
     **/
@@ -225,6 +295,30 @@ public class SweetStateTest {
 			
 			testCard = new Card(i | Card.DOUBLE, -1);
 			resultDest = gameState.calculateDest(startPos, testCard);
+			assertEquals(i, testSpaces.get(resultDest).getIntColorCode());
+		}
+	}
+	
+	/**
+    * Tests to make sure the destination tile is the same color as the drawn card.
+	* All colors are tested for both single and double cards.
+    **/
+	@Test
+	public void testCalculateReverseDestSameColor()
+	{
+		SweetState gameState = new SweetState();
+		ArrayList<BoardSpace> testSpaces = gameState.storePath(1200, 1000);
+		int startPos = 15;
+		int resultDest;
+		Card testCard;
+
+		for(int i = 1; i < 32; i *= 2) {
+			testCard = new Card(i, -1);
+			resultDest = gameState.calculateReverseDest(startPos, testCard);
+			assertEquals(i, testSpaces.get(resultDest).getIntColorCode());
+			
+			testCard = new Card(i | Card.DOUBLE, -1);
+			resultDest = gameState.calculateReverseDest(startPos, testCard);
 			assertEquals(i, testSpaces.get(resultDest).getIntColorCode());
 		}
 	}
@@ -255,9 +349,34 @@ public class SweetStateTest {
 	}
 	
 	/**
+    * Tests to make sure a token moves when a normal/double card is drawn. For example,
+	* if a red card is drawn when the token is on a red tile, the token should move to 
+	* the previous tile instead of remaining in place
+    **/
+	@Test
+	public void testCalculateReverseDestDistanceGreaterThanZero()
+	{
+		SweetState gameState = new SweetState();
+		gameState.storePath(1200, 1000);
+		int startPos = 15;
+		int resultDest;
+		Card testCard;
+
+		for(int i = 1; i < 32; i *= 2) {
+			testCard = new Card(i, -1);
+			resultDest = gameState.calculateReverseDest(startPos, testCard);
+			assertTrue(startPos - resultDest > 0);
+			
+			testCard = new Card(i | Card.DOUBLE, -1);
+			resultDest = gameState.calculateReverseDest(startPos, testCard);
+			assertTrue(startPos - resultDest > 0);
+		}
+	}
+	
+	/**
     * Tests to make sure a token will move the correct amount of distance when a single card is drawn.
 	* Because one of our features was implementing random locations for special tiles, we do not know exactly
-	* how far away the first matching tile is going to be; however, we know that it is either 5 or 6 spaces 
+	* how far away the first matching tile is going to be; however, we know that it is at most 6 spaces 
 	* away since special tiles must be at least 5 squares apart.
     **/
 	@Test
@@ -274,14 +393,38 @@ public class SweetStateTest {
 			testCard = new Card(i, -1);
 			resultDest = gameState.calculateDest(startPos, testCard);
 			distance = resultDest - startPos;
-			assertTrue(distance > 4 || distance < 6);
+			assertTrue(distance > 0 && distance < 7);
+		}
+	}
+	
+	/**
+    * Tests to make sure a token will move the correct amount of distance when a single card is drawn.
+	* Because one of our features was implementing random locations for special tiles, we do not know exactly
+	* how far away the first matching tile is going to be; however, we know that it is at most 6 spaces 
+	* away since special tiles must be at least 5 squares apart.
+    **/
+	@Test
+	public void testCalculateReverseDestDistanceSingleCard()
+	{
+		SweetState gameState = new SweetState();
+		gameState.storePath(1200, 1000);
+		int startPos = 15;
+		int resultDest;
+		int distance;
+		Card testCard;
+
+		for(int i = 1; i < 32; i *= 2) {
+			testCard = new Card(i, -1);
+			resultDest = gameState.calculateReverseDest(startPos, testCard);
+			distance = startPos - resultDest;
+			assertTrue(distance > 0 && distance < 7);
 		}
 	}
 	
 	/**
     * Tests to make sure a token will move the correct amount of distance when a double card is drawn.
 	* Because one of our features was implementing random locations for special tiles, we do not know exactly
-	* how far away the second matching tile is going to be; however, we know that it is 10-12 spaces away
+	* how far away the second matching tile is going to be; however, we know that it is 6-11 spaces away
 	* since special tiles must be at least 5 squares apart.
     **/
 	@Test
@@ -295,13 +438,59 @@ public class SweetStateTest {
 		Card testCard;
 
 		for(int i = 1; i < 32; i *= 2) {
-			testCard = new Card(i, -1);
+			testCard = new Card(i | Card.DOUBLE, -1);
 			resultDest = gameState.calculateDest(startPos, testCard);
 			distance = resultDest - startPos;
-			assertTrue(distance > 9 || distance < 13);
+			assertTrue(distance > 5 && distance < 12);
 		}
 	}
     
+	/**
+    * Tests to make sure a token will move the correct amount of distance when a double card is drawn.
+	* Because one of our features was implementing random locations for special tiles, we do not know exactly
+	* how far away the second matching tile is going to be; however, we know that it is 6-11 spaces away
+	* since special tiles must be at least 5 squares apart.
+    **/
+	@Test
+	public void testCalculateReverseDestDistanceDoubleCard()
+	{
+		SweetState gameState = new SweetState();
+		gameState.storePath(1200, 1000);
+		int startPos = 15;
+		int resultDest;
+		int distance;
+		Card testCard;
+
+		for(int i = 1; i < 32; i *= 2) {
+			testCard = new Card(i | Card.DOUBLE, -1);
+			resultDest = gameState.calculateReverseDest(startPos, testCard);
+			distance = startPos - resultDest;
+			assertTrue(distance > 5 && distance < 12);
+		}
+	}
+	
+	
+	/**
+	* Move player should change the value of testPlayer.position to endLoc and return the end destination
+	**/
+	@Test
+	public void testMovePlayer() {
+		SweetState gameState = new SweetState();
+		gameState.storePath(1200, 1000);
+		
+		int startLoc = 0;
+		int endLoc = 1;
+		
+		Player testPlayer = new Player(null, "test player 1", startLoc);
+		
+		
+		assertEquals(startLoc, testPlayer.getPos());
+		
+		int result = gameState.movePlayer(testPlayer, startLoc, endLoc);
+		
+		assertEquals(endLoc, testPlayer.getPos());
+		assertEquals(endLoc, result);
+	}
     
     /**
     * Tests to ensure pickSpecialSpaces is always generating

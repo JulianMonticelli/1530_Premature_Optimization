@@ -40,8 +40,7 @@ public class HUD {
     private static BufferedImage HUD_BOOMERANG_ICON;
     
     // colors
-    private static final Color TEXT_BEHIND_COLOR = Color.decode("#FFBF00");
-    private static final Color TEXT_MIDDLE_COLOR = Color.decode("#4C3900");
+    private static final Color TEXT_BEHIND_COLOR = Color.decode("#000000");
     private static final Color TEXT_MAIN_COLOR = Color.decode("#FFFFFF");
     
     private static final Color TIMER_TEXT_BEHIND_COLOR = Color.decode("#000000");
@@ -100,6 +99,8 @@ public class HUD {
     private String playerFirstPlace;
     private String playerTurn;
     
+    private Color playerColor;
+    
     private int screenWidth = -1;
     private int screenHeight = -1;
     
@@ -154,7 +155,7 @@ public class HUD {
         hudBackground = HUD_BACKGROUND_IMAGE_3;
         
         currentDeckImage = DECK_FULL; // Deck starts as full
-        fontHUD  = new Font("Arial", Font.PLAIN|Font.BOLD, (int)(36*currentOldWidthRatio));;
+        fontHUD  = new Font("Arial", Font.PLAIN|Font.BOLD, (int)(36*currentOldWidthRatio));
     }
     
     public double getWidthRatio() {
@@ -203,6 +204,7 @@ public class HUD {
     private String updatePlayerTurn(SweetState gameState) {
         // TODO: Fix player turn to make it more obvious that it is the player's turn
         playerTurn = gameState.getCurrentPlayerTurn();
+        playerColor = gameState.getCurrentPlayer().getColor();
         return playerTurn;
     }
     
@@ -243,13 +245,14 @@ public class HUD {
             }
         }
         
+        // In old resolution, y=965 was a nice spot for the HUD text
         int y = 965;
         
         // Player's Turn
-        drawHUDString(g, playerTurn + "'s turn!", 20, y);
+        drawHUDString(g, playerTurn + "'s turn!", 20, y, true);
         
         // Players in first
-        drawHUDString(g, playerFirstPlace, 400, y);
+        drawHUDString(g, playerFirstPlace + " is winning!", 400, y, false);
     }
     
     private void drawBoomerangBox(Graphics g) {
@@ -303,15 +306,29 @@ public class HUD {
     }
     
     // FEEL FREE to change some colors if you want to boys, I'm not convinced these colors are great
-    private void drawHUDString(Graphics g, String str, int x, int y) {
+    private void drawHUDString(Graphics g, String str, int x, int y, boolean usePlayerColor) {
     	g.setColor(TEXT_BEHIND_COLOR);
         g.setFont(fontHUD);
         g.drawString(str, (int)(x*currentOldWidthRatio), (int)(y*currentOldHeightRatio));
         
-        g.setColor(TEXT_MIDDLE_COLOR);
+        if (usePlayerColor) {
+            g.setColor(new Color(255-playerColor.getRed(),
+                                 255-playerColor.getGreen(),
+                                 255-playerColor.getBlue()));
+        }
+        else {
+            g.setColor(new Color(255-TEXT_MAIN_COLOR.getRed(),
+                                 255-TEXT_MAIN_COLOR.getGreen(),
+                                 255-TEXT_MAIN_COLOR.getBlue()));
+        }
         g.drawString(str, (int)(x*currentOldWidthRatio)+1, (int)(y*currentOldHeightRatio)+1);
         
-        g.setColor(TEXT_MAIN_COLOR);
+        if (usePlayerColor) {
+            g.setColor(playerColor);
+        }
+        else {
+            g.setColor(TEXT_MAIN_COLOR);
+        }
         g.drawString(str, (int)(x*currentOldWidthRatio)+2, (int)(y*currentOldHeightRatio)+2);
     }
     

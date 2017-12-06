@@ -121,4 +121,9 @@ public class Player implements Serializable
 	public boolean isDad() {
 		return isDad;
 	}
+        
+        public int resetPosition() {
+            position = 0;
+            return position;
+        }
 }

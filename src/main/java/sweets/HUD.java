@@ -158,6 +158,11 @@ public class HUD {
         fontHUD  = new Font("Arial", Font.PLAIN|Font.BOLD, (int)(36*currentOldWidthRatio));
     }
     
+    public void resetHUD() {
+        lastCardPicked = null;
+        wasLastCardPickedDouble = false;
+    }
+    
     public double getWidthRatio() {
         return currentOldWidthRatio;
     }

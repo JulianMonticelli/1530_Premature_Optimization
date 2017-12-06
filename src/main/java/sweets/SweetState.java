@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.awt.Color;
 import java.io.Serializable;
 import java.io.*;
+import javax.swing.JOptionPane;
 //import javax.swing.JOptionPane;
 
 public class SweetState implements Serializable {
@@ -25,7 +26,7 @@ public class SweetState implements Serializable {
     private ArrayList<Player> players;
 
     private DeckFactory deckCreator;
-    private Deck deck;
+    private volatile Deck deck;
 
     private int playerTurn;
     private int numPlayers;
@@ -50,7 +51,7 @@ public class SweetState implements Serializable {
     public boolean isGameModeStrategicMode() {
         return gameModeIsStrategicMode;
     }
-  
+    
     public void applySavedTime() {
         initializeTimer();
         mtTimer.setTimeInSeconds(timeInSeconds);
@@ -335,14 +336,26 @@ public class SweetState implements Serializable {
         // fade and travel up the screen.
         WarningManager.getInstance().createWarning("Game Over", Warning.TYPE_ENDGAME);
         mtTimer.killThread();
-
+        
+        finished = true;
         // Display some sort of "Play another game?" message?
     }
 
-    public void resetGameState() {
+    public void resetGameState(int width, int height) {
+        deckClicked = false;
+        boomerangClicked = false;
         paused = false;
         finished = false;
         newGame = true;
+        deck = new DeckFactory().makeDeck();
+        deck.reshuffleDeck();
+        players.forEach((player) -> {
+            player.resetPosition();
+            if (isGameModeStrategicMode()) {
+                player.setBoomerangCount(3);
+            }
+        });
+        spaces = storePath(width, height);
         warningManager.clearWarningList();
     }
 
@@ -590,6 +603,7 @@ public class SweetState implements Serializable {
      */
     public ArrayList<BoardSpace> storePath(int WIDTH, int HEIGHT)
     {
+        spaces = new ArrayList<BoardSpace>();
         // Current x and y keep track of our x and y indexes into the Jpanel
         int currentX = 0;
         int currentY = 0;

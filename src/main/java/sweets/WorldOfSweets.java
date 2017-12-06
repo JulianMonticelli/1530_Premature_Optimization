@@ -426,6 +426,27 @@ public class WorldOfSweets extends JPanel {
         {
              running = gameState.makeTurn();
         }
+        
+        if (running == false) {
+            hud.update(gameState);
+            repaint();
+            try {
+                Thread.sleep(1000);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            int option = JOptionPane.showConfirmDialog(null, "Congratulations on "
+                    + "winning, " +gameState. getCurrentPlayerTurn() + "\nWould you like to "
+                            + "play another game?", "Game Over!", 
+                            JOptionPane.YES_NO_OPTION);
+            if (option == JOptionPane.YES_OPTION) {
+                gameState.resetGameState(WIDTH, HEIGHT);
+                running = true;
+                gameState.initializeTimer();
+                hud.resetHUD();
+            }
+        }
 
        
         

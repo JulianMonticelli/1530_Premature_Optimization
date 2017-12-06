@@ -426,7 +426,7 @@ public class WorldOfSweets extends JPanel {
         {
              running = gameState.makeTurn();
         }
-       
+        
         
         // Update HUD 
         hud.update(gameState);

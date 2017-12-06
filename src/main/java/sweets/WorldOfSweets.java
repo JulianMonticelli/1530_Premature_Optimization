@@ -105,22 +105,24 @@ public class WorldOfSweets extends JPanel {
             + "\n"
             + "\n"
             + "        Classic Mode:"
-            + "\n"
+            + "\n\n"
             +"             In Classic mode players simply move by clicking the deck.\n"
             +"             When the deck is clicked the player's token will be moved\n"
             +"             to the appropriate space.\n"
+            + "\n\n"
             + "        Strategic Mode:"
-            + "\n"
-            +"             In Strategic mode players players start with 3 boomarangs.\n"
-            +"             Players are then able to throw these boomarangs at other players.\n"
-            +"             Players hit by these boomarangs are sent back to last space of the\n" 
+            + "\n\n"
+            +"             In Strategic mode players players start with 3 boomerangs.\n"
+            +"             Players are then able to throw these boomerangs at other players.\n"
+            +"             Players hit by these boomerangs are sent back to last space of the\n" 
             +"             same color as the next card the current player draws, or to the start\n"
             +"             square if there are no squares of that color behind them.\n"
             + "\n"
-            +"             To use a boomarang simply click the boomarang box then click on the\n"
-            +"             player you would like to throw the boomarang at. Then simply draw a card\n"
+            +"             To use a boomerang simply click the boomerang box then click on the\n"
+            +"             player you would like to throw the boomerang at. Then simply draw a card\n"
             +"             and it will hit that player\n"
-            + "\n"
+            + "\n\n"
+            + "            At any time, feel free to pause the game using Escape. Good luck!"
             );
             // WARNING: IF you change any of the code in this method remember:
             // INITIALIZING THE TIMER SHOULD HAPPEN L A S T!
@@ -665,8 +667,9 @@ public class WorldOfSweets extends JPanel {
             }
         }
         int playerNum = 0;
-		//Get names of players
-		for (int i = 0; i < numPlayers; i++) 
+        
+        //Get names of players
+        for (int i = 0; i < numPlayers; i++) 
         {
 			        
                     String aiMessage = "Would you like player " + (playerNum +1) + " to be AI controlled?";
@@ -685,14 +688,14 @@ public class WorldOfSweets extends JPanel {
                     }
                     else
                     {
-                        playerName = "AIPlayer " + (playerNum + 1);
+                        playerName = "Bot " + (playerNum + 1);
                     }
 
                     
 
                     for (int j = 0; j < i; j++) 
                     {
-                        if (playerName.equals(players.get(j).getName()) || playerName.length() < 1 || playerName.length() > 10) 
+                        while (playerName.equals(players.get(j).getName()) || playerName.length() < 1 || playerName.length() > 10) 
                         {
                             playerName = JOptionPane.showInputDialog("Please enter a unique name between 1 and 10 characters");
 
@@ -762,12 +765,12 @@ public class WorldOfSweets extends JPanel {
                 {
                     if(gameState.isBoomerangClicked())
                     {
-                        WarningManager.getInstance().createWarning("Click the deck to throw the boomarang!", Warning.TYPE_INFORMATION);
+                        WarningManager.getInstance().createWarning("Click the deck to throw the boomerang!", Warning.TYPE_INFORMATION);
                         return i;   
                     }
                     else
                     {
-                         WarningManager.getInstance().createWarning("Please select the boomarang option first!", Warning.TYPE_INFORMATION);
+                        WarningManager.getInstance().createWarning("Please select the boomerang option first!", Warning.TYPE_INFORMATION);
                     }
                     
                     
@@ -777,7 +780,7 @@ public class WorldOfSweets extends JPanel {
                     WarningManager.getInstance().createWarning("You cannot select your own token!", Warning.TYPE_INFORMATION);
                     return -1;
                 }
-    		}
+            }
     	}
 
     	return -1;

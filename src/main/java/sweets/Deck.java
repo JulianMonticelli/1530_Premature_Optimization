@@ -7,7 +7,7 @@ import java.io.Serializable;
 public class Deck implements Serializable{
     // This needs to exist to allow serializability
     private static final long serialVersionUID = 489021829075290170L;
-    
+
     private SweetState gameState = null;
     private ArrayList<Card> theDeck;
     private int top;
@@ -56,12 +56,12 @@ public class Deck implements Serializable{
     }
 
     public Card dadDraw(int playerPosition) {
-		draw(); //Deal with deck state update, but don't return
+	    draw(); //Deal with deck state update, but don't return
         int worstCardIndex = top;
-        int worstMoveDistance = Integer.MAX_VALUE;
+        int worstMoveDistance = getDistance(playerPosition, theDeck.get(top));
         for (int i = top + 1; i < theDeck.size(); i++) {
-            int currentMoveDistance = gameState.calculateDest(playerPosition,
-                                                              theDeck.get(i));
+            int currentMoveDistance = getDistance(playerPosition,
+                                                  theDeck.get(i));
             if (currentMoveDistance < worstMoveDistance) {
                 worstCardIndex = i;
                 worstMoveDistance = currentMoveDistance;
@@ -69,6 +69,10 @@ public class Deck implements Serializable{
         }
         swap(top, worstCardIndex);
         return theDeck.get(top);
+    }
+
+    private int getDistance(int start, Card aCard) {
+        return gameState.calculateDest(start, aCard) - start;
     }
 
     //NKD: Need to define error handling for case where no card was drawn
@@ -86,7 +90,7 @@ public class Deck implements Serializable{
     public boolean wasLastCardSkipCard() {
         return getLastCard().isSkipTurn();
     }
-    
+
     private void swap(int a, int b) {
         Card c = theDeck.get(a);
         theDeck.set(a, theDeck.get(b));

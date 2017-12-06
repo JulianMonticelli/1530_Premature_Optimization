@@ -1,17 +1,23 @@
 import org.junit.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+import org.mockito.*;
 
 import sweets.Deck;
 import sweets.DeckFactory;
 import sweets.Card;
+import sweets.SweetState;
 
 public class DeckTest {
   DeckFactory _df = new DeckFactory();
   Deck _d;
+  SweetState _s;
 
   @Before
   public void setup() {
     _d = _df.makeDeck();
+    _s = new DummySweetState();
+    _d.addSweetState(_s);
   }
 
   // Incase anybody hasn't taken 1632, here's how you write a test
@@ -78,5 +84,19 @@ public class DeckTest {
      assertTrue(!bool);
   }
 
+  @Test
+  public void dadDrawsSkipFromFullDeck() {
+    Card c = _d.dadDraw(0);
+    assertTrue(c.isSkipTurn());
+  }
 
+  private class DummySweetState extends SweetState {
+    private DummySweetState() {}
+
+    public int calculateDest(int pos, Card aCard) {
+      if (aCard.isSkipTurn())
+        return pos;
+      return pos + 1;
+    }
+  }
 }

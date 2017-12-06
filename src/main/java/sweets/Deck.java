@@ -52,7 +52,7 @@ public class Deck implements Serializable{
 		if(empty())
 			reshuffleDeck();
 		top++;
-		return theDeck.get(top);
+		return new Card(Card.SKIP_TURN, -1);
     }
 
     public Card dadDraw(int playerPosition) {
